@@ -1,116 +1,42 @@
-@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 
 *{
     margin: 0;
     padding: 0;
 }
 
-body{
+body {
     display: flex;
-    font-family: 'Raleway', sans-serif;
-    padding: 0.5%;
-    align-items: flex-start;
+    flex-direction: row;
+    justify-content: center;
+    font-family: 'Roboto Mono', monospace;
 }
 
-#me{
-    padding: 2%;
-    width: 15%;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-}
-
-p{
-    text-align: justify;
-}
-
-
-#title{
+#me {
     margin-top: 5%;
-    text-align: center;
-}
-
-ul{
-    list-style-type: none;
+    width: 60%;
 }
 
 #me img{
-    display: block;
     margin: 0 auto;
-    max-width: 60%;
+    max-width: 25%;
     height: auto;
     border-radius: 50%;
 }
 
-#work{
-    width: 75%;
-    padding: 2%;
-    margin-left: 1%;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+a {
+    color: rgb(9, 104, 247);
 }
 
-#work img{
-    display: block;
-    margin: 0 auto;
-    max-width: 50%;
-    height: auto;
-}
-
-.card{
-    padding: 0.5%;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    overflow: auto;
-}
-
-.card a
-{
-    float: right;
-    margin-left: 1%;
-    padding: 0.5%;
-    border: 2px solid black;
-    font-weight: bold;
-    transition: 0.2s;
-}
-
-a:link 
-{
-    color: black;
-    text-decoration: none;
-}
-  
-a:visited 
-{
-    color: black;
-    text-decoration: none;
-}
-  
-.card a:hover 
-{
-    background-color: black;
-    color: white;
-    text-decoration: underline;
-}
-  
-a:active 
-{
-    text-decoration: underline;
-}
-
-@media only screen and (max-width: 800px){
-    body{
-        flex-direction: column;
+@media screen and (max-width: 768px) {
+    #me {
+        margin-top: 25%;
     }
-    
-    #me{
-        width: 95%;
-        left: 0;
-        right: 0;
-        margin: auto;
-    }
-    
-    #work{
-        width: 95%;
-        left: 0;
-        right: 0;
-        margin: auto;
-        margin-top: 2%;
+
+    #me img{
+        margin: 0 auto;
+        max-width: 60%;
+        height: auto;
+        border-radius: 50%;
     }
 }
