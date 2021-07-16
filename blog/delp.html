@@ -25,7 +25,7 @@
 </li>
 <li><p>I let my code pass through lint checks, formatting checks, and optionally, some tests too. I build a version of this site and run it on localhost. I keep pushing my development commits too, frequently.</p>
 </li>
-<li><p>If my build is stable enough, I merge my <a href="https://github.com/viveknathani/delp/tree/main">main branch</a> with the development branch.</p>
+<li><p>If my build is stable enough, I merge the development branch with my <a href="https://github.com/viveknathani/delp/tree/main">main branch</a>.</p>
 </li>
 <li><p>When I push commits to the main branch, I want <a href="https://www.heroku.com/">Heroku</a> to deploy my site automatically. And that's it.</p>
 <p>So I programmed things to do exactly this. I set up the build, formatting, linting, and testing commands in my package.json file. I also made a <a href="https://github.com/features/actions">Github Action</a> to look for changes in my main branch and deploy to Heroku.</p>
