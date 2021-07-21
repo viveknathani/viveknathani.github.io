@@ -1,7 +1,7 @@
 const technicalBlogPosts = [
     {
         name: "building delp - an open source tool to help devs",
-        path: "/delp",
+        path: "./delp",
         uploadedAt: "07/21"
     }
 ]
