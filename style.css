@@ -40,3 +40,10 @@ a {
         border-radius: 50%;
     }
 }
+
+@media screen and (max-width: 480px) {
+
+    #me {
+        margin-bottom: 10%;
+    }
+}
