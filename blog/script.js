@@ -3,6 +3,11 @@ const technicalBlogPosts = [
         name: "building delp - an open source tool to help devs",
         path: "./delp",
         uploadedAt: "07/21"
+    }, 
+    {
+        name: "exploring Go",
+        path: "./go",
+        uploadedAt: "08/21"
     }
 ]
 
