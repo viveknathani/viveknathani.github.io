@@ -3,6 +3,8 @@
 *{
     margin: 0;
     padding: 0;
+    font-size: 1rem;
+    background-color: rgb(243, 228, 215);
 }
 
 body {
@@ -10,6 +12,12 @@ body {
     flex-direction: row;
     justify-content: center;
     font-family: 'Roboto Mono', monospace;
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+}
+
+#links {
+    padding: 5px;
+    position: absolute;
 }
 
 #me {
@@ -46,4 +54,10 @@ a {
     #me {
         margin-bottom: 10%;
     }
+}
+#me #name {
+    /* text-align: center; */
+    font-size: 2rem;
+    font-weight: 900;
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
 }
