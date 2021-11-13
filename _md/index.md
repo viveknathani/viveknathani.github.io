@@ -4,7 +4,7 @@
 
 # Hi, I am Vivek!
 <div>
-I am an engineering student based out of India with a passion for software development. My skills include building backends in Node.js and TypeScript, CLI tools in Go and occasionally, building user interfaces using React.  
+I am an engineering student based in India with a passion for software development. My skills include building backends in Node.js and TypeScript, CLI tools in Go and occasionally, building user interfaces using React.  
 
 Find out more about me: [projects](./work) | [blog](./blog) | [resume](https://drive.google.com/file/d/16dQb5zN6FYl0dFurLYl3Ojxdu0qiIdUn/view?usp=sharing)
 
