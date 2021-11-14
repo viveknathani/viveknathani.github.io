@@ -8,4 +8,10 @@ A publically visible log of what I read.
 
 - The Intelligent Investor by Benjamin Graham [(notes)](./notes/intelligent-investor.html)
 - Sapiens - A brief history of humankind by Yuval Noah Harari [(notes)](./notes/sapiens.html)
-- Bitcoin research paper
+- Bitcoin research paper (notes are super sketchy rn)
+- Computer Networking - A top-down approach (great book, would totally recommend!)
+
+Things to read in future. 
+
+- Ethereum [(whitepaper)](https://ethereum.org/en/whitepaper/)
+- Parsers (maybe build some for fun?)[(wikipedia)](https://en.wikipedia.org/wiki/Parsing)
