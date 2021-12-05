@@ -36,11 +36,9 @@ I wanted my development workflow to be as simple and as effective as possible. S
 
 3. If my build is stable enough, I merge my [main branch](https://github.com/viveknathani/delp/tree/main) with the development branch. 
 
-4. When I push commits to the main branch, I want [Heroku](https://www.heroku.com/) to deploy my site automatically. And that's it. 
+4. When I push commits to the main branch, I want [Netlify](https://www.netlify.com/) to deploy my site automatically. And that's it. 
    
-   So I programmed things to do exactly this. I set up the build, formatting, linting, and testing commands in my package.json file. I also made a [Github Action](https://github.com/features/actions) to look for changes in my main branch and deploy to Heroku.
-   
-   
+   So I programmed things to do exactly this. I set up the build, formatting, linting, and testing commands in my package.json file.    
 
 ### Outcome
 
