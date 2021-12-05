@@ -38,16 +38,7 @@ h1::before {
 
     * {
         font-size: small;
-        margin-bottom: 2%;
-        padding: 1%;
-    }
-
-    h1 {
-        font-size: x-large;
-    }
-
-    body {
-        width: 80%;
-        margin: auto;
+        margin-bottom: 5%;
+        padding: 2%;
     }
 }
