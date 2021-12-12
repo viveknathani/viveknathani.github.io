@@ -10,6 +10,7 @@ A publically visible log of what I read.
 - Sapiens - A brief history of humankind by Yuval Noah Harari [(notes)](./notes/sapiens.html)
 - Bitcoin research paper (notes are super sketchy rn)
 - Computer Networking - A top-down approach (great book, would totally recommend!)
+- Logging: [minimum viable logging](https://kulikalov.com/minimal-viable-logging) 
 
 Things to read in future. 
 
