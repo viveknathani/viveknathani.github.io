@@ -22,7 +22,7 @@ I needed a language that can help me build CLI tools, that provides type-safety,
 
 Go is a garbage collected, statically typed, compiled programming language. Its philoshopy is to stay clean, concise and efficient.
 
-<img src="./go.PNG" height="200px" width="350px">
+<img src="./go.png" height="200px" width="350px">
 
 I started learning about Go from the official [docs](https://golang.org/doc/). Meanwhile, I discovered this [website ](https://gobyexample.com/) that provides an introduction to various topics of Go with an example. This website is pretty good and you should check it out if you are new to Go or maybe just want to revise your learnings. It was not hard to pick it up. I have been able to stay very productive while using it. I am still exploring some of its concepts but I like it. The concept of using goroutines and communicating via channels makes it fairly easy to write code for systems that need concurrency.
 
