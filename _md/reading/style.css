@@ -9,7 +9,7 @@
 }
 
 body {
-    width: 60%;
+    width: 90%;
     margin: auto;
 }
 
@@ -23,6 +23,7 @@ h2 {
 a, a:visited, a:hover, a:active {
     color: rgb(79, 204, 68);
     text-decoration: underline;
+    background-color: transparent;
 }
 
 @media screen and (max-width: 480px) {

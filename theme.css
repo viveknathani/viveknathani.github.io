@@ -9,24 +9,24 @@
 }
 
 body {
-    width: 60%;
+    width: 90%;
     margin: auto;
 }
 
 h1 {
     color: cyan;
     text-align: center;  
-    margin-top: 20%;
+    margin-top: 10%;
 }
 
 p {
     margin-bottom: 1%;
-    width: 80%;
 }
 
 a, a:visited, a:hover, a:active {
     color: rgb(79, 204, 68);
     text-decoration: underline;
+    background-color: transparent;
 }
 
 h1::before {
