@@ -1,6 +1,6 @@
 
 [meta]: # (CSS_URL=../blog.css)
-[meta]: # (DOCUMENT_TITLE=viveknathani - blog - go)
+[meta]: # (DOCUMENT_TITLE=viveknathani - blog)
 
 # code for yourself
 
