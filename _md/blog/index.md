@@ -6,3 +6,4 @@
 
 - [exploring Go](./go)
 - [building delp](./delp)
+- [code for yourself](./code-for-yourself)
