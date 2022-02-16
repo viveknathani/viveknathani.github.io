@@ -10,4 +10,5 @@ This is a public log of my covid journey. Why am I writing this? Maza aata hai.
 - [13th February][Day 2] Coughing. Things like hot water and soup helped. Did some work for a mental distraction.
 - [14th February][Day 3] Coughing. Hot water, soup, and steaming helped.
 - [15th February][Day 4] Coughing. Hot water, soup, and steaming helped.
+- [16th February][Day 5] Coughing. Hot water, soup, and steaming helped.
 
