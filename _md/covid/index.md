@@ -12,4 +12,6 @@ This is a public log of my covid journey. Why am I writing this? Maza aata hai.
 - [15th February][Day 4] Coughing. Hot water, soup, and steaming helped.
 - [16th February][Day 5] Coughing. Hot water, soup, and steaming helped.
 - [17th February][Day 6] Coughing. Slightly reduced. Still looks like a long term problem. 
+- [18th February][Day 7] Reduced coughing. Feeling good.
+- [19th February][Day 8] Reduced coughing. Feeling good.
 
