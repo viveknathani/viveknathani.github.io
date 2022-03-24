@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Allura&family=Roboto:wght@100;500&display=swap');
+
+body {
+    margin: auto;
+    text-align: center;
+    margin-top: 18%;
+    background: rgb(250,250,250);
+    background: linear-gradient(90deg, rgba(250,250,250,1) 0%, rgba(252,29,74,1) 100%);
+    font-family: 'Roboto', sans-serif;
+}
+
+#intro {
+    font-size: large;
+    font-weight: 500;
+}
+
+#notes {
+    font-family: 'Allura', cursive;
+    font-size: xx-large;
+}
+
+button {
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: x-large;
+    padding-left: 1%;
+    padding-right: 1%;
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: rgb(36, 36, 36);
+}
+
+@media screen and (max-width: 480px) {
+
+    body {
+        margin-top: 50%;
+    }
+}
