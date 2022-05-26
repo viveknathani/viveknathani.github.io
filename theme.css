@@ -9,8 +9,13 @@
 }
 
 body {
-    width: 90%;
+    width: 60%;
     margin: auto;
+}
+
+img {
+    float: right;
+    border-radius: 50%;
 }
 
 h1 {
@@ -33,12 +38,24 @@ h1::before {
     content: "👋 ";
 }
 
+ul {
+    list-style: none;
+}
+
+.socials {
+    font-size: smaller;
+}
 
 @media screen and (max-width: 480px) {
 
     * {
-        font-size: small;
         margin-bottom: 5%;
-        padding: 2%;
     }
+
+    body {
+        width: 60%;
+        margin: auto;
+    }
+
+    
 }
