@@ -21,7 +21,8 @@ async function main() {
   const app = express();
   const port = process.env.PORT || 3000;
   app.use('/static', express.static(path.join(__dirname, './static')));
-  app.use('/', serveFromPath('./static/index.html'));
+  app.get('/', serveFromPath('./static/index.html'));
+  app.get('*', serveFromPath('./static/404.html'));
   app.listen(port, () => {
     console.log('⚡️ server is up and running!');
   });
