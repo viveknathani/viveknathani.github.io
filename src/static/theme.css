@@ -2,7 +2,7 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #fceddc;
+  background-color: #faf9f6;
 }
 
 a,
@@ -25,6 +25,13 @@ img {
   display: block;
   margin: 0 auto;
   width: 80%;
+}
+
+#me-img {
+  width: 150px;
+  height: 200px;
+  clip-path: circle();
+  margin: 0;
 }
 
 @media (min-width: 600px) {
