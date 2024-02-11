@@ -44,7 +44,7 @@ I love lists. This page is a list of lists, describing my interests that range f
 
 1. [Putting ideas into words](https://paulgraham.com/words.html)
 2. [Pluripotent](https://www.theplurisociety.com/)
-3. [How to speal](https://www.youtube.com/watch?v=Unzc731iCUY&ab_channel=MITOpenCourseWare)
+3. [How to speak](https://www.youtube.com/watch?v=Unzc731iCUY&ab_channel=MITOpenCourseWare)
 
 ## movies
 
