@@ -74,7 +74,7 @@ async function main() {
   app.get('/', serve('./static/index.html', 'AS_FILE'));
   app.get(
     '/lists',
-    serve(`${MARKDOWN_PARENT_PATH}/lists.md`, 'AS_MARKDOWN_STRING'),
+    serve(`${MARKDOWN_PARENT_PATH}/LISTS.md`, 'AS_MARKDOWN_STRING'),
   );
   app.get(
     '/blog',
