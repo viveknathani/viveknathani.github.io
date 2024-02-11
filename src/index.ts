@@ -44,10 +44,11 @@ function serve(
         res.sendFile(path.resolve(__dirname, source));
         return;
       }
+      let sourceToUse = source;
       if (type === 'AS_SLUG') {
-        source = `${source}/${req.params['slug']}.md`;
+        sourceToUse = `${source}/${req.params['slug']}.md`;
       }
-      const html = await convertFromMarkdown(source);
+      const html = await convertFromMarkdown(sourceToUse);
       res.send(html);
     } catch (err) {
       console.log(err);
@@ -57,11 +58,11 @@ function serve(
 }
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.log("unhandled rejection at:", promise, "reason:", reason);
+  console.log('unhandled rejection at:', promise, 'reason:', reason);
 });
 
 process.on('uncaughtException', (err, origin) => {
-  console.log("uncaught exception: ", err, origin);
+  console.log('uncaught exception: ', err, origin);
 });
 
 async function main() {
@@ -86,7 +87,6 @@ async function main() {
   app.get('/blog/:slug', serve(`${MARKDOWN_PARENT_PATH}/blog`, 'AS_SLUG'));
   app.get('/notes/:slug', serve(`${MARKDOWN_PARENT_PATH}/notes`, 'AS_SLUG'));
   app.get('*', serve('./static/404.html', 'AS_FILE'));
-  await createAndSendHackerNewsDigest();
   app.listen(config.PORT, () => {
     console.log('⚡️ server is up and running!');
   });
