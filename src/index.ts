@@ -2,6 +2,9 @@ import showdown from 'showdown';
 import express from 'express';
 import fs from 'fs/promises';
 import path from 'path';
+import config from './config';
+import cron from 'node-cron';
+import { createAndSendHackerNewsDigest } from './hn';
 
 const MARKDOWN_PARENT_PATH = './build/static/markdown';
 
@@ -53,9 +56,19 @@ function serve(
   };
 }
 
+process.on('unhandledRejection', (reason, promise) => {
+  console.log("unhandled rejection at:", promise, "reason:", reason);
+});
+
+process.on('uncaughtException', (err, origin) => {
+  console.log("uncaught exception: ", err, origin);
+});
+
 async function main() {
+  cron.schedule('30 1 * * *', async () => {
+    await createAndSendHackerNewsDigest();
+  });
   const app = express();
-  const port = process.env.PORT || 3000;
   app.use('/static', express.static(path.join(__dirname, './static')));
   app.get('/', serve('./static/index.html', 'AS_FILE'));
   app.get(
@@ -73,7 +86,8 @@ async function main() {
   app.get('/blog/:slug', serve(`${MARKDOWN_PARENT_PATH}/blog`, 'AS_SLUG'));
   app.get('/notes/:slug', serve(`${MARKDOWN_PARENT_PATH}/notes`, 'AS_SLUG'));
   app.get('*', serve('./static/404.html', 'AS_FILE'));
-  app.listen(port, () => {
+  await createAndSendHackerNewsDigest();
+  app.listen(config.PORT, () => {
     console.log('⚡️ server is up and running!');
   });
 }
