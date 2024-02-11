@@ -19,8 +19,8 @@ echo "Getting latest"
 git clone https://github.com/viveknathani/vivekn.dev.git
 cp .env vivekn.dev/
 cd vivekn.dev
-docker build -t website .
-docker run -dp 127.0.0.1:8080:8080 website
+docker compose build
+docker compose up -d
 ```
 
 ## license
