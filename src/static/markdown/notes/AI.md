@@ -19,7 +19,7 @@ title: AI
 13. people can come up with their own cost functions. squared error cost function just happens to be the most used one for regression problems.
 14. goal is to minimise the output of the cost function. contour plots are a good way to visualise this.
 15. silver bullet for this: gradient descent.
-16. w = w - alpha _ (partial derivative of cost function w.r.t. w). b = b - alpha _ (partial derivative of cost function w.r.t. b)
+16. w = w - alpha * (partial derivative of cost function w.r.t. w). b = b - alpha * (partial derivative of cost function w.r.t. b)
 17. alpha = learning rate. small value means more iterations hence slow. large value can cause gradient descent to never reach the minimum.
 18. w and b need to be updated simultaneously.
 19. gradient descent can fundamentally cause you to end up at a local minima but in the case of linear regression, the cost function is a convex function - it will always converge to the global minimum.
