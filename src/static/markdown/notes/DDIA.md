@@ -1,6 +1,8 @@
 «««
-:title: designing data intensive applications
+title: designing data intensive applications
 »»»
+
+# designing data intensive applicatios
 
 1. goal is to make systems that are reliable, scalable, and maintainable.
 2. data models: relational, document, graph, triple store.
