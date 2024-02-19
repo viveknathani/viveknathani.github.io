@@ -41,3 +41,13 @@ title: designing data intensive applications
 34. to speed up queries in OLAP - the storage of data can be column-oriented instead of row-oriented.
 35. an idea that keeps coming up frequently is that you can compress blocks/pages/columns of data to save disk space.
 36. chapter-3 needs to be read multiple times in order to fully internalise what is truly going on. great book!
+37. replication - keep a copy of the same data on multiple machines. why? be geographically closer to your users, allow system to be available if some parts have failed, scale out the number of machines that can serve read queries.
+38. popular algorithms: single-leader, multi-leader, leaderless.
+39. in a leader based approach - the leader is the one where writes happen. and other "follower" nodes just get their copies updated.
+40. replication can be: synchronous, asynchronous, semi-synchronous (copy to one node in sync and to rest async).
+41. mostly, replication is fast. but under heavy workloads, it can slow down. seen this at Investmint a couple of times.
+42. when you want to setup a new follower, take a snapshot of the existing data and capture the timestamp. copy the data to your new node. next, use the timestamp to get all updates after this in the database log. in postgres, instead of timestamp, log sequence numbers are used. in mysql, they are called as binlog coordinates.
+43. when a node goes down: if it is a follower, it just needs to catch-up with the new updates whenever it is back. when it is a leader who has failed, it may require manual intervention. a new leader needs to be chosen and the system needs to be configured to use the new leader. it is possible that the new leader might be a little out of sync with the leader who died. this can lead to discarding of some data. this can be undesirable for some systems. github ran into this problem because they had auto incrementing ids in their system and the sequencing got messed up because the leader went down and the best possible was a little out of sync. in some situations, two nodes might believe that they are the leader. this is called a split brain situation. in general, choosing a new leader is usually ver hard. some companies prefer to just do this manually.
+44. replication log implementation: statement, WAL shipping, logical row based, trigger based
+45. workarounds for replication lag: have a read-after-write consistency guarantee, do monotonic reads, do consistent prefix reads.
+46. 
