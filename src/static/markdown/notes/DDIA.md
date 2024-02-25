@@ -62,3 +62,5 @@ title: designing data intensive applications
 54. fix sloppy quorums by "hinted handoff". although, sloppy quorums increase write availability.
 55. leaderless replication is helpful in multi datacenter operations.
 56. look into the algorithm to determine if two operations are concurrent or whether one happened before the other.
+57. version vectors help in concurrent writes too.
+58. sharding: watch the gkcs video.
