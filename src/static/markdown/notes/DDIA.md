@@ -52,4 +52,13 @@ title: designing data intensive applications
 45. workarounds for replication lag: have a read-after-write consistency guarantee, do monotonic reads, do consistent prefix reads.
 46. multi leader replication is hard and rarely needed. one usecase where it is required: having multiple data centers in different geographies. you need to think about stuff like conflict resolution (which has a lot in parallel with the problem of implementing realtime collaborative editing). clients that support offline operations in multiple devices have a similar multi leader pattern. checkout couchdb.
 47. ways for resolving write conflict: last write wins, or show merged values, or let the application resolve it instead of doing it in the DB layer (bucardo and couchdb let you do this).
-48. areas of research in conflict resolution: conflict free replicated datatypes (CRDTs), meregable persistent data structures, operational transformation (used behind etherpad and google docs). 
+48. areas of research in conflict resolution: conflict free replicated datatypes (CRDTs), meregable persistent data structures, operational transformation (used behind etherpad and google docs).
+48. leaderless replication - the idea existed in the earlier days but became fashionable after amazon adopted it. writing to all nodes happens in parallel. reading from all happens in parallel too. once items are fetched, the one with the latest version number is considered to be valid.
+49. strategies for fixing out-of-sync nodes: read repair, anti entropy.
+50. if there are n replicas, every write must be confirmed by w nodes to be considered successful, and we must query at least r nodes for each read. as long as w + r > n, we can expect to get an up-to-date value. reads and writes that obey these r and w values are called quorum reads and writes. n, w, and r are typically configurable. if fewer than w or r nodes are available, writes or reads return an error.
+51. limitations of quorum consistency - sloppy quorums, concurrent writes, concurrent read and write, no rollback of values in case of partial failure.
+52. dynamo-style databases are handled for cases that can tolerate eventual consistency.
+53. monitoring is harder in leaderless replication.
+54. fix sloppy quorums by "hinted handoff". although, sloppy quorums increase write availability.
+55. leaderless replication is helpful in multi datacenter operations.
+56. look into the algorithm to determine if two operations are concurrent or whether one happened before the other.
