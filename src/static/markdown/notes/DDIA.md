@@ -64,3 +64,12 @@ title: designing data intensive applications
 56. look into the algorithm to determine if two operations are concurrent or whether one happened before the other.
 57. version vectors help in concurrent writes too.
 58. sharding: watch the gkcs video.
+59. transactions: group several reads and writes into one logical unit. either you commit, or rollback.
+60. they have a cost: can decrease performance slightly, make systems less available.
+61. the NoSQL guys dislike it, call it the "antithesis of scalability".
+62. the safety guarantees of transactions are defined by ACID - atomicity, consistency, isolation, durability.
+63. atomicity: all or nothing behaviour.
+64. consistency: in context of ACID, it means keep the system in a "good state". however, the invariants of a system depend on the application, not on the database. so consistency in ACID is just there, without much importance.
+65. isolation: two transactions are unaware about each other's existence.
+66. durability: a promise that once a transaction has been commited, any data it has written will not be forgotten. however, nothing in perfect. disks can crash or get corrupt at a later point in time. unless you have backups, nothing can save you.
+67. TODO: explore storage systems.
