@@ -73,3 +73,14 @@ title: designing data intensive applications
 65. isolation: two transactions are unaware about each other's existence.
 66. durability: a promise that once a transaction has been commited, any data it has written will not be forgotten. however, nothing in perfect. disks can crash or get corrupt at a later point in time. unless you have backups, nothing can save you.
 67. TODO: explore storage systems.
+68. serializable isolation - the database guarantees that transactions have the same effect as if they ran serially.
+69. however, isolation has a performance cost. so many systems prefer to provide weaker levels of isolation.
+70. approach one - read committed. no dirty reads (read only what has been committed). no dirty writes (overwrrite only what has been committed).
+71. issue with read committed - read skew or nonrepeatable read.
+72. solution to long running read queries like backups or analytical tasks - snapshot isolation.
+73. the database may need to maintain several different versions of the same object at the same time for different transactions involving that object - this is called multi version concurrency control.
+74. indexing on snapshot isolation is wild. explore this.
+74. postgres calls its snapshot isolation implementation as a repeatable read.
+75. to prevent lost updates - atomic writes, explicit locks, automatically detect lost updates, compare-and-set.
+76. explore phantoms and write skews.
+  
