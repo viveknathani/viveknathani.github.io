@@ -83,4 +83,49 @@ title: designing data intensive applications
 74. postgres calls its snapshot isolation implementation as a repeatable read.
 75. to prevent lost updates - atomic writes, explicit locks, automatically detect lost updates, compare-and-set.
 76. explore phantoms and write skews.
-  
+77. explore serializability.
+
+
+troubles in distributed systems
+1. partial failures
+2. unreliable networks
+    1. timeouts
+    2. unbounded delays
+    3. congestion
+    4. queuing
+3. variable delays are a consequence of dynamic resource partitioning
+4. unreliable clocks
+    1. a day may not have exactly 86400 seconds
+    2. time-of-day clocks might move backwards in time
+    3. monotonic clocks can helpful in measuring duration 
+    4. time-of-day clocks are usually synchronised with NTP which can be inaccurate because of network round trip and quartz drift.
+    5. logical clocks are hence looked at as the alternative. just increment counters. and use this to understand the relative ordering of events. eg: lamport clock.
+
+consistency and consensus
+1. linearizability
+    1. make the system appear as if there is only a single copy of data. a read followed by a write will receive the most up to date version of the data.
+    2. if any one read has returned the new value, all following reads must also return the new value. the value should never flip back to the old one.
+    3. you can theoretically check if a system’s behaviour is linearisable by recording the timings of all requests and responses and arranging them in a valid sequential order.
+    4. single leader replication has the potential to provide linearizability.
+    5. some consensus algorithms can guarantee linearizability. zookeeper and etcd are examples of systems that use these algorithms.
+    6. if your application requires linearizability and some replicas are down, then it can cause unavailability. 
+    7. Attiya and Welch prove that if you want linearizability, the response time of read and write requests is atleast proportional to the uncertainty of delays in the network.
+2. CAP theorem
+    1. states that you can have a system is either consistent and partition tolerant (CP) OR available and partition tolerant (AP) OR consistent and available.
+    2. however, this theorem has many misleading definitions and assumptions and only serves as a high level thinking ground. it is of little practical value in designing systems.
+3. ordering
+    1. ordering of events helps in preserving causality 
+    2. causal order is not total order
+    3. a linearizable system has total order
+    4. you can order events in a sequence using lamport timestamps
+    5. total order broadcast ensures that all nodes in the distributed system agree on the order in which messages are delivered, regardless of the sender. this property is crucial for maintaining consistency and ensuring that all participants have a consistent view of the system state.
+    6. a linearizable compare-and-set register and total order broadcast are both equivalent to having consensus.
+4. consensus
+    1. 2PC - coordinator sends “prepare”, sends “commit” - has single point of failure if coordinator is down.
+    2. 3PC solves for SPOF but it assumes a network with bounded delay and nodes with bounded response times - both of which are pretty unrealistic.
+    3. good consensus algorithms don’t let you reach this dead state - they always move forward.
+    4. popular ones: viewstamped replication, paxos, raft, and zab. 
+    5. they all implement total order broadcast.
+    6. leader is elected by votes.
+    7. most consensus algorithms assume there to be a fixed set of nodes. they rely on timeouts to detect failed nodes. they are sensitive to unreliable networks. 
+    8. explore zookeeper and etcd - see how they are used. 
