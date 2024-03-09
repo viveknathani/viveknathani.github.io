@@ -6,7 +6,7 @@ title: blog
 
 Ideas. Small. Big. Mine.
 
-2024-03-23 - [DNS](/blog/dns)
+2024-03-09 - [DNS](/blog/dns)
 
 2023-07-16 - [slowly-fast](/blog/slowly-fast)
 
