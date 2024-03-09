@@ -51,7 +51,7 @@ I would like to highlight some interesting things I learnt while implementing th
 
 DNS is a critical component of the internet infrastructure. But there are pretty interesting incidents in history where it has contributed to some global outages.
 
-<img src="/static/images/root-server-timeout.png">
+<img src="/static/images/dns-meme.png">
 
 1. In July 2021, the Akamai DNS service was down. This disruption led to major websites like PlayStation Network, Fidelity, FedEx, Steam, AT&T, Amazon, and AWS becoming inaccessible.
 
