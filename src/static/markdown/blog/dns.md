@@ -36,7 +36,7 @@ DNS is managed in a hierarchy using something called as zones. It is a portion o
 
 ### the resolver
 
-Now you know that you have to start with a root server and work your way down the tree till you find your IP. The software that does this for you is called as the resolver. There are many DNS resolvers out here in the world. [Google has its own](https://developers.google.com/speed/public-dns). [Cloudflare has its own](https://1.1.1.1/). When you connect to the internet, your ISP also assigns a resolver for your device. You have the option to override this and choose any other resolver in the world as your own. Heck, you can even write one on your own. As a learning exercise, I wrote one. But I wouldn't recommend using it as your default resolver for your network unless you have battle tested it.
+Now you know that you have to start with a root server and work your way down the tree till you find your IP. The software that does this for you is called as the resolver. There are many DNS resolvers out here in the world. [Google has its own](https://developers.google.com/speed/public-dns). [Cloudflare has its own](https://1.1.1.1/). When you connect to the internet, your ISP also assigns a resolver for your device. You have the option to override this and choose any other resolver in the world as your own. Heck, you can even write one on your own. As a learning exercise, [I wrote one](https://github.com/viveknathani/vn53). But I wouldn't recommend using it as your default resolver for your network unless you have battle tested it.
 
 I would like to highlight some interesting things I learnt while implementing this resolver.
 
