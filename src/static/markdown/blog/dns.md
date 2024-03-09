@@ -22,7 +22,7 @@ If you are writing software that has to serve DNS queries, you need to start som
 
 The TLD server now has a smaller set of data to deal with it. It is only concerned with the domain it belongs to. But interestingly, the breakup does not end here. A DNS query sent to a TLD server is further redirected to something called as the authoritative nameserver. The authoritative nameserver is usually your last step in the journey for finding an IP address. The authoritative nameserver contains information specific to the domain name it serves.
 
-<img src="/static/images/dns-tree.PNG">
+<img src="/static/images/dns-tree.png">
 
 ### the zone file
 
@@ -39,13 +39,13 @@ I would like to highlight some interesting things I learnt while implementing th
 3. In a packet sent across the network by a name server, the domain name is actually compressed! Let's say we have a DNS message that needs to include the domain name "example.com" multiple times. Without compression, each occurrence of "example.com" would need to be fully written out in the message. However, with DNS compression, subsequent occurrences can be replaced with a pointer to the first occurrence. In the length field that describes how long the name is, every time we get the two starting bits as 1s, we know that the message that follows is actually a compressed one. Since domain components are only 63 characters long, you cannot have your starting bits as 1s, indicating this is definitely compressed. This is pretty neat.
 4. ISPs apparently block direct access to root servers. While taking my program for a test drive, I sent a query to one of the 13 IP addresses, and it timed out. I tried to do it via the `dig` utility, and it failed there too. Switched to a different ISP, and it worked! Tried on my Linode VM and it worked there too. This means you are at the mercy of your ISP if you wish to run your own resolver. That sucks imo.
 
-<img src="/static/images/root-server-timeout.PNG">
+<img src="/static/images/root-server-timeout.png">
 
 ### shit blowing up in production
 
 DNS is a critical component of the internet infrastructure. But there are pretty interesting incidents in history where it has contributed to some global outages.
 
-<img src="/static/images/root-server-timeout.PNG">
+<img src="/static/images/root-server-timeout.png">
 
 1. In July 2021, the Akamai DNS service was down. This disruption led to major websites like PlayStation Network, Fidelity, FedEx, Steam, AT&T, Amazon, and AWS becoming inaccessible.
 
