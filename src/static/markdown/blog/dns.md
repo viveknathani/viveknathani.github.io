@@ -4,6 +4,8 @@ title: DNS
 
 # DNS
 
+March 2024.
+
 The core idea of DNS is simple to understand. You give a domain name and get back the IP of it. Though, there is *A LOT* that goes on behind the scenes in making that happen for you. And it happens really fast. Today, I'd like to take you down this rabbit hole and by the end of it, I hope to give you a great amount of clarity on what goes on.
 
 If we were tasked with designing a system like this, most of us would begin with a single database. We would store all the domain names and their IP addresses in a table-like structure, maybe put an index on it and call it a day, right?
