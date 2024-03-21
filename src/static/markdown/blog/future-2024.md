@@ -2,7 +2,7 @@
 title: future as of 2024
 »»»
 
-# future as of 2204
+# future as of 2024
 
 March 2024
 
