@@ -39,7 +39,9 @@ async function convertFromMarkdown(filePath: string) {
     </script>
 
     <body>
-    ${htmlBody}
+      ${htmlBody}
+      <p></p>
+      <a href="/"><- back to home</a>
     </body>
     </html>
   `;
