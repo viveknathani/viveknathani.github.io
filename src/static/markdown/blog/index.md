@@ -6,6 +6,8 @@ title: blog
 
 Ideas. Small. Big. Mine.
 
+2024-03-30 - [decisions](/blog/decisions)
+
 2024-03-21 - [future as of 2024](/blog/future-2024)
 
 2024-03-09 - [DNS](/blog/dns)
