@@ -48,8 +48,8 @@ for directory in directories:
 ### backup or restore in postgres
 
 ```bash
-PGPASSWORD=your_password pg_dump -h localhost -U your_username -p 12345 your_database_name -t users > users.sql
-pg_restore -d your_database_name users.sql
+PGPASSWORD=your_password pg_dump -h localhost -U your_username -p 12345 your_database_name -F t users > users.tar
+pg_restore -d your_database_name users.tar
 ```
 
 ### JSON array to SQL inserts in Node.js

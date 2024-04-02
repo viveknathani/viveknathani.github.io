@@ -14,3 +14,4 @@ Structured and selective brain dump.
 5. [designing data intensive applications](/notes/DDIA)
 6. [networking](/notes/networking)
 7. [AI (wip)](/notes/AI)
+8. [database admin](/notes/database-admin)
