@@ -36,4 +36,5 @@ I love lists. This page is a list of lists, describing my interests that range f
 
 # religion
 
-1. Hinduism
+1. [Hinduism](/notes/hinduism)
+
