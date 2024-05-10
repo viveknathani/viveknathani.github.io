@@ -38,3 +38,6 @@ I love lists. This page is a list of lists, describing my interests that range f
 
 1. [Hinduism](/notes/hinduism)
 
+# misc
+
+1. [Wisdom](/notes/wisdom)
