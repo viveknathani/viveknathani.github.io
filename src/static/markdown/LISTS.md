@@ -34,3 +34,6 @@ I love lists. This page is a list of lists, describing my interests that range f
 1. [This Discovery of India](/notes/the-discovery-of-india)
 2. [The French Revolution](/notes/the-french-revolution)
 
+# religion
+
+1. Hinduism
