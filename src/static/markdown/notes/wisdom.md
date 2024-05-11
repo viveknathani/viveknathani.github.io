@@ -1,3 +1,7 @@
+«««
+title: wisdom
+»»»
+
 # wisdom
 
 1. keep your house in order. when your house is not in order, nothing will go right. make time for it and fix it.
