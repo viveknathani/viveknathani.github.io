@@ -8,6 +8,7 @@ async function sendNotification(request: NotificationRequest) {
       const chatIds = [
         5501101308, // vivek
         1204630303, // advait
+        1315932283, // sourav
       ];
       await Promise.all(
         chatIds.map(async (chatId) => {
