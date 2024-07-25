@@ -3,4 +3,4 @@ WORKDIR /app
 COPY . .
 RUN yarn && yarn build
 CMD ["yarn", "start"]
-EXPOSE 8080
+EXPOSE 8081
