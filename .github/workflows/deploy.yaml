@@ -14,4 +14,4 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
-        script: bash deploy.sh
+        script: bash ~/nattukaka/services/vivekn.dev/deploy.sh
