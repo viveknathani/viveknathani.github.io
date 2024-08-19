@@ -24,7 +24,7 @@ Some books that I have really liked over time.
 3. the oath of the vayuputras by amish tripathi
 4. desigining data intensive applications
 5. an era of darkness - the british empire in india
-6. the first world war (currently reading, and really liking it!)
+6. the first world war by john keegan (currently reading, and really liking it!)
 
 ### movies
 
