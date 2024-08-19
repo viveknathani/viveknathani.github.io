@@ -4,40 +4,43 @@ title: lists
 
 # lists
 
-I love lists. This page is a list of lists, describing my interests that range from computers to history, and everything in between. These are items that I keep coming back to. Books, papers, and blog posts are either linked to my own notes or Amazon links (non affiliate).
+I love lists. This page is a list of lists, describing my interests that range from computers to history, and everything in between.
 
-## computers
+### projects
 
-1. [Designing Data Intensive Applications](/notes/DDIA)
-2. [Computer Networking - A Top-Down Approach](https://www.amazon.com/Computer-Networking-Top-Down-Approach-7th/dp/0133594149/ref=sr_1_2?crid=336CFJSUYAA1B&keywords=computer+networking+a+top-down+approach&qid=1707666827&s=books&sprefix=computer+networkin%2Cstripbooks-intl-ship%2C321&sr=1-2)
-3. [Operating Systems - Three Easy Pieces](https://pages.cs.wisc.edu/~remzi/OSTEP/)
-4. [Computer Systems: A Programmer's Perspective](https://csapp.cs.cmu.edu/)
-5. [The bitcoin whitepaper](https://bitcoin.org/en/bitcoin-paper)
-6. [How UPI works](https://blog.setu.co/articles/upi-101-the-basics)
-7. [What every programmer should know about memory](https://lwn.net/Articles/250967/)
-8. [Latency numbers every programmer should know](https://gist.github.com/jboner/2841832)
+I love building things that add meaning to my life. And therefore, I try to produce software that can become a part of my life somehow.
 
-## math
+1. [teachyourselfmath](https://teachyourselfmath.app/)
+2. [vn53](https://github.com/viveknathani/vn53)
+3. [nattukaka](https://nattukaka.dev/)
+4. [workdiff](https://github.com/viveknathani/workdiff)
 
-1. [The Art of Problem Solving](https://artofproblemsolving.com/)
-2. [Project Euler](https://projecteuler.net/)
-3. [IMO Problems](https://www.imo-official.org/problems.aspx)
+### reading
 
-## communication
+Some books that I have really liked over time.
 
-1. [Putting ideas into words](https://paulgraham.com/words.html)
-2. [Pluripotent](https://www.theplurisociety.com/)
-3. [How to speak](https://www.youtube.com/watch?v=Unzc731iCUY&ab_channel=MITOpenCourseWare)
+1. the immortals of meluha by amish tripathi
+2. the secret of the nagas by amish tripathi
+3. the oath of the vayuputras by amish tripathi
+4. desigining data intensive applications
+5. an era of darkness - the british empire in india
+6. the first world war (currently reading, and really liking it!)
 
-## history
+### movies
 
-1. [This Discovery of India](/notes/the-discovery-of-india)
-2. [The French Revolution](/notes/the-french-revolution)
+Some movies that are timeless in my opinion.
 
-## religion
+1. up (2009)
+2. the social network (2010)
+3. the godfather (1972)
+4. the godfather 2 (1974)
+5. the godfather 3 (1990)
+6. gully boy (2019)
 
-1. [Hinduism](/notes/hinduism)
+### video games
 
-## misc
+Some video games that I have really liked.
 
-1. [Wisdom](/notes/wisdom)
+1. far cry 6
+2. left 4 dead 2
+3. superhot
