@@ -22,7 +22,7 @@ Some books that I have really liked over time.
 1. the immortals of meluha by amish tripathi
 2. the secret of the nagas by amish tripathi
 3. the oath of the vayuputras by amish tripathi
-4. desigining data intensive applications
+4. desigining data intensive applications by martin kleppmann
 5. an era of darkness - the british empire in india by shashi tharoor
 6. the first world war by john keegan (currently reading, and really liking it!)
 
