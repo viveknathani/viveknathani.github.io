@@ -6,10 +6,11 @@ I am a big fan of databases. The knowledge around this is scattered. This page i
 - [hierarchical](https://en.wikipedia.org/wiki/Hierarchical_database_model)
 - [network](https://en.wikipedia.org/wiki/Network_model)
 - [relational](https://en.wikipedia.org/wiki/Relational_model)
-2. normalization, connection pooling, enums
+2. normalization, connection pooling, enums, pagination
 - [normalization](https://en.wikipedia.org/wiki/Database_normalization)
 - [connection pooling](https://en.wikipedia.org/wiki/Connection_pool)
 - [enums](https://vivekn.dev/notes/database-admin#enums)
+- [no offset](https://use-the-index-luke.com/no-offset)
 3. memory and disk
 - [what every programmer should know about memory](https://lwn.net/Articles/250967/)
 - [disk](https://en.wikipedia.org/wiki/Disk_storage)
