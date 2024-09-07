@@ -1,3 +1,7 @@
+«««
+title: databases
+»»»
+
 # databases
 
 I am a big fan of databases. The knowledge around this is scattered. This page is an attempt to encapsulate stuff that I find interesting in an order that I think will help the reader develop the right mental model.
