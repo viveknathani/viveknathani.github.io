@@ -94,6 +94,10 @@ async function main() {
     serve(`${MARKDOWN_PARENT_PATH}/DATABASES.md`, 'AS_MARKDOWN_STRING'),
   );
   app.get(
+    '/history',
+    serve(`${MARKDOWN_PARENT_PATH}/DATABASES.md`, 'AS_MARKDOWN_STRING'),
+  );
+  app.get(
     '/blog',
     serve(`${MARKDOWN_PARENT_PATH}/blog/index.md`, 'AS_MARKDOWN_STRING'),
   );
