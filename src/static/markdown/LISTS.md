@@ -39,8 +39,8 @@ Some movies that are timeless in my opinion.
 
 ### video games
 
-Some video games that I have really liked.
+List of video games that I have played along with the number of hours it took me to complete them.
 
-1. far cry 6
-2. left 4 dead 2
-3. superhot
+1. far cry 6 (~30 hours)
+2. left 4 dead 2 (~12 hours)
+3. battlefield 3 (~8 hours)
