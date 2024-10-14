@@ -24,7 +24,6 @@ Some books that I have really liked over time.
 3. the oath of the vayuputras by amish tripathi
 4. desigining data intensive applications by martin kleppmann
 5. an era of darkness - the british empire in india by shashi tharoor
-6. the first world war by john keegan (currently reading, and really liking it!)
 
 ### movies
 
@@ -44,3 +43,4 @@ List of video games that I have played along with the number of hours it took me
 1. far cry 6 (~30 hours)
 2. left 4 dead 2 (~12 hours)
 3. battlefield 3 (~8 hours)
+4. call of duty modern warfare 1 (~10 hours)
