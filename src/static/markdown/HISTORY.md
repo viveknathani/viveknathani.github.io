@@ -68,3 +68,21 @@ World War II was a global conflict lasting from 1939 to 1945, involving many of 
 - October 24, 1945: United Nations established
 - November 20, 1945: Nuremberg trials begin
 - September 8, 1951: San Francisco Peace Treaty signed, formally ending the war in the Pacific
+
+### Cold War
+
+The Cold War was a period of geopolitical tension and military rivalry between the United States and the Soviet Union that lasted from 1947 to 1991. It wasn't a traditional war with direct military confrontation between the superpowers, but rather a sustained state of political and military tension. The conflict shaped international relations, divided the world into competing spheres of influence, and left a lasting impact on global politics, economics, and culture through proxy wars, the nuclear arms race, and the space race.
+
+- February 4, 1945: Yalta Conference divides Europe into spheres of influence
+- March 12, 1947: Truman Doctrine announced, marking the official start of the Cold War
+- June 24, 1948: Soviet Union blockades West Berlin
+- April 4, 1949: NATO established
+- August 29, 1949: Soviet Union tests its first atomic bomb
+- June 25, 1950: Korean War begins
+- August 13, 1961: Construction of the Berlin Wall begins
+- October 16, 1962: Cuban Missile Crisis brings world to brink of nuclear war
+- July 20, 1969: US wins Space Race with Moon landing
+- December 24, 1979: Soviet Union invades Afghanistan
+- March 11, 1985: Mikhail Gorbachev becomes Soviet leader
+- November 9, 1989: Berlin Wall falls
+- December 25, 1991: Soviet Union officially dissolves, ending the Cold War
