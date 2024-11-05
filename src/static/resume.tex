@@ -1,0 +1,103 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Medium Length Professional CV
+% LaTeX Template
+% Version 2.0 (8/5/13)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Trey Hunner (http://www.treyhunner.com/)
+%
+% Important note:
+% This template requires the resume.cls file to be in the same directory as the
+% .tex file. The resume.cls file provides the resume style used for structuring the
+% document.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%   PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{resume} % Use the custom resume.cls style
+\usepackage[left=0.7in,top=0.4in,right=0.7in,bottom=0.5in]{geometry} % Document margins
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+%----------------------------------------------------------------------------------------
+%   DOCUMENT START
+%----------------------------------------------------------------------------------------
+
+\name{Vivek Nathani}
+\usepackage{graphicx}
+\address{
++91 9106581560 \\
+viveknathani2402@gmail.com \\
+\href{https://GitHub.com/viveknathani/}{\underline{GitHub}} \\
+\href{https://www.LinkedIn.com/in/viveknathani/}{\underline{LinkedIn}}
+}
+
+\begin{document}
+\title{Vivek's Resume}
+%----------------------------------------------------------------------------------------
+%   EDUCATION SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{rSection}{Education}
+
+\begin{rSubsection}{Symbiosis Institute Of Technology}{2019-2023}{B.Tech in Information Technology}{Pune, India}
+
+\vspace{-.65cm}
+\item[]
+\end{rSubsection}
+\end{rSection}
+
+
+%----------------------------------------------------------------------------------------
+%   Projects
+%----------------------------------------------------------------------------------------
+
+\begin{rSection}{Experience}
+\begin{rSubsection}{Founding Engineer}{August 2024 - Present}
+{Mars Computers}{}
+\item Working on making powerful compute accessible everywhere.
+\item Using Rust and Go.
+
+\end{rSubsection}
+\begin{rSubsection}{Software Engineer}{July 2023 - April 2024}{Investmint}{}
+\item Built the entire backend for having an in-app broking experience on top of an existing broker. Integrated their APIs into our ecosystem and securely exposed the data for our product. 12000+ orders were processed through this layer inside our app.
+\item Integrated Razorpay for putting the in-app broking layer behind a paywall.
+\item Built the news feed that sends the latest updates for all the companies who have their stocks listed on NSE. 70000+ news items were processed using OpenAI’s models and 8000+ orders were placed because of these news items.
+\item Built the portfolio connecting feature that lets you import your portfolio from 10+ brokers in India and get detailed analysis on top of it. 16000+ portfolios were connected via this layer.
+\item Built inves-broker - A heavily used internal library written in Node.js for interacting with multiple broker APIs in the Indian stock market. The launch of this project led to a 96\% increase in in-app orders.
+\item Technologies used: Node.js, PostgreSQL, Redis, Docker, MongoDB, and AWS.
+\end{rSubsection}
+\begin{rSubsection}{Software Engineer Intern}{June - July 2022, December 2022 - June 2023}{Investmint}{}
+\item Implemented the REST APIs for displaying data of Indian stocks inside the app. Asynchronous jobs were implemented to process data of 2000+ stocks every day.
+\item Was the single person of contact for experimenting with API based trading in the early days via Zerodha and Dhan which eventually led to the inves-broker project.
+\item Used technologies like Node.js, PostgreSQL, Redis, and Render.
+\end{rSubsection}
+\end{rSection}
+
+\begin{rSection}{Projects}
+
+\begin{rSubsection}{teachyourselfmath - A math PDF extraction engine.}{\href{https://teachyourselfmath.app/}{\underline{Live website}}}{Using Node.js, TypeScript, PostgreSQL,Redis}{}
+\item Implemented an engine that takes LaTeX outputs of a PDF from an AI model, extracts the relevant math problems, and stores them in a database.
+\item Posted about this on Hacker News ({\href{https://news.ycombinator.com/item?id=39113879}{\underline{link}}) - This led to 300+ upvotes and made it to the front page in the top 10 list.
+\end{rSubsection}
+\end{rSection}
+
+%----------------------------------------------------------------------------------------
+%   Skills
+%----------------------------------------------------------------------------------------
+\begin{rSection}{Skills}
+
+\begin{tabular}{ @{} >{\bfseries}l @{\hspace{6ex}} l }
+Languages & C++, JavaScript (primarily Node.js), Go \\
+Tools & Git, Linux, GitHub Actions, MySQL, PostgreSQL, MongoDB, AWS \\
+\end{tabular}
+
+\end{rSection}
+
+\end{document}

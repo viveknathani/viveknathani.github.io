@@ -107,6 +107,7 @@ async function main() {
   );
   app.get('/blog/:slug', serve(`${MARKDOWN_PARENT_PATH}/blog`, 'AS_SLUG'));
   app.get('/notes/:slug', serve(`${MARKDOWN_PARENT_PATH}/notes`, 'AS_SLUG'));
+  app.get('/resume', serve('./static/VivekNathaniResume.pdf', 'AS_FILE'));
   app.get('*', serve('./static/404.html', 'AS_FILE'));
   app.listen(config.PORT, () => {
     console.log('⚡️ server is up and running!');
