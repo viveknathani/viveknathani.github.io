@@ -18,14 +18,18 @@ async function convertFromMarkdown(filePath: string) {
   const text = (await fs.readFile(filePath)).toString();
   const htmlBody = converter.makeHtml(text);
   const meta = converter.getMetadata() as showdown.Metadata;
+  const title = meta['title'];
+  const description = 'viveknathani - blog';
   return `
     <!DOCTYPE html>
     <html>
     <head>
-      <title>viveknathani - ${meta['title']}</title>
+      <title>viveknathani - ${title}</title>
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta charset="utf-8">
       <link rel="stylesheet" type="text/css" href="/static/theme.css">
+      <meta property="og:title" content="${title}">
+      <meta property="og:description" content="${description}">
     </head>
 
     <!-- Google tag (gtag.js) -->
