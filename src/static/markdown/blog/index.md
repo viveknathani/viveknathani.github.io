@@ -6,6 +6,8 @@ title: blog
 
 Ideas. Small. Big. Mine.
 
+2024-11-15 - [fulfillment and capitalism](/blog/fulfillment-capitalism)
+
 2024-10-04 - [indie hacking my way to thousands of math problems and puzzles for the internet](/blog/teachyourselfmath)
 
 2024-03-30 - [decisions](/blog/decisions)
