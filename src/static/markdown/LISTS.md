@@ -24,6 +24,7 @@ Some books that I have really liked over time.
 3. the oath of the vayuputras by amish tripathi
 4. desigining data intensive applications by martin kleppmann
 5. an era of darkness - the british empire in india by shashi tharoor
+6. crime and punishment by fyodor dostoevsky
 
 ### movies
 
