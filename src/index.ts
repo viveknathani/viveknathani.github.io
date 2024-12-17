@@ -90,20 +90,20 @@ async function main() {
   app.use('/static', express.static(path.join(__dirname, './static')));
   app.get('/', serve('./static/index.html', 'AS_FILE'));
   app.get(
-    '/lists',
-    serve(`${MARKDOWN_PARENT_PATH}/LISTS.md`, 'AS_MARKDOWN_STRING'),
+    '/blog',
+    serve(`${MARKDOWN_PARENT_PATH}/blog/index.md`, 'AS_MARKDOWN_STRING'),
   );
   app.get(
     '/databases',
     serve(`${MARKDOWN_PARENT_PATH}/DATABASES.md`, 'AS_MARKDOWN_STRING'),
   );
   app.get(
-    '/history',
-    serve(`${MARKDOWN_PARENT_PATH}/HISTORY.md`, 'AS_MARKDOWN_STRING'),
+    '/deepcuts',
+    serve(`${MARKDOWN_PARENT_PATH}/DEEPCUTS.md`, 'AS_MARKDOWN_STRING'),
   );
   app.get(
-    '/blog',
-    serve(`${MARKDOWN_PARENT_PATH}/blog/index.md`, 'AS_MARKDOWN_STRING'),
+    '/math',
+    serve(`${MARKDOWN_PARENT_PATH}/MATH.md`, 'AS_MARKDOWN_STRING'),
   );
   app.get(
     '/notes',
