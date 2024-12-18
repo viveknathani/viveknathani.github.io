@@ -16,3 +16,5 @@ This page is a list of books, papers, and videos that I think are truly great. T
 <i>What every programmer should know about memory</i> - A classic [paper](https://people.freebsd.org/~lstewart/articles/cpumemory.pdf) by Ulrich Drepper. This does not need a description. Just read it.
 
 <i>The Godfather Trilogy</i> - Put it on TV, get some whiskey, sit back, and enjoy pure art.
+
+<i>Chip War - the race for semiconductor supremacy</i> - A [video](https://www.youtube.com/watch?v=8mvWbKEpO9Q&ab_channel=TaiwanPlusDocs) on the importance of semiconductors in the modern world.
