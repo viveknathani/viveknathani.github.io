@@ -18,3 +18,5 @@ This page is a list of books, papers, and videos that I think are truly great. T
 <i>The Godfather Trilogy</i> - Put it on TV, get some whiskey, sit back, and enjoy pure art.
 
 <i>Chip War - the race for semiconductor supremacy</i> - A [video](https://www.youtube.com/watch?v=8mvWbKEpO9Q&ab_channel=TaiwanPlusDocs) on the importance of semiconductors in the modern world.
+
+<i>2024: The Election that Surprised India By Rajdeep Sardesai</i> - A fun read that covers the surprising result of 2024 along with the events that led to it.
