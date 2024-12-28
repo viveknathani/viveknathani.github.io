@@ -31,3 +31,12 @@ This involves the idea of locking.
 The job of a `Mutex` is to ensure threads have exclusive access to some data by temporarily blocking other threads that try to access it at the same time. It has two states: locked and unlocked. Locking is an explicit action performed by `lock()`. Unlocking is implicit and happens when the mutex goes out of scope. This is why it's important to ensure that the mutex goes out of scope as soon as possible. A common runtime bug is to keep the lock in scope for too long. Prevent this by doing your work inside a scope.
 
 `RwLock` has three states: read-locked, write-locked, and unlocked. It allows multiple readers or one writer at a time. This is useful when you have a large data structure and you want to allow multiple threads to read it at the same time. The writer blocks all readers and writers.
+
+### lock-free, thread-safe, and efficient operations
+Use `AtomicBool`, `AtomicIsize`, `AtomicUsize`, etc. for lock-free, thread-safe, and efficient operations. They are useful for simple types like integers and booleans. They are not useful for complex types like `String` and `Vec`.
+
+Common patterns: `load`, `store`, `swap`, `compare_and_swap`, `fetch_add`, `fetch_sub`, etc.
+
+Atomics avoid the overhead of a `Mutex` or a context switch because they operate at the hardware level, ensuring synchronization without blocking.
+
+Common usecases: Keeping a global counter, toggling a flag, or accessing a single value across threads.
