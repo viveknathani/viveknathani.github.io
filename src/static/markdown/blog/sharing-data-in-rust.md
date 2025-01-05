@@ -4,7 +4,7 @@ title: sharing data in rust
 
 # sharing data in Rust
 
-December 2024
+January 2025
 
 We are interested in looking at various ways to share data in Rust under various conditions. This deserves a summarized understanding because Rust is powerful but also complex. [This book](https://marabos.nl/atomics/) is a great resource to have in your library and the post often takes ideas from it.
 
@@ -12,7 +12,7 @@ We are interested in looking at various ways to share data in Rust under various
 Use the `static` keyword for this. This variable is owned by the entire program instead of an individual thread. Useful for truly immutable data or lazily initialized global data shared across threads. Use synchronization primitives like `Mutex` or `RwLock` to provide mutable access to the data.
 
 ### absolute freedom like C
-Use raw pointers - `*const T` and `*mut T`. But then, why are you writing Rust?
+Use raw pointers - `*const T` and `*mut T`. This is useful and sometimes the only way to do things but it will usually lead to unsafe code.
 
 ### write to an internal property of a struct without making the struct instance mutable
 Use `Cell` or `RefCell` for this. Bot allow you to mutate data even when it's behind an immutable reference. 
@@ -40,3 +40,6 @@ Common patterns: `load`, `store`, `swap`, `compare_and_swap`, `fetch_add`, `fetc
 Atomics avoid the overhead of a `Mutex` or a context switch because they operate at the hardware level, ensuring synchronization without blocking.
 
 Common usecases: Keeping a global counter, toggling a flag, or accessing a single value across threads.
+
+### if you think of the flow of your data like a river
+Channels are one of the most idiomatic ways to share data between threads in Rust. They allow safe, synchronized, and structured communication by transferring ownership of data from one thread to another. The standard library provides multi-producer, single-consumer channels (mpsc). You can create a channel with `std::sync::mpsc::channel()` which returns a `(Sender, Receiver)` pair. Threads can send data using the Sender and receive data using the Receiver.

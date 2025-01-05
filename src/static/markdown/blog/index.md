@@ -6,6 +6,8 @@ title: blog
 
 Ideas. Small. Big. Mine.
 
+2025-05-01 - [sharing data in Rust](/blog/sharing-data-in-rust)
+
 2025-05-01 - [future as of 2025](/blog/future-2025)
 
 2024-11-15 - [fulfillment and capitalism](/blog/fulfillment-capitalism)
