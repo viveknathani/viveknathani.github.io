@@ -52,3 +52,19 @@ network layer: this layer is responsible for routing packets from the source to 
 link layer: this layer is responsible for transferring data between two devices on the same link. It is responsible for error detection and correction. Examples include Ethernet. Each message in this layer is called a frame.
 
 physical layer: this layer is responsible for transmitting bits over a communication link. It is responsible for the physical connection between devices. Examples include copper wire, fiber optics, and radio waves.
+
+### http
+
+http is an application layer protocol that pretty much runs the web.
+
+an important thing to understand is the difference between a persistent and a non persistent connection. a non persistent connection is where you need to open a separate tcp connection for each request/response pair. in a persistent connection, the same tcp connection can be reutilised. this is a significant performance gain.
+
+http/1.0 employees non persistent tcp connections by default. http/1.1 employees persistent connections by default. 
+
+http/1.1 suffers from a head of line blocking problem. if the first request in a shared tcp connection take a lot of time (like the first payload being too big let’s say), this causes an issue for subsequent requests as they never get the chance to reach the server. browsers employ parallel tcp connections to circumvent this.
+
+http/2 solves the head of line blocking problem by the idea of framing. it breaks a request into a unit called as a frame. and it sends frames from all possible requests in a rotational/interleaved manner. this gives every request a fairer chance to reach the server. the larger request will still take a considerable amount of time to finish but the perceived latency will still be low because the smaller requests will resolve quickly and user will be able to see atleast something on the webpage.
+
+http/2 also allows a push behaviour. servers can push data to their clients which is faster and desirable in some situations. from wikipedia: In practice, Server Push frequently results in wasted bandwidth because the server rarely knows which resources are already loaded by the client and transmits the same resource multiple times, resulting in slowdowns if the resources being pushed compete for bandwidth with resources that were requested. http/2 also increases bandwidth efficiency by using a binary compressed format for headers.
+
+still, http/2 does not have wide adoption. and the world is slowly moving towards http/3 - based on QUIC. a lot of big tech seems to run on http/3. cloudflare, akamai, and fastly are early adopters of HTTP/3, offering it to customers as part of their CDN services.
