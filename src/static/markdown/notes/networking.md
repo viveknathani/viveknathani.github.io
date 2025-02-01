@@ -68,3 +68,19 @@ http/2 solves the head of line blocking problem by the idea of framing. it break
 http/2 also allows a push behaviour. servers can push data to their clients which is faster and desirable in some situations. from wikipedia: In practice, Server Push frequently results in wasted bandwidth because the server rarely knows which resources are already loaded by the client and transmits the same resource multiple times, resulting in slowdowns if the resources being pushed compete for bandwidth with resources that were requested. http/2 also increases bandwidth efficiency by using a binary compressed format for headers.
 
 still, http/2 does not have wide adoption. and the world is slowly moving towards http/3 - based on QUIC. a lot of big tech seems to run on http/3. cloudflare, akamai, and fastly are early adopters of HTTP/3, offering it to customers as part of their CDN services.
+
+### transport layer
+
+two protocols: TCP and UDP
+
+services expected from an ideal transport layer protocol
+1. multiplexing and demultiplexing: mapping an incoming/outgoing packet to a process in the host
+2. error detection: packets may have corrupted bits, check if this is happening
+3. error correction: if packets have corrupted bits, some mechanism for correction is needed
+4. ordered delivery: ensure that the packets are delivered in the correct ordered
+5. flow control: preventing a fast sender from overwhelming a slow receiver by regulating data transmission rates
+6. congestion control: manage network congestion by adjusting the transmission rate to avoid excessive packet loss and delays
+
+UDP just gives you multiplexing and demultiplexing, along with error detection. upon detecting an error, it simply drops that packet.
+
+TCP does 1 and 2 like UDP. but it also does automatic retransmission of lost or corrupted packets using acknowledgments (ACKs) and timeouts thereby solving for error correction. it ensures that packets are delivered in sequence using sequence numbers and buffering out-of-order packets until all preceding packets arrive. it uses a sliding window mechanism to ensure that a sender does not overwhelm a slow receiver by adjusting the amount of data that can be sent at a time. unlike UDP (which is connection-less), TCP is connection-oriented, meaning that it establishes a connection before data transfer (via the three-way handshake). there are two common algorithms for doing error correction + ordered delivery: go-back-n and selective repeat. TCP employs a combination of these two.
