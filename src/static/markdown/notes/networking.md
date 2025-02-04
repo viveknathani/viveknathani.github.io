@@ -84,3 +84,10 @@ services expected from an ideal transport layer protocol
 UDP just gives you multiplexing and demultiplexing, along with error detection. upon detecting an error, it simply drops that packet.
 
 TCP does 1 and 2 like UDP. but it also does automatic retransmission of lost or corrupted packets using acknowledgments (ACKs) and timeouts thereby solving for error correction. it ensures that packets are delivered in sequence using sequence numbers and buffering out-of-order packets until all preceding packets arrive. it uses a sliding window mechanism to ensure that a sender does not overwhelm a slow receiver by adjusting the amount of data that can be sent at a time. unlike UDP (which is connection-less), TCP is connection-oriented, meaning that it establishes a connection before data transfer (via the three-way handshake). there are two common algorithms for doing error correction + ordered delivery: go-back-n and selective repeat. TCP employs a combination of these two.
+
+A link's throughput can never exceed it's capacity. Delay increases as capacity is approached. Retransmission decreases effective throughput. This is congestion.
+
+Basic approaches to congestion control: end-to-end and (used by TCP), network assisted (routers facilitate this, recent versions of TCP implement this in a hybrid fashion with the basic end-to-end approach)
+
+A great video on TCP congestion control: https://www.youtube.com/watch?v=cIHiSR4j3g4&ab_channel=JimKurose
+ 
