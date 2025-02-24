@@ -15,7 +15,6 @@ March 2024
 5. Hiring juniors in tech will become more competitive.
 6. iPhones will become a very common thing in India. 
 7. AI will be more open sourced than a closed one. 
-8. Google will see a death in most of its products, except search.
-9. We will be able to create movies from our minds and experiences. (Thought -> Text -> Prompt -> Video & Audio)
+8. We will be able to create movies from our minds and experiences. (Thought -> Text -> Prompt -> Video & Audio)
 
 Vivek
