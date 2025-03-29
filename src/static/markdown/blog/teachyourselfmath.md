@@ -4,6 +4,7 @@ title: indie hacking my way to thousands of math problems and puzzles for the in
 
 # indie hacking my way to thousands of math problems and puzzles for the internet
 
+October 2024
 
 Earlier this year, I published a website called [teachyourselfmath.app](https://teachyourselfmath.app/). It gives you a large list of math problems of various categories along with their difficulty levels. The project got more traction than I had anticipated. In this post, I would like to share my journey of building this and talk about some updates.
 

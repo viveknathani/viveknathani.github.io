@@ -4,6 +4,8 @@ title: fulfillment and capitalism
 
 # fulfillment and capitalism
 
+November 2024
+
 I have spent the last two years of my life working as an engineer in startups. During this time, I have often wondered about my fulfillment in a technical sense. I think I can now firmly establish the fact that I need to put all my heart into the work that I do. Otherwise, it just wouldn’t make sense to me. And I wouldn’t feel motivated to work on the problems that are assigned to me.
 
 I do understand that as an engineer, you will face some periods in your job that are drier than others, in terms of technical excitement. But, on a higher level, I still need to feel I am doing something important. The startup life has turned me into the kind of person that values time. I have a sense of urgency and I am almost always in a hacker mode. And this is really fun. Shipping things quickly and reliably gives me an adrenaline rush. I don’t know for how long I will keep getting this feeling but I am enjoying it while it lasts.

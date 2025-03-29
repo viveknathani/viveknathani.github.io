@@ -4,6 +4,8 @@ title: delp
 
 # Building delp - an open-source tool to help devs
 
+August 2022
+
 ### Motivation
 
 _"A man who knows why can bear any how." - Friedrich Nietzsche_
