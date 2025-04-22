@@ -10,4 +10,4 @@ I got interested in number theory. Spent a good chunk of time (October 2024 - Ma
 
 I also started a math club - [teachyourselfmath.app/club](https://teachyourselfmath.app/club).
 
-I have now picked up Linear Algebra - trying to make some deep sense of it and go beyond the elementary understanding of vectors, matrices, and determinants.
+For about a month, I spent time learning linear algebra. I watched some lectures by Gilbert Strang, also watched 3b1b's Essence Of Linear Algebra playlist. I just got bored. Despite the great efforts of the creators, I just couldn't get into it. Maybe, I'll give it another shot in the future.
