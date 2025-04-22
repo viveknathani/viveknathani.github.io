@@ -54,11 +54,16 @@ async function convertFromMarkdown(filePath: string) {
 function serve(
   source: string,
   type: 'AS_FILE' | 'AS_MARKDOWN_STRING' | 'AS_SLUG',
+  downloadFilename?: string,
 ): ExpressFunction {
   return async (req: express.Request, res: express.Response) => {
     try {
       if (type === 'AS_FILE') {
-        res.sendFile(path.resolve(__dirname, source));
+        if (downloadFilename) {
+          res.download(path.resolve(__dirname, source), downloadFilename);
+        } else {
+          res.sendFile(path.resolve(__dirname, source));
+        }
         return;
       }
       let sourceToUse = source;
@@ -111,7 +116,14 @@ async function main() {
   );
   app.get('/blog/:slug', serve(`${MARKDOWN_PARENT_PATH}/blog`, 'AS_SLUG'));
   app.get('/notes/:slug', serve(`${MARKDOWN_PARENT_PATH}/notes`, 'AS_SLUG'));
-  app.get('/resume', serve('./static/VivekNathaniResume.pdf', 'AS_FILE'));
+  app.get(
+    '/resume',
+    serve(
+      './static/VivekNathaniResume.pdf',
+      'AS_FILE',
+      'VivekNathaniResume.pdf',
+    ),
+  );
   app.get('*', serve('./static/404.html', 'AS_FILE'));
   app.listen(config.PORT, () => {
     console.log('⚡️ server is up and running!');
