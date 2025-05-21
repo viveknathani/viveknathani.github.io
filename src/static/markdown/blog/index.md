@@ -6,6 +6,8 @@ title: blog
 
 Ideas. Small. Big. Mine.
 
+2025-05-21 - [numero - building a math parser for fun](/blog/numero)
+
 2025-05-03 - [the producer consumer problem of life](/blog/producer-consumer)
 
 2025-05-01 - [sharing data in Rust](/blog/sharing-data-in-rust)
