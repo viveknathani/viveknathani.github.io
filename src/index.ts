@@ -118,6 +118,10 @@ async function main() {
     serve(`${MARKDOWN_PARENT_PATH}/MATH.md`, 'AS_MARKDOWN_STRING'),
   );
   app.get(
+    '/games',
+    serve(`${MARKDOWN_PARENT_PATH}/GAMES.md`, 'AS_MARKDOWN_STRING'),
+  );
+  app.get(
     '/notes',
     serve(`${MARKDOWN_PARENT_PATH}/notes/index.md`, 'AS_MARKDOWN_STRING'),
   );
