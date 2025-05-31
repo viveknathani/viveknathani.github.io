@@ -20,3 +20,5 @@ This page is a list of books, papers, and videos that I think are truly great. T
 <i>Chip War - the race for semiconductor supremacy</i> - A [video](https://www.youtube.com/watch?v=8mvWbKEpO9Q&ab_channel=TaiwanPlusDocs) on the importance of semiconductors in the modern world.
 
 <i>2024: The Election that Surprised India By Rajdeep Sardesai</i> - A fun read that covers the surprising result of 2024 along with the events that led to it.
+
+<i>Gully Boy</i> - Enough said in this tweet - https://x.com/viveknathani_/status/1892501134062878925
