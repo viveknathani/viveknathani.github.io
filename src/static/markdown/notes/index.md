@@ -6,6 +6,10 @@ title: notes
 
 Structured and selective brain dump.
 
+### business
+
+1. [clarity](/notes/clarity)
+
 ### computers
 
 1. [memory](https://lwn.net/Articles/250967/)
