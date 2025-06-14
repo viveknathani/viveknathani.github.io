@@ -1,5 +1,7 @@
 «««
 title: slowly fast
+date: 2023-07-16
+tags: life
 »»»
 
 # slowly fast

@@ -1,5 +1,7 @@
 «««
 title: delp
+date: 2022-08-22
+tags: software
 »»»
 
 # Building delp - an open-source tool to help devs

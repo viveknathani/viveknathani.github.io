@@ -1,12 +1,14 @@
 «««
 title: the producer consumer problem of life
+date: 2025-05-03
+tags: life
 »»»
 
 # the producer consumer problem Of life
 
 May 2025
 
-“Create more than you consume” is an idea we keep hearing. I think this is not exactly possible. Because you are almost always consuming things. Food. News. Or even the quiet presence of a tree outside your window. Pure creation without consumption feels like a myth. 
+“Create more than you consume” is an idea we keep hearing. I think this is not exactly possible. Because you are almost always consuming things. Food. News. Or even the quiet presence of a tree outside your window. Pure creation without consumption feels like a myth.
 
 Yet, the spirit of the idea holds a lot of weight. The world consistently rewards those who produce, whether it’s a product, art, software, or a fresh way of thinking. Over time, those who move towards production end up shaping the landscape that others live in.
 

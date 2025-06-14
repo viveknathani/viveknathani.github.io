@@ -1,5 +1,7 @@
 «««
 title: sharing data in rust
+date: 2025-05-01
+tags: software, rust
 »»»
 
 # sharing data in Rust
@@ -15,7 +17,7 @@ Use the `static` keyword for this. This variable is owned by the entire program 
 Use raw pointers - `*const T` and `*mut T`. This is useful and sometimes the only way to do things but it will usually lead to unsafe code.
 
 ### write to an internal property of a struct without making the struct instance mutable
-Use `Cell` or `RefCell` for this. Bot allow you to mutate data even when it's behind an immutable reference. 
+Use `Cell` or `RefCell` for this. Bot allow you to mutate data even when it's behind an immutable reference.
 
 `Cell` works for simple, `Copy` types like integers, booleans, etc. `RefCell` works for non-Copy types like `String` and `Vec`.
 

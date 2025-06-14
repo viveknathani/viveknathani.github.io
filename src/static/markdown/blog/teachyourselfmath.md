@@ -1,5 +1,7 @@
 «««
 title: indie hacking my way to thousands of math problems and puzzles for the internet
+tags: software, math
+date: 2024-10-04
 »»»
 
 # indie hacking my way to thousands of math problems and puzzles for the internet

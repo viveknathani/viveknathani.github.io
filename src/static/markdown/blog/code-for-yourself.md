@@ -1,5 +1,7 @@
 «««
 title: code for yourself
+date: 2022-08-22
+tags: software, life
 »»»
 
 # code for yourself

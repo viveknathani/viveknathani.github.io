@@ -1,5 +1,7 @@
 «««
 title: numero - building a math parser for fun
+date: 2025-05-21
+tags: math, software, go
 »»»
 
 # numero - building a math parser for fun

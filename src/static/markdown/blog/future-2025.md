@@ -1,5 +1,7 @@
 «««
 title: future as of 2025
+date: 2025-05-01
+tags: future
 »»»
 
 # future as of 2025
