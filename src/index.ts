@@ -196,10 +196,10 @@ async function main() {
 
   app.get('/blog', async (req, res) => {
     try {
-      const tagFilter = req.query.tag;
+      const tagList = (req.query.tag as string)?.split(',') || [];
       let blogsToRender: BlogMeta[];
-      if (typeof tagFilter === 'string' && tagFilter.length > 0) {
-        blogsToRender = tagMap.get(tagFilter) || [];
+      if (tagList.length > 0) {
+        blogsToRender = tagList.map((tag) => tagMap.get(tag) || []).flat();
       } else {
         blogsToRender = allBlogs;
       }
@@ -213,7 +213,9 @@ async function main() {
         })
         .join('');
 
-      const tagsHtml = getTagsHtml(Array.from(tagMap.keys()));
+      const tagsHtml = getTagsHtml(
+        tagList.length > 0 ? tagList : Array.from(tagMap.keys()),
+      );
 
       const fullHtml = `
       <!DOCTYPE html>
