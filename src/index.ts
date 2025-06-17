@@ -172,6 +172,9 @@ async function loadBlogsMetadata() {
     const title = meta['title'] || slug;
     const tags = extractTags(meta);
     const date = new Date(meta['date']);
+    const draft = meta['draft'] === 'true';
+
+    if (draft) continue;
 
     const blogMeta: BlogMeta = { slug, title, tags, filePath, date };
 
