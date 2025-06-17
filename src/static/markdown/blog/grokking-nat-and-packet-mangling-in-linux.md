@@ -1,6 +1,6 @@
 «««
 title: grokking NAT and packet mangling in linux
-date: 2025-06-19
+date: 2025-06-18
 tags: computer-networking, containers, software
 draft: true
 »»»
@@ -12,13 +12,13 @@ draft: true
 
 Imagine a house full of devices connected to your Wi-Fi network. From any device, try finding your public IP by visiting [https://www.whatismyip.com/](https://www.whatismyip.com/). The IPv4 address field should be the same for all devices. This is the IP provided by your Internet Service Provider (ISP) to your router, which acts as a gateway for your internet.
 
-So what's happening here? If the IPv4 is same, how is the router able to differentiate between the devices? Why can't we just assign a unique IPv4 address to each device?
+So what's happening here? If the IPv4 address is the same, how is the router able to differentiate between the devices? Why can't we just assign a unique IPv4 address to each device?
 
-Well, the size of an IPv4 address is 4 bytes or 32 bits. Therefore, there can be 2^32 unique IPv4 addresses in the world. 2^32 = 4,294,967,296. ~4 billion addresses. Now, imagine a data center trying to setup a network thousands of servers. Imagine a household with 5 devices. Imagine a corporation with thousands of employees, each having atleast 1 device. If we were to assign a unique IPv4 address to each device, we'd run out of addresses pretty quickly.
+Well, the size of an IPv4 address is 4 bytes or 32 bits. Therefore, there can be 2^32 unique IPv4 addresses in the world. 2^32 = 4,294,967,296. ~4 billion addresses. Now, imagine a data center trying to set up a network of thousands of servers. Imagine a household with 5 devices. Imagine a corporation with thousands of employees, each having at least 1 device. If we were to assign a unique IPv4 address to each device, we'd run out of addresses pretty quickly.
 
-Networking class 101 may tell you about IPv6 as well. And if you do the math (2^128), IPv6 can support upto 340 undecillion addresses. That's a lot of addresses! So this should fix the IPv4 problem right? Just migrate to IPv6 and call it a day! Except - the reality is disappointing. For this to happen, every single ISP in the world needs to move to IPv6. Every piece of hardware, and software in the world that was written with IPv4 in mind needs to accept IPv6. Transitioning requires running IPv4 and IPv6 side by side for a while. Applications need to be updated to support IPv6. Bottom line: It's a lot of work.
+Networking class 101 may tell you about IPv6 as well. And if you do the math (2^128), IPv6 can support up to 340 undecillion addresses. That's a lot of addresses! So this should fix the IPv4 problem, right? Just migrate to IPv6 and call it a day! Except - the reality is disappointing. For this to happen, every single ISP in the world needs to move to IPv6. Every piece of hardware and software in the world that was written with IPv4 in mind needs to accept IPv6. Transitioning requires running IPv4 and IPv6 side-by-side for a while. Applications need to be updated to support IPv6. Bottom line: It's a lot of work.
 
-So what we do do until then? Well, we what if every routing device had a unique, publically visible  IPv4 address and every device inside that network had a private IPv4 address. And what the router were to maintain a table mapping like:
+So what do we do until then? Well, what if every routing device had a unique, publicly visible  IPv4 address and every device inside that network had a private IPv4 address? And what the router was to maintain a table mapping like:
 
 ```
 ${private_ip}:${private_port} -> ${shared_public_ip}:${public_port}`
@@ -30,9 +30,9 @@ That is the idea behind Network Address Translation (NAT).
 
 ## history
 
-As per the [RFC 1631](https://www.rfc-editor.org/rfc/rfc1631) from 1994, NAT was proposed as a *short term solution* to the IPv4 address shortage problem. Today, in 2025, NAT is widely used everywhere.
+As per the [RFC 1631](https://www.rfc-editor.org/rfc/rfc1631) from 1994, NAT was proposed as a *short-term solution* to the IPv4 address shortage problem. Today, in 2025, NAT is widely used everywhere.
 
-A patch-work that stayed forever. Seems familiar?
+A patch work that stayed forever. Seems familiar?
 
 <img src="/static/images/wire-patch.jpeg">
 <p style="text-align:center"><i> Overhead cables that were supposed to be underground. Source: <a href="https://x.com/CoreyJMahler/status/1931057608162685149/photo/1">Twitter. </a> </i></p>
