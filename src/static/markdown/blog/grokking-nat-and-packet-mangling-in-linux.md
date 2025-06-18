@@ -2,7 +2,6 @@
 title: grokking NAT and packet mangling in linux
 date: 2025-06-18
 tags: computer-networking, containers, software
-draft: true
 »»»
 
 # grokking NAT and packet mangling in linux
@@ -122,17 +121,17 @@ So NAT is kind of a packet surgery, done live in the data path!
 
 ## NAT around you as an engineer - docker!
 
-Even if you’ve never written a firewall rule in your life, if you’ve used Docker, you’ve been relying on Linux NAT. Every time you run:
+Even if you’ve never written a firewall rule in your life, if you’ve used docker, you’ve been relying on linux NAT. Every time you run:
 ```
 docker run -p 8080:80 nginx # ${host_port}:${container_port}
 ```
 
-As per Docker's [docs](https://docs.docker.com/engine/network/packet-filtering-firewalls/), they use `iptables`. So we should expect a rule like this:
+As per docker's [docs](https://docs.docker.com/engine/network/packet-filtering-firewalls/), they use `iptables`. So we should expect a rule like this:
 ```
 iptables -t nat -A PREROUTING -p tcp --dport 8080 -j DNAT --to-destination 172.17.0.2:80
 ```
 
-This tells the Linux kernel: <i>“If a packet comes to port 8080 on the host, rewrite its destination IP and port to send it into the container.”</i>
+This tells the linux kernel: <i>“If a packet comes to port 8080 on the host, rewrite its destination IP and port to send it into the container.”</i>
 
 The point is: NAT isn't just a data-center or an ISP thing. It's everywhere!
 
