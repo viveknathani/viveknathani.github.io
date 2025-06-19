@@ -17,7 +17,7 @@ Well, the size of an IPv4 address is 4 bytes or 32 bits. Therefore, there can be
 
 Networking class 101 may tell you about IPv6 as well. And if you do the math (2^128), IPv6 can support up to 340 undecillion addresses. That's a lot of addresses! So this should fix the IPv4 problem, right? Just migrate to IPv6 and call it a day! Except - the reality is disappointing. For this to happen, every single ISP in the world needs to move to IPv6. Every piece of hardware and software in the world that was written with IPv4 in mind needs to accept IPv6. Transitioning requires running IPv4 and IPv6 side-by-side for a while. Applications need to be updated to support IPv6. Bottom line: It's a lot of work.
 
-So what do we do until then? Well, what if every routing device had a unique, publicly visible  IPv4 address and every device inside that network had a private IPv4 address? And what the router was to maintain a table mapping like:
+So what do we do until then? Well, what if every routing device had a unique, publicly visible  IPv4 address and every device inside that network had a private IPv4 address? And what if the router was to maintain a table mapping like:
 
 ```
 ${private_ip}:${private_port} -> ${shared_public_ip}:${public_port}`
