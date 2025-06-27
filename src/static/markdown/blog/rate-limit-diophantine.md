@@ -2,12 +2,11 @@
 title: modelling API rate limits as diophantine inequalities
 date: 2025-06-27
 tags: math, software
-draft: true
 »»»
 
 # modelling API rate limits as diophantine inequalities
 
-You're allowed 10 requests per hour. Each task you run makes three attempts:initial call, retry after 10 minutes, retry after 30 minutes.
+You're allowed 10 requests per hour. Each task you run makes three attempts: initial call, retry after 10 minutes, and retry after 30 minutes.
 
 What’s the maximum number of tasks you can safely run per hour?
 
@@ -19,12 +18,12 @@ In a way, this is just an integer feasibility problem.
 
 Let’s define the retry pattern: [0, 10, 30]. Every task fires three requests: at minute 0, 10, and 30 after its start.
 
-Now suppose you start a new task every 20 minutes:
+Now, suppose you start a new task every 20 minutes:
 - Task A: starts at 0 → hits at [0, 10, 30]
 - Task B: starts at 20 → hits at [20, 30, 50]
 - Task C: starts at 40 → hits at [40, 50, 70]
 
-Now examine the 60-minute window [30, 90]:
+Now, examine the 60-minute window [30, 90]:
 - Task A contributes 1 (at 30)
 - Task B contributes 2 (at 30, 50)
 - Task C contributes 3 (at 40, 50, 70)
@@ -60,7 +59,7 @@ This is a bounded integer linear inequality. In other words: a diophantine inequ
 
 We've now got the building blocks: retry timings and rate limits. But before we dive into the scheduling logic, let’s take a short detour into something older and surprisingly relevant: Diophantine equations.
 
-A Diophantine equation is just an equation where you’re only allowed integer solutions. Think 3x + 5y = 14, and you're asked to find values of x and y that are whole numbers. These types of problems show up in number theory, cryptography, even tiling puzzles.
+A Diophantine equation is just an equation where you’re only allowed integer solutions. Think 3x + 5y = 14, and you're asked to find values of x and y that are whole numbers. These types of problems show up in number theory, cryptography, and even tiling puzzles.
 
 But they also show up here as well, in disguise!
 
@@ -74,7 +73,7 @@ With that framing, let’s return to the real-world question:
 
 ### can I schedule this task now?
 
-Now, let's say you're running a live system. Some tasks already in flight. You want to schedule one more task at t, with a known retry pattern.
+Now, let's say you're running a live system. Some tasks are already in flight. You want to schedule one more task at t, with a known retry pattern.
 
 Does this task, when added, cause any 60-minute window to exceed the limit?
 
