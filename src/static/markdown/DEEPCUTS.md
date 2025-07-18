@@ -22,3 +22,6 @@ This page is a list of books, papers, and videos that I think are truly great. T
 <i>2024: The Election that Surprised India By Rajdeep Sardesai</i> - A fun read that covers the surprising result of 2024 along with the events that led to it.
 
 <i>Gully Boy</i> - Enough said in this tweet - https://x.com/viveknathani_/status/1892501134062878925
+
+<i>Vanilla Sky</i> - This one is trippy. 10/10!
+
