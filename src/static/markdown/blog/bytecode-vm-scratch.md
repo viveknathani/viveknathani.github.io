@@ -1,13 +1,12 @@
 «««
 title: the joy of building a bytecode VM from scratch
 date: 2025-08-08
-draft: true
 tags: c, compilers, software
 »»»
 
 # the joy of building a bytecode VM from scratch
 
-A few months ago, I was working on [numero](https://numero.vivekn.dev). It is a math expression parser. I thought I was building a calculator. Turns out, I was actually standing at the edge of the compiler rabbit hole.
+A few months ago, I was working on [numero](https://numero.vivekn.dev) - a math expression parser. I thought I was building a calculator. Turns out, I was actually standing at the edge of the compiler rabbit hole.
 
 Parsing led to ASTs. ASTs led to evaluation. Evaluation led to... wait, am I building a language?
 
