@@ -194,6 +194,28 @@ async function main() {
   });
   await loadBlogsMetadata();
   const app = express();
+
+  const honeyPotPaths = [
+    '.env',
+    'info.php',
+    'phpinfo.php',
+    'config.php',
+    'wp-login.php',
+    'wp-content',
+    'wp-admin',
+    'wp-includes',
+  ];
+
+  app.use((req, res, next) => {
+    if (honeyPotPaths.some((path) => req.path.includes(path))) {
+      return res.redirect(
+        302,
+        'https://www.youtube.com/watch?v=lyWqQ4KzlzQ&ab_channel=ModernTalking-Topic',
+      );
+    }
+    next();
+  });
+
   app.use('/static', express.static(path.join(__dirname, './static')));
   app.get('/', serve('./static/index.html', 'AS_FILE'));
 
