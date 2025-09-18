@@ -1,5 +1,5 @@
 «««
-title: decisions
+title: slow money
 date: 2025-12-13
 tags: startups, markets, life
 draft: true
