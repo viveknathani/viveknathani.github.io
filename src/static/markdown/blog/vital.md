@@ -2,14 +2,13 @@
 title: vital - attaching a raspberry pi to my exercise bike for fun
 date: 2025-09-20
 tags: raspberry-pi, go, software, hardware
-draft: true
 »»»
 
 # attaching a raspberry pi to my exercise bike for fun
 
 A few weeks ago, I purchased an in-house exercise bike to fix my sedentary lifestyle. I figured I could attach a small Raspberry Pi to it and make it more lively!
 
-IMAGE 1: BIKE + PI setup
+<img src="/static/images/bike-pi.png">
 
 ## firstly why?
 
@@ -63,7 +62,7 @@ Instead of just printing numbers to the console, I wanted to expose them. So, I 
 
 And now, we have a small web UI like this:
 
-IMAGE 2: WEB UI
+<img src="/static/images/vital-web.png">
 
 ## syncing with apple health
 
