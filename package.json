@@ -7,7 +7,7 @@
     "lint": "npx eslint --fix src/",
     "format": "npx prettier --write src/",
     "build": "yarn lint && yarn format && yarn tsc && yarn copy-files",
-    "start": "yarn build && node --env-file .env build/index.js",
+    "start": "yarn build && node build/index.js",
     "copy-files": "npx copyfiles -u 1 \"src/static/**/*\" build/"
   },
   "repository": "https://github.com/viveknathani/vivekn.dev",
@@ -27,6 +27,7 @@
   "dependencies": {
     "@typescript-eslint/parser": "^6.21.0",
     "axios": "^1.6.7",
+    "dotenv": "^17.2.3",
     "express": "^4.18.2",
     "node-cron": "^3.0.3",
     "showdown": "^2.1.0"
