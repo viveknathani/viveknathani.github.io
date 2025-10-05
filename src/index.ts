@@ -4,10 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import config from './config';
 import cron from 'node-cron';
-import dotenv from 'dotenv';
 import { createAndSendHackerNewsDigest } from './hn';
-
-dotenv.config();
 
 type ExpressFunction = (
   req: express.Request,
