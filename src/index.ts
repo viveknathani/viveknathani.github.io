@@ -3,8 +3,6 @@ import express from 'express';
 import fs from 'fs/promises';
 import path from 'path';
 import config from './config';
-import cron from 'node-cron';
-import { createAndSendHackerNewsDigest } from './hn';
 
 type ExpressFunction = (
   req: express.Request,
@@ -189,9 +187,6 @@ async function loadBlogsMetadata() {
 }
 
 async function main() {
-  cron.schedule('30 1 * * *', async () => {
-    await createAndSendHackerNewsDigest();
-  });
   await loadBlogsMetadata();
   const app = express();
 
