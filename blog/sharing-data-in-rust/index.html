@@ -1,0 +1,55 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>viveknathani - sharing data in rust</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="/theme.css">
+      <meta property="og:title" content="sharing data in rust">
+      <meta property="og:description" content="viveknathani - blog">
+    </head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NJ89W10549');
+    </script>
+
+    <body>
+      <main>
+        <div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a><a href="/blog/?tag=rust" style="text-decoration:none; display:inline-block; background-color: #cbe2e9ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">rust</a></div>
+        <h1 id="sharingdatainrust">sharing data in Rust</h1>
+<p>January 2025</p>
+<p>We are interested in looking at various ways to share data in Rust under various conditions. This deserves a summarized understanding because Rust is powerful but also complex. <a href="https://marabos.nl/atomics/">This book</a> is a great resource to have in your library and the post often takes ideas from it.</p>
+<h3 id="readaccesstoallthreadswithnodynamicallocationnomutation">read access to all threads with no dynamic allocation, no mutation</h3>
+<p>Use the <code>static</code> keyword for this. This variable is owned by the entire program instead of an individual thread. Useful for truly immutable data or lazily initialized global data shared across threads. Use synchronization primitives like <code>Mutex</code> or <code>RwLock</code> to provide mutable access to the data.</p>
+<h3 id="absolutefreedomlikec">absolute freedom like C</h3>
+<p>Use raw pointers - <code>*const T</code> and <code>*mut T</code>. This is useful and sometimes the only way to do things but it will usually lead to unsafe code.</p>
+<h3 id="writetoaninternalpropertyofastructwithoutmakingthestructinstancemutable">write to an internal property of a struct without making the struct instance mutable</h3>
+<p>Use <code>Cell</code> or <code>RefCell</code> for this. Bot allow you to mutate data even when it's behind an immutable reference.</p>
+<p><code>Cell</code> works for simple, <code>Copy</code> types like integers, booleans, etc. <code>RefCell</code> works for non-Copy types like <code>String</code> and <code>Vec</code>.</p>
+<p><code>RefCell</code> also allows you to borrow the data mutably at runtime. This is useful when you can't determine at compile time whether you need mutable access to the data.</p>
+<p><code>Cell</code> is a bit faster than <code>RefCell</code> because it doesn't do runtime checks. <code>RefCell</code> panics at runtime if you violate the borrowing rules.</p>
+<p><i>Limitation: both work only for single-threaded code only. For <code>Cell</code>, the escape hatch here is to use <code>UnsafeCell</code> but it does not guarantee thread safety.</i></p>
+<h3 id="readandwriteaccessacrossthreads">read and write access across threads</h3>
+<p>This involves the idea of locking.</p>
+<p>The job of a <code>Mutex</code> is to ensure threads have exclusive access to some data by temporarily blocking other threads that try to access it at the same time. It has two states: locked and unlocked. Locking is an explicit action performed by <code>lock()</code>. Unlocking is implicit and happens when the mutex goes out of scope. This is why it's important to ensure that the mutex goes out of scope as soon as possible. A common runtime bug is to keep the lock in scope for too long. Prevent this by doing your work inside a scope.</p>
+<p><code>RwLock</code> has three states: read-locked, write-locked, and unlocked. It allows multiple readers or one writer at a time. This is useful when you have a large data structure and you want to allow multiple threads to read it at the same time. The writer blocks all readers and writers.</p>
+<h3 id="lockfreethreadsafeandefficientoperations">lock-free, thread-safe, and efficient operations</h3>
+<p>Use <code>AtomicBool</code>, <code>AtomicIsize</code>, <code>AtomicUsize</code>, etc. for lock-free, thread-safe, and efficient operations. They are useful for simple types like integers and booleans. They are not useful for complex types like <code>String</code> and <code>Vec</code>.</p>
+<p>Common patterns: <code>load</code>, <code>store</code>, <code>swap</code>, <code>compare_and_swap</code>, <code>fetch_add</code>, <code>fetch_sub</code>, etc.</p>
+<p>Atomics avoid the overhead of a <code>Mutex</code> or a context switch because they operate at the hardware level, ensuring synchronization without blocking.</p>
+<p>Common usecases: Keeping a global counter, toggling a flag, or accessing a single value across threads.</p>
+<h3 id="ifyouthinkoftheflowofyourdatalikeariver">if you think of the flow of your data like a river</h3>
+<p>Channels are one of the most idiomatic ways to share data between threads in Rust. They allow safe, synchronized, and structured communication by transferring ownership of data from one thread to another. The standard library provides multi-producer, single-consumer channels (mpsc). You can create a channel with <code>std::sync::mpsc::channel()</code> which returns a <code>(Sender, Receiver)</code> pair. Threads can send data using the Sender and receive data using the Receiver.</p>
+        <p></p>
+        <a href="/"><- back to home</a>
+      </main>
+    </body>
+    </html>
+  

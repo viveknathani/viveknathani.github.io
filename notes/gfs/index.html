@@ -1,0 +1,65 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>viveknathani - gfs</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="/theme.css">
+      <meta property="og:title" content="gfs">
+      <meta property="og:description" content="viveknathani - notes">
+    </head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NJ89W10549');
+    </script>
+
+    <body>
+      <main>
+        
+        <h1 id="googlefilesystem">google file system</h1>
+<ul>
+<li>does not implement a standard API such as POSIX</li>
+<li>other than usual operations, they support two more: snapshot and record append</li>
+<li>snapshot creates a copy of the file or a directory tree at low cost</li>
+<li>record append allows multiple clients to append to the same file concurrently while guarenteeing atomicity <ul>
+<li>this helps in many way merge algorithms and producer-consumer queues</li></ul></li>
+<li>one cluster has a single master and multiple chunkservers</li>
+<li>files are divided into fixed-size chunks, each chunk is identified by an immutable and globally unique 64-bit chunkhandle (kinda like an ID) assigned by master</li>
+<li>for reliability, each chunk is replicated on multiple chunkservers</li>
+<li>master contains all filesystem metadata</li>
+<li>file data is not cached, clients only cache metadata</li>
+<li>even tho a master exists, read and write operations take place directly b/w the chunkserver and the client</li>
+<li>read operation:<ul>
+<li>client knows filename and byte offset -&gt; converts byte offset into chunk index -&gt; possible because chunk size is known</li>
+<li>master uses filename and chunk index to return chunkhandle and location of replicas where this chunk is available</li>
+<li>client sends request to one of the replicas, mostly the closest one to get the actual chunk</li>
+<li>chunk size is 64MB</li></ul></li>
+<li>write operation:<ul>
+<li>client splits it write into multiple chunks</li>
+<li>master returns the relevant chunkservers (primary + replicas) and chunk ids</li>
+<li>client pushes data to all replicas</li>
+<li>but replicas don’t write to disk yet, they hold it in memory, in LRU cache</li>
+<li>replicas send ACK, client now sends request to primary</li>
+<li>primary writes to disk and forwards write request to replicas</li></ul></li>
+<li>all metadata in master is stored in-memory</li>
+<li>master maintains less than 64 bytes of data, for each 64MB chunk. the file namespace data requires less than 64 bytes per file because it stores file names compactly using prefix compression.</li>
+<li>operation log contains a historical record of critical metadata changes.</li>
+<li>GFS applications can accommodate the relaxed consistency model with a few simple techniques already needed for other purposes: relying on appends rather than overwrites, checkpointing, and writing self-validating, self-identifying records</li>
+<li>garbage collection process is lazy</li>
+<li>data integrity is taken care of by checksumming</li>
+<li>diagnostic tooling support is built-in, logging has minimal overhead</li>
+<li>GFS assumes that a large number of components are unreliable, hence fault tolerance is baked in.</li>
+</ul>
+        <p></p>
+        <a href="/"><- back to home</a>
+      </main>
+    </body>
+    </html>
+  

@@ -1,0 +1,43 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>viveknathani - hash-tables</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="/theme.css">
+      <meta property="og:title" content="hash-tables">
+      <meta property="og:description" content="viveknathani - notes">
+    </head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NJ89W10549');
+    </script>
+
+    <body>
+      <main>
+        
+        <h1 id="hashtables">hash tables</h1>
+<ol>
+<li>i know enough about usage. some notes on underlying implementations.</li>
+<li>approaches for implementing: do it by chaining, do it by open-addressing.</li>
+<li>an array A of length m is filled with n elements. m &gt;= n. and a (k,v) pair gets stored at A[h(k)] = v. h(x) is the hash function.</li>
+<li>load factor alpha = (number of entries) / (number of buckets);</li>
+<li>if load factor reaches alpha-max or alpha-max/4, hash table is resized.</li>
+<li>separate chaining - store a linked list at each array index. items that collide are chained in the list.</li>
+<li>the linked list of separate chaining implementation may not be cache-conscious due to spatial locality—locality of reference—when the nodes of the linked list are scattered across memory, thus the list traversal during insert and search may entail CPU cache inefficiencies. in cache-conscious variants, a dynamic array </li>
+<li>probing is kinda messed up imo - you get the hash and you then you use some sequence to find the best index for insertion tho it benefits on the locality front.</li>
+<li>this is really cool - https://github.com/golang/go/blob/master/src/runtime/map.go </li>
+</ol>
+        <p></p>
+        <a href="/"><- back to home</a>
+      </main>
+    </body>
+    </html>
+  

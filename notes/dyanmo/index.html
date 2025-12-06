@@ -1,0 +1,71 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>viveknathani - dynamo</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="/theme.css">
+      <meta property="og:title" content="dynamo">
+      <meta property="og:description" content="viveknathani - notes">
+    </head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NJ89W10549');
+    </script>
+
+    <body>
+      <main>
+        
+        <h1 id="dynamo">dynamo</h1>
+<ul>
+<li>a key-value store that is highly available, weak on consistency under certain scenarios</li>
+<li>meant to handle cases where a relational structure would not help</li>
+<li>many services on Amazon’s platform that only need primary-key access to a data store - dynamo provides a simple interface for this</li>
+<li>data is partitioned and replicated using consistent hashing</li>
+<li>consistency is facilitated by object versioning</li>
+<li>has a gossip based distributed failure detection and membership protocol</li>
+<li>decentralized system, does not require manual administration</li>
+<li>RDBMS chooses consistency over availability - this was a problem at amazon’s scale</li>
+<li>and many of their services needed to access the data by some sort of ID - no complex querying</li>
+<li>dynamo does not provide isolation guarantees and permits only single key updates</li>
+<li>when trying to assess performance, amazon prioritizes 99.9th percentile over average or median because their goal is to build systems where all the customers have a good experience instead of just the majority</li>
+<li>if consistency is weak, conflicts will happen amongst replicas</li>
+<li>conflicts need resolution - to do it at read time or write time?</li>
+<li>to do it at write time would cause some writes to fail in some scenarios - cannot work with this, hence resolve conflicts during read time</li>
+<li>who resolves conflicts? ideally the application but if app devs don’t want to get into this - the data store will do it with “last write wins” technique</li>
+<li>their design goal was to make it decentralized but they could not adopt a DHT routing based approach of the popular P2P systems because these routing hops introduce high variability in response times hence “dynamo can characterized as a zero hop DHT”</li>
+<li>API - get(key), put(key, context, object)</li>
+<li>applies a MD5 hash on the key to generate a 128-bit identifier, which is used to determine the storage nodes that are responsible for serving the key</li>
+<li>principle advantage of consistent hashing is that departure or arrival of a node only affects its immediate neighbors and other nodes remain unaffected</li>
+<li>they changed the basic consistent algorithm to a version where uniform data and load distribution is possible</li>
+<li>for replication, each key gets a coordinator node</li>
+<li>list of nodes that is responsible for storing a particular key is called the preference list</li>
+<li>system is designed in a way that every node can determine the preference list of any given key</li>
+<li>dynamo allows for multiple versions of a data object to be present in the system at the same time</li>
+<li>vector clocks are used to determine if two versions are concurrent or causal</li>
+<li>when doing a put operation, you need to specify the version you are trying to update - this is done in the context argument</li>
+<li>temporary failures are handled via hinted handoff</li>
+<li>to detect the inconsistencies between replicas faster and to minimize the amount of transferred data, Dynamo uses Merkle trees - mention of “anti entropy protocol”</li>
+<li>membership problem is solved by using a gossip based protocol</li>
+<li>ALL OF THE ABOVE WAS FOR DYNAMO, NOT DYNAMODB</li>
+<li>they had to make dynamo more accessible and address the limitations of simpledb so they made dynamodb</li>
+<li>dynamodb supports ACID transactions</li>
+<li>has encryption at rest</li>
+<li>data is stored in Tables as items, and can be queried using indices</li>
+<li>dynamodb uses JSON for its syntax</li>
+<li>uses B-trees internally to manage the data</li>
+<li>uses paxos for consensus</li>
+</ul>
+        <p></p>
+        <a href="/"><- back to home</a>
+      </main>
+    </body>
+    </html>
+  

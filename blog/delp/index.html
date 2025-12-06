@@ -1,0 +1,60 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>viveknathani - delp</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="/theme.css">
+      <meta property="og:title" content="delp">
+      <meta property="og:description" content="viveknathani - blog">
+    </head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NJ89W10549');
+    </script>
+
+    <body>
+      <main>
+        <div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a></div>
+        <h1 id="buildingdelpanopensourcetooltohelpdevs">Building delp - an open-source tool to help devs</h1>
+<p>August 2022</p>
+<h3 id="motivation">Motivation</h3>
+<p><em>"A man who knows why can bear any how." - Friedrich Nietzsche</em></p>
+<p>A few weeks ago, I was exploring the internet to find a developer toolbox that is free, easy to use, does not require logins, and simply just works. I found that there are some tools that do meet some of my requirements but nobody could meet all of them.</p>
+<p>For instance, why do I need to login into your website in order to calculate the hash of a string? Or why does a particular site provide me with the facility of JSON to CSV conversion only? This also comes with an overhead to remember all of these individual sites that just do one or two things with partially fulfilled non-functional requirements.</p>
+<p>This motivated me to go ahead and build something that solves my problems and potentially helps other developers too in their own lives. So, I decided to build <a href="https://github.com/viveknathani/delp">delp</a>.</p>
+<h3 id="technicaldecisions">Technical decisions</h3>
+<p>So now that the "what" and "why" were defined, the next question to answer was "how". Since I was not interested in storing any kind of user data, I did not need a user database. Since the world is gifted with JavaScript, all computations can be easily done on the client-side. So it was clear that delp is going to be a frontend task.</p>
+<p>When I am tasked with a frontend project, my go-to method is still the simple way of using HTML, CSS, and vanilla JavaScript. But as the project's complexity goes up, it does not hurt to have some more sophistication into how your DOM tree is managed, how elements change their inner values, bringing me to the point of using some sort of frontend library/framework. There are three popular ones: React, Vue and Angular. I have not coded in Vue and Angular. I had not coded much in React either but I had a fair idea about it. Since my developer toolbox could have many tools, I could think of each tool as a React component. So React seemed like a good choice going forward.</p>
+<p>I had never coded in <a href="https://www.typescriptlang.org/">TypeScript</a> either, but I always wanted to since I come from a background of C++, and having the ability to ensure type safety can surely help. So this was a good point in time for me to pick up TypeScript. It took me about a week to get started and be confident about building in TS.</p>
+<h3 id="workflow">Workflow</h3>
+<p>I wanted my development workflow to be as simple and as effective as possible. So I came up with this process:</p>
+<ol>
+<li><p>I start developing in the <a href="https://github.com/viveknathani/delp/tree/dev">development branch</a> of my source code.</p></li>
+<li><p>I let my code pass through lint checks, formatting checks, and optionally, some tests too. I build a version of this site and run it on localhost. I keep pushing my development commits too, frequently.</p></li>
+<li><p>If my build is stable enough, I merge my <a href="https://github.com/viveknathani/delp/tree/main">main branch</a> with the development branch.</p></li>
+<li><p>When I push commits to the main branch, I want <a href="https://www.netlify.com/">Netlify</a> to deploy my site automatically. And that's it.</p>
+<p>So I programmed things to do exactly this. I set up the build, formatting, linting, and testing commands in my package.json file.</p></li>
+</ol>
+<h3 id="outcome">Outcome</h3>
+<p><img src="/images/delp.PNG" height="194.45px" width="350px"></p>
+<p>So this is delp.</p>
+<p>The process was actually fun. To be honest, building something like delp is not hard at all. You can pick up any feature of delp and build it in like an evening. But it still feels nice to build a collection of such tools in the way it helps me and potentially other developers too.</p>
+<h3 id="whatsnext">What's next</h3>
+<p>I think I am done with delp for now. I am still happy to receive any PRs that fix bugs or add new features since this project is fully open-sourced. And this is the best part, delp can always just keep growing. It does not matter if I am in the driver's seat. I am currently taking a deep dive into <a href="https://teachyourselfcs.com/#networking">computer networking</a> and <a href="https://teachyourselfcs.com/#distributed-systems">distributed systems</a>. So, maybe, my future projects would use some knowledge from these domains. Until then, goodbye. Happy programming!</p>
+<ul>
+<li>Vivek</li>
+</ul>
+        <p></p>
+        <a href="/"><- back to home</a>
+      </main>
+    </body>
+    </html>
+  

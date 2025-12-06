@@ -1,0 +1,205 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>viveknathani - the joy of building a bytecode VM from scratch</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="/theme.css">
+      <meta property="og:title" content="the joy of building a bytecode VM from scratch">
+      <meta property="og:description" content="viveknathani - blog">
+    </head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NJ89W10549');
+    </script>
+
+    <body>
+      <main>
+        <div style="margin-top: 10px;"><a href="/blog/?tag=c" style="text-decoration:none; display:inline-block; background-color: #cee9e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">c</a><a href="/blog/?tag=compilers" style="text-decoration:none; display:inline-block; background-color: #e9ded6ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">compilers</a><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a></div>
+        <h1 id="thejoyofbuildingabytecodevmfromscratch">the joy of building a bytecode VM from scratch</h1>
+<p>A few months ago, I was working on <a href="https://numero.vivekn.dev">numero</a> - a math expression parser. I thought I was building a calculator. Turns out, I was actually standing at the edge of the compiler rabbit hole.</p>
+<p>Parsing led to ASTs. ASTs led to evaluation. Evaluation led to… wait, am I building a language?</p>
+<p>While exploring, I came across the excellent books by <a href="https://thorstenball.com/">Thorsten Ball</a> - <a href="https://interpreterbook.com/">Writing An Interpreter In Go</a> and <a href="https://compilerbook.com/">Writing A Compiler In Go</a>. They walk you through building a full interpreted programming language in Go, step by step.</p>
+<p>Inspired by that, I knew I wanted to build a toy language of my own. Although, copying the implementation file-by-file didn’t sound fun. So to make things interesting: I rewrote the whole thing in C.</p>
+<p>It doesn’t support closures. It doesn’t have a garbage collector. It’s definitely still a toy.</p>
+<p>But it works! And it compiles to a self-contained executable.</p>
+<p>In this post, I’ll walk you through what it took to go from monkey’s source code to an actual executable that feels like magic to me. You'll see why.</p>
+<h2 id="highleveldesign">high level design</h2>
+<p>Let’s zoom out for a moment. What does it even mean to build a language that compiles to a self-contained executable?</p>
+<pre><code class="bash language-bash">monkey source code → lexer → parser → AST → compiler → bytecode → VM → output
+</code></pre>
+<p>I added one final layer:</p>
+<pre><code>bytecode + runtime stub -&gt; linked together -&gt; native executable
+</code></pre>
+<p>It’s not a compiler in the traditional sense (like C → machine code) but it is conceptually kinda similar to how Deno, Bun or Node.js produce self-contained executables for JavaScript.</p>
+<h2 id="designingthestackbasedbytecodevm">designing the stack-based bytecode VM</h2>
+<p>After I had the compiler emitting bytecode, I needed a way to run it. Enter: the virtual machine.</p>
+<p>I went with a stack-based VM, much like the books I was using. It’s the simplest design that gets the job done. Just push values, pop values, execute opcodes. No registers, no optimization, just a tight loop over instructions.</p>
+<p>Here's what lives inside the VM struct:</p>
+<pre><code class="c language-c">  struct VM {
+    Object* constants;     // loaded from bytecode constant pool
+    int constantsCount;
+    Object* stack;         // evaluation stack for expressions
+    int stackCount;
+    int sp;               // stack pointer (top of stack)
+    Object* globals;      // global variable bindings
+    int globalCount;
+    Frame* frames;        // call frame stack for functions
+    int frameCount;
+    int framesIndex;      // current frame depth
+  };
+</code></pre>
+<p>There’s a fixed-size stack for evaluation, a pool of constants, a globals store, and a frame stack for function calls.</p>
+<pre><code class="c language-c">int push(VM *vm, Object *object) {
+  if (vm-&gt;sp &gt;= STACK_SIZE) {
+    fprintf(stderr, "stack overflow: exceeded maximum stack size of %d\n", STACK_SIZE);
+    return -1;
+  }
+  vm-&gt;stack[vm-&gt;sp] = *object;
+  vm-&gt;sp++;
+  return 0;
+}
+</code></pre>
+<p>Yes, it’s just an array. Yes, I’ve hit the overflow error more times than I care to admit.</p>
+<p>And the loop:</p>
+<pre><code>while (ip &lt; instructions_len) {
+  Opcode op = read_opcode();
+  switch (op) {
+    case OP_CONSTANT:
+      push(constants[read_operand()]);
+      break;
+    case OP_ADD:
+      Object* b = pop();
+      Object* a = pop();
+      push(add(a, b));
+      break;
+    ...
+  }
+}
+</code></pre>
+<p>Control flow uses computed jumps. Conditional jumps pop the condition from the stack and test truthiness:</p>
+<pre><code class="c language-c">  case OpJumpNotTruthy: {
+    int pos = ((unsigned char)instructions[ip + 1] &lt;&lt; 8) |
+              (unsigned char)instructions[ip + 2];
+    currentFrame(vm)-&gt;ip += 2;
+
+    Object *condition = pop(vm);
+    if (!isTruthy(condition)) {
+      currentFrame(vm)-&gt;ip = pos - 1;  // -1 because loop will increment
+    }
+    break;
+  }
+</code></pre>
+<p>Call frames manage function invocation state. Each frame tracks the compiled function, instruction pointer, and base pointer for local variable access:</p>
+<pre><code class="c language-c">  typedef struct {
+    CompiledFunction *compiledFunction;
+    int ip;           // instruction pointer within this function
+    int basePointer;  // stack offset for local variables
+  } Frame;
+</code></pre>
+<p>The VM maintains a frame stack and switches between frames during function calls. Local variables are accessed by indexing into the evaluation stack relative to the frame's base pointer.</p>
+<h2 id="compilertobytecode">compiler to bytecode</h2>
+<p>Now for the compiler which is the part that turns AST into bytecode.</p>
+<p>The compiler walks the AST in a single pass, emitting instructions into an instruction buffer. It also tracks a constant pool and symbol tables for scope resolution.</p>
+<pre><code class="c language-c">  typedef struct {
+    Instructions instructions;  // current compilation scope's bytecode
+    Object *constants;         // constant pool (shared across scopes)
+    int constantsCount;
+    SymbolTable *symbolTable;  // handles global/local/builtin scope resolution
+    CompilationScope *scopes;   // stack of compilation scopes for functions
+    int scopeIndex;            // current scope depth
+  } Compiler;
+</code></pre>
+<p>Each compilation scope tracks its own instruction buffer, allowing nested function compilation:</p>
+<pre><code class="c language-c">  typedef struct {
+    Instructions instructions;
+    int instructionsLength;
+    EmittedInstruction lastInstruction;    // for optimization passes
+    EmittedInstruction previousInstruction;
+  } CompilationScope;
+</code></pre>
+<p>Symbol table management uses a linked structure for lexical scoping. Global variables get indices in the global store, while locals get stack offsets:</p>
+<pre><code class="c language-c">  Symbol define(SymbolTable *symbolTable, char *name) {
+    Symbol symbol;
+    symbol.name = name;
+    symbol.index = symbolTable-&gt;numDefinitions;
+
+    if (symbolTable-&gt;outer == NULL) {
+      symbol.scope = GlobalScope;  // top-level binding
+    } else {
+      symbol.scope = LocalScope;   // function parameter or local
+    }
+
+    symbolTable-&gt;numDefinitions++;
+    return symbol;
+  }
+</code></pre>
+<p>Constants stay in a shared pool. Integer literals get stored as objects. Each compiled function also becomes a constant: which makes functions first-class values. A function literal compiles into its own instruction sequence inside a new scope. The result is packed into a <code>CompiledFunction</code> object and emitted as a constant.</p>
+<h2 id="producingnativeexecutables">producing native executables</h2>
+<p>This part was my favorite.</p>
+<p>Once I had bytecode, I wanted to go further: create real binaries. Binaries you can <code>chmod +x</code> and run. Binaries that contain the VM + the program.</p>
+<p>Here’s how it works.</p>
+<p>Bytecode Serialization
+The compiler emits a ByteCode struct that includes the final instruction buffer and constant pool. This is serialized into binary format with type tags:</p>
+<pre><code class="c language-c">uint8_t tag = CONST_INTEGER;
+write(buf + offset, &amp;tag, 1);
+write_le64(buf + offset + 1, obj-&gt;integer-&gt;value);
+</code></pre>
+<p>Strings include a length prefix. Functions include their own instruction slices.</p>
+<pre><code class="c language-c">  ByteCode *bc = deserializeBytecode(bytecode, bytecode_len);
+  VM *vm = newVM(bc);
+  run(vm);
+</code></pre>
+<p>The build process takes the compiled bytecode and glues it to the end of a precompiled runtime stub. This stub is just the VM code compiled into a tiny binary that can deserialize and run the program.</p>
+<p>Behind the scenes, the build process is split into two parts. </p>
+<ol>
+<li><p>First, I compile a minimal VM stub which a tiny C program that knows how to locate the bytecode at the end of its own binary, deserialize it, and invoke the VM on it. This stub is compiled once and then embedded as a C header. </p></li>
+<li><p>The compiler (monkeyc) then includes this header, appends the serialized bytecode to it during the build step, and writes out a fully-formed native binary.</p></li>
+</ol>
+<p>This approach lets me avoid dealing with linkers, ELF sections, or fancy binary patching tools. It’s just pure C and a bit of file manipulation. The result is a clean split: the runtime stub is responsible for executing programs, and the compiler is responsible for generating them.</p>
+<pre><code class="c language-c">FILE *out = fopen(outputPath, "wb");
+fwrite(bin_vm_stub, 1, bin_vm_stub_len, out);
+fwrite(BYTECODE_MARKER, 1, strlen(BYTECODE_MARKER), out);
+fwrite(bytecode_len, 1, 4, out);
+fwrite(bytecode_data, 1, bytecode_len, out);
+chmod(outputPath, 0755);
+</code></pre>
+<p>When the binary runs, it opens itself, scans for the marker, reads the bytecode, and runs the program:</p>
+<pre><code class="c language-c">FILE *self = fopen(argv[0], "rb");
+// read file, find marker
+ByteCode *bc = deserializeBytecode(...);
+VM *vm = newVM(bc);
+run(vm);
+</code></pre>
+<p>Along the way, I figured that in Linux, we have something called as <code>/proc/self/exe</code>. It is a symbolic link that always points to the absolute path of the executable file of the currently running process. I didn't incorporate this but this is so cool!</p>
+<p>It’s a bit hacky. But it works and it’s a real binary, with no interpreter or external runtime.</p>
+<p>Here’s a MonkeyC program:</p>
+<pre><code>let square = fn(x) { x * x };
+square(4);
+</code></pre>
+<p>I can compile this to a .mon file, and then build it like this:</p>
+<pre><code>$ monkeyc build square.mon -o square
+$ ./square
+16
+</code></pre>
+<p>No runtime, no interpreter, no VM binary next to it. Just one executable file.</p>
+<p>It still blows my mind a little.</p>
+<h2 id="whatsnext">what’s next?</h2>
+<p>If you're interested in contributing or just taking a look, here's the <a href="https://github.com/viveknathani/monkeyc">github link</a>.</p>
+<p>Although, my implementation still doesn’t support closures or garbage collection, and it’s far from a general-purpose language. But it works and it taught me more about compilers, memory, and language design than I ever expected.</p>
+<p>I guess I will just continue to lurk around compilers.</p>
+<p><i>Need help with your infra/systems software? Hire me! <a href="mailto:work@vivekn.dev">work@vivekn.dev</a></i></p>
+<p>Vivek</p>
+        <p></p>
+        <a href="/"><- back to home</a>
+      </main>
+    </body>
+    </html>
+  

@@ -1,0 +1,96 @@
+
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>viveknathani - blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/theme.css">
+  </head>
+  <body>
+    <main>
+      <h1>blog</h1>
+      <p>Ideas. Small. Big. Mine.</p>
+      <div id="tags-container"></div>
+      <div id="blog-list"></div>
+      <p><a href="/">&#x2190; back to home</a></p>
+    </main>
+
+    <script>
+      const tagColors = ["#e7ceceff","#cfe6c9ff","#cbe2e9ff","#dac4daff","#e9ded6ff","#d5d8e7ff","#efe4d7ff","#c8e6dbff","#e4d2caff","#cee9e7ff"];
+      const allBlogs = [{"slug":"vital","title":"vital - attaching a raspberry pi to my exercise bike for fun","tags":["raspberry-pi","go","software","hardware"],"date":"2025-09-20"},{"slug":"bytecode-vm-scratch","title":"the joy of building a bytecode VM from scratch","tags":["c","compilers","software"],"date":"2025-08-08"},{"slug":"rate-limit-diophantine","title":"modelling API rate limits as diophantine inequalities","tags":["math","software"],"date":"2025-06-27"},{"slug":"grokking-nat-and-packet-mangling-in-linux","title":"grokking NAT and packet mangling in linux","tags":["computer-networking","containers","software"],"date":"2025-06-18"},{"slug":"numero","title":"numero - building a math parser for fun","tags":["math","software","go"],"date":"2025-05-21"},{"slug":"producer-consumer","title":"the producer consumer problem of life","tags":["life"],"date":"2025-05-03"},{"slug":"future-2025","title":"future as of 2025","tags":["future"],"date":"2025-05-01"},{"slug":"sharing-data-in-rust","title":"sharing data in rust","tags":["software","rust"],"date":"2025-05-01"},{"slug":"fulfillment-capitalism","title":"fulfillment and capitalism","tags":["life"],"date":"2024-11-15"},{"slug":"teachyourselfmath","title":"indie hacking my way to thousands of math problems and puzzles for the internet","tags":["software","math"],"date":"2024-10-04"},{"slug":"decisions","title":"decisions","tags":["life"],"date":"2024-03-30"},{"slug":"future-2024","title":"future as of 2024","tags":["future"],"date":"2024-03-21"},{"slug":"dns","title":"DNS","tags":["software","computer-networking"],"date":"2024-03-09"},{"slug":"slowly-fast","title":"slowly fast","tags":["life"],"date":"2023-07-16"},{"slug":"nonlinear","title":"non linear","tags":["life"],"date":"2022-10-01"},{"slug":"code-execution","title":"building a code execution service","tags":["software","containers"],"date":"2022-09-30"},{"slug":"code-for-yourself","title":"code for yourself","tags":["software","life"],"date":"2022-08-22"},{"slug":"delp","title":"delp","tags":["software"],"date":"2022-08-22"}];
+      const allTags = ["raspberry-pi","go","software","hardware","c","compilers","math","computer-networking","containers","life","future","rust"];
+      
+      function colorForTag(tag) {
+        let sum = 0;
+        for (let i = 0; i < tag.length; i++) {
+          sum += tag.charCodeAt(i);
+        }
+        const index = sum % tagColors.length;
+        return tagColors[index];
+      }
+      
+      function renderTags(selectedTags = []) {
+        const tagsContainer = document.getElementById('tags-container');
+        const tagsToShow = selectedTags.length > 0 ? selectedTags : allTags;
+        
+        tagsContainer.innerHTML = tagsToShow.length > 0 ? 
+          '<div style="margin-top: 10px;">' +
+          tagsToShow.map(tag => 
+            '<span class="tag" data-tag="' + tag + '" style="text-decoration:none; display:inline-block; background-color: ' + 
+            colorForTag(tag) + '; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">' + 
+            tag + '</span>'
+          ).join('') + '</div>' : '';
+          
+        // Add click handlers
+        document.querySelectorAll('.tag').forEach(tagEl => {
+          tagEl.addEventListener('click', () => {
+            const tag = tagEl.getAttribute('data-tag');
+            const url = new URL(window.location);
+            url.searchParams.set('tag', tag);
+            window.history.pushState({}, '', url);
+            filterBlogs([tag]);
+          });
+        });
+      }
+      
+      function renderBlogs(blogsToShow) {
+        const blogList = document.getElementById('blog-list');
+        blogList.innerHTML = blogsToShow.map(blog => 
+          '<article>' +
+          '<date>' + blog.date + '</date>' +
+          '<a href="/blog/' + blog.slug + '/">' + blog.title + '</a>' +
+          '</article>'
+        ).join('');
+      }
+      
+      function filterBlogs(selectedTags = []) {
+        let blogsToShow = allBlogs;
+        if (selectedTags.length > 0) {
+          blogsToShow = allBlogs.filter(blog => 
+            selectedTags.some(tag => blog.tags.includes(tag))
+          );
+        }
+        
+        renderTags(selectedTags);
+        renderBlogs(blogsToShow);
+      }
+      
+      // Initialize
+      const urlParams = new URLSearchParams(window.location.search);
+      const tagParam = urlParams.get('tag');
+      const initialTags = tagParam ? tagParam.split(',') : [];
+      
+      filterBlogs(initialTags);
+      
+      // Handle browser back/forward buttons
+      window.addEventListener('popstate', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tagParam = urlParams.get('tag');
+        const currentTags = tagParam ? tagParam.split(',') : [];
+        filterBlogs(currentTags);
+      });
+    </script>
+  </body>
+  </html>
+      

@@ -1,0 +1,124 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>viveknathani - javascript</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="/theme.css">
+      <meta property="og:title" content="javascript">
+      <meta property="og:description" content="viveknathani - notes">
+    </head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NJ89W10549');
+    </script>
+
+    <body>
+      <main>
+        
+        <h1 id="javascript">javascript</h1>
+<p>javascript</p>
+<ol>
+<li>use MDN as your reference</li>
+<li>object-oriented. No distinction between types of objects. Inheritance is through the prototype mechanism, and properties and methods can be added to any object dynamically.</li>
+<li>javascript cannot automatically write to disk</li>
+<li>it is standardized at ECMA international - the standardized version is called ECMAScript and companies can use the open spec to develop their own implementations.</li>
+<li>the ECMAScript specification does not describe the Document Object Model (DOM).</li>
+<li>many JS engines exists - spidermonkey by firefox, v8 by chrome.</li>
+<li>there are some pretty interesting web APIs available - https://developer.mozilla.org/en-US/docs/Web/API </li>
+<li>var  - declares a variable, optionally initializing it to a value</li>
+<li>let - declares a block-scoped, local variable, optionally initializing it to a value</li>
+<li>const - declares a block-scoped, read-only named constant</li>
+<li>you can declare variables to unpack values using the destructuring assignment syntax</li>
+<li>undeclared variables lead to ReferenceError</li>
+<li>declared but unassigned variables get the value, undefined which is a primitive value in this language</li>
+<li>typeof undefined returns undefined</li>
+<li>const declarations always need an initializer, else lead to SyntaxError</li>
+<li>scope types - global, module, function, block</li>
+<li>var-declared variables are hoisted, meaning you can refer to the variable anywhere in its scope, even if its declaration isn't reached yet. You can see var declarations as being "lifted" to the top of its function or global scope. however, if you access a variable before it's declared, the value is always undefined, because only its declaration is hoisted, but not its initialization.</li>
+<li>a variable declared with let, const, or class is said to be in a "temporal dead zone" (TDZ) from the start of the block until code execution reaches the place where the variable is declared and initialized. while inside the TDZ, the variable has not been initialized with a value, and any attempt to access it will result in a ReferenceError.</li>
+<li>unlike var declarations, which only hoist the declaration but not its value, function declarations are hoisted entirely — you can safely call the function anywhere in its scope.</li>
+<li>data types - Number, BigInt, String, Boolean, Symbol, undefined, null</li>
+<li>typeof null is object</li>
+<li>comparison with null and undefined is pretty non-intuitive</li>
+<li>null == undefined returns true</li>
+<li>null === undefined returns false</li>
+<li>loop - basic for, do..while, while, for..in, for…of</li>
+<li>all objects have a special property [[Prototype]], that is either null or references another object.</li>
+<li>if you assign obj1 to obj2’s <strong>proto</strong> value, obj2 will have all properties of obj1. obj2 has basically inherited obj1.</li>
+<li><strong>proto</strong> is a historical getter/setter for [[Prototype]]</li>
+<li>since it is a little outdated, it is suggested to use Object.getPrototypeOf/Object.setPrototypeOf</li>
+<li>no matter where the method is found: in an object or its prototype. In a method call, this is always the object before the dot</li>
+<li><em>Object.keys only returns own keys but for…in returns both own and inherited keys</em></li>
+<li>obj.hasOwnProperty for checking if property is own</li>
+<li>new objects can be created with a constructor function, like new F()</li>
+<li>every function has the "prototype" property even if we don’t supply it.</li>
+<li>Object has a default toString method - returns “[object Object]”</li>
+<li>read up on extending errors, can be pretty helpful</li>
+<li>closures - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures </li>
+<li>event based programming in the browser is a pretty good example of closures</li>
+<li>this is fucking weird - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this</li>
+<li>sorting of array happens in-place</li>
+<li>to sort the elements in an array without mutating the original array, use toSorted()</li>
+<li>typed arrays are made up of Buffers and Views - useful stuff but read about them when you need them</li>
+<li>garbage collection algorithms - reference counting (not used by any existing engine implementations), mark-and-sweep</li>
+<li>built-in eval function allows to execute a string of code</li>
+<li>javascript is single threaded and synchronous</li>
+<li>at low-level, all info is stored as key-value pairs in what we call as variable environment</li>
+<li>at low-level, all code is executed in thread of execution</li>
+<li>thread of execution + variable environment = execution context</li>
+<li>new function invoke =&gt; new execution context created</li>
+<li>call stack maintains the order of execution of execution contexts</li>
+<li>hoisting: variable declarations are scanned and made undefined, function declarations are scanned and made available</li>
+<li>global space: anything that is not in a function, is in global space</li>
+<li>variables present in global space can be accessed by window object</li>
+<li>in global space, window === this</li>
+<li>undefined is like a placeholder till a variable is assigned some value</li>
+<li>undefined does not mean not defined</li>
+<li>javascript is loosely typed or weakly typed, types have flexibliity </li>
+<li>not a good practice to explicitly assign undefined to a variable</li>
+<li>let and const are hoisted but allocated memory in place different than the window object, cannot be accessed until initialized, hence lie in temporal dead zone</li>
+<li>prefer const over let over var</li>
+<li>a block is defined by {}</li>
+<li>let and const are block-scoped</li>
+<li>shadowing: giving a variable in a child scope the name of a variable in the outer scope</li>
+<li>closure: function + its lexical environment</li>
+<li>use of closure: module design pattern, currying, once, memoize, maintain state in async, setTimeout, iterator</li>
+<li>function statement/declaration: normally defined function fun() {}</li>
+<li>function expresssion: created and assigned to a variable</li>
+<li>anonymous function: function without a name</li>
+<li>named function expression: function with a name, assigned to a variable, but not accessible in global scope with that function name, only by the variable name</li>
+<li>functions in javascript are first-class: used as values, can be passed as arguments, can be executed inside a closure function, can be returned</li>
+<li>callback function: function passed as argument to another function</li>
+<li>things which take time can block the main thread</li>
+<li>event loop = call stack + microtask queue + callback queue</li>
+<li>microtask queue: promises, mutation observers</li>
+<li>microtask queue &gt; callback queue: this can lead to starvation of functions in callback queue</li>
+<li>higher-order function: take another function as argument or return a function</li>
+<li>be comfortable with map, filter, and reduce</li>
+<li>promise: do some work, then resolve it or reject it. user of your promise has to write callbacks for then, catch, finally</li>
+<li>promise states: pending, fulfilled, rejected</li>
+<li>settled state = fulfilled or rejected</li>
+<li>promise API: all, allSettled, race, any, resolve, value</li>
+<li>async/await: wait for a promise to settle</li>
+<li>nodejs talk by ryan dahl - https://www.youtube.com/watch?v=EeYvFl7li9E&amp;ab_channel=JSConf </li>
+<li>concurrent request handling - https://stackoverflow.com/questions/34855352/how-in-general-does-node-js-handle-10-000-concurrent-requests </li>
+<li>the learn section - https://nodejs.org/en/learn/ </li>
+<li>when is it single threaded - https://www.youtube.com/watch?v=gMtchRodC2I&amp;ab_channel=HusseinNasser </li>
+<li>libuv - https://www.youtube.com/watch?v=<em>c51fcXRLGw&ab</em>channel=node.js </li>
+<li>you don’t know node - https://www.youtube.com/watch?v=NLtL-EEclRc&amp;ab_channel=JSConf </li>
+<li>profiling - https://www.youtube.com/watch?v=ASv8188AkVk&amp;ab_channel=InfoQ </li>
+</ol>
+        <p></p>
+        <a href="/"><- back to home</a>
+      </main>
+    </body>
+    </html>
+  

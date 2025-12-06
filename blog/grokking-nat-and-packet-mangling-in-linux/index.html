@@ -1,0 +1,130 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>viveknathani - grokking NAT and packet mangling in linux</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="/theme.css">
+      <meta property="og:title" content="grokking NAT and packet mangling in linux">
+      <meta property="og:description" content="viveknathani - blog">
+    </head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NJ89W10549');
+    </script>
+
+    <body>
+      <main>
+        <div style="margin-top: 10px;"><a href="/blog/?tag=computer-networking" style="text-decoration:none; display:inline-block; background-color: #e7ceceff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">computer-networking</a><a href="/blog/?tag=containers" style="text-decoration:none; display:inline-block; background-color: #e4d2caff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">containers</a><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a></div>
+        <h1 id="grokkingnatandpacketmanglinginlinux">grokking NAT and packet mangling in linux</h1>
+<p><img src="/images/NAT.png"></p>
+<p style="text-align:center"><i> Source: <a href="https://imgur.com/gallery/i-made-this-nat-1Ucb01N">Imgur</a> </i></p>
+<p>Imagine a house full of devices connected to your Wi-Fi network. From any device, try finding your public IP by visiting <a href="https://www.whatismyip.com/">https://www.whatismyip.com/</a>. The IPv4 address field should be the same for all devices. This is the IP provided by your Internet Service Provider (ISP) to your router, which acts as a gateway for your internet.</p>
+<p>So what's happening here? If the IPv4 address is the same, how is the router able to differentiate between the devices? Why can't we just assign a unique IPv4 address to each device?</p>
+<p>Well, the size of an IPv4 address is 4 bytes or 32 bits. Therefore, there can be 2^32 unique IPv4 addresses in the world. 2^32 = 4,294,967,296. ~4 billion addresses. Now, imagine a data center trying to set up a network of thousands of servers. Imagine a household with 5 devices. Imagine a corporation with thousands of employees, each having at least 1 device. If we were to assign a unique IPv4 address to each device, we'd run out of addresses pretty quickly.</p>
+<p>Networking class 101 may tell you about IPv6 as well. And if you do the math (2^128), IPv6 can support up to 340 undecillion addresses. That's a lot of addresses! So this should fix the IPv4 problem, right? Just migrate to IPv6 and call it a day! Except - the reality is disappointing. For this to happen, every single ISP in the world needs to move to IPv6. Every piece of hardware and software in the world that was written with IPv4 in mind needs to accept IPv6. Transitioning requires running IPv4 and IPv6 side-by-side for a while. Applications need to be updated to support IPv6. Bottom line: It's a lot of work.</p>
+<p>So what do we do until then? Well, what if every routing device had a unique, publicly visible  IPv4 address and every device inside that network had a private IPv4 address? And what if the router was to maintain a table mapping like:</p>
+<pre><code>${private_ip}:${private_port} -&gt; ${shared_public_ip}:${public_port}`
+</code></pre>
+<p>The router would just have to rewrite the packet headers before forwarding them.</p>
+<p>That is the idea behind Network Address Translation (NAT).</p>
+<h2 id="history">history</h2>
+<p>As per the <a href="https://www.rfc-editor.org/rfc/rfc1631">RFC 1631</a> from 1994, NAT was proposed as a <em>short-term solution</em> to the IPv4 address shortage problem. Today, in 2025, NAT is widely used everywhere.</p>
+<p>A patch work that stayed forever. Seems familiar?</p>
+<p><img src="/images/wire-patch.jpeg"></p>
+<p style="text-align:center"><i> Overhead cables that were supposed to be underground. Source: <a href="https://x.com/CoreyJMahler/status/1931057608162685149/photo/1">Twitter. </a> </i></p>
+<h2 id="types">types</h2>
+<ol>
+<li>Basic / Static NAT</li>
+</ol>
+<p>The simplest type of NAT provides a one-to-one translation of IP addresses.
+Let's take examples of two networks that use different IP ranges:</p>
+<pre><code>Network A: uses 192.168.1.0/24
+Network B: uses 10.0.0.0/24
+</code></pre>
+<p>If you need a device on Network A to communicate with Network B, you can use a NAT device to translate the IP addresses.</p>
+<p>An example mapping would look like this:</p>
+<pre><code>192.168.1.10 (Network A) &lt;-&gt; 10.0.0.10 (Network B equivalent)
+</code></pre>
+<ol start="2">
+<li>Port Address Translation (PAT)</li>
+</ol>
+<p>Basic NAT is too simplistic to support multiple devices on the same network. Port Address Translation (PAT) is a technique that allows multiple devices on a private network to share a single public IP address by using different ports. Instead of using just a single private IP to public IP mapping, PAT uses a combination of IP and port numbers to uniquely identify each device.</p>
+<ol start="3">
+<li>Full Cone NAT / One-to-One NAT / NAT 1</li>
+</ol>
+<p>Once an internal device sends a packet to an external host, any external host can send a packet to this internal device, provided it knows the public IP and port.</p>
+<ol start="4">
+<li>Restricted Cone NAT / NAT 2</li>
+</ol>
+<p>Similar to full cone NAT, but with an added restriction. Only external hosts that you have previously sent packets to can send packets back to you.</p>
+<ol start="5">
+<li>Port Restricted Cone NAT / NAT 3</li>
+</ol>
+<p>A stricter version of restricted cone NAT. Not only must an external host match the IP address, but it must also match the port number as specified in the outbound communication.</p>
+<ol start="6">
+<li>Symmetric NAT / NAT 4</li>
+</ol>
+<p>This is the most restrictive type of NAT. All requests sent from the same private IP address and port to a specific destination IP address and port are mapped to the same IP address and port. If a host sends a packet with the same source IP address and port number to a different destination, a different NAT mapping is used.</p>
+<p>For people who are building applications that rely on WebRTC, this type of NAT makes WebRTC impossible to work via STUN. You need to use a TURN server to relay packets between the two devices.</p>
+<p>You can check what type of NAT you have by using a tool like <a href="https://www.checkmynat.com/">Check My NAT</a>.</p>
+<p>It is important to note that the types in the list above are not mutually exclusive. A PAT like behaviour is seen in conjunction with Restricted Cone NAT, for instance.</p>
+<h2 id="sohowdoroutersimplementnat">so how do routers implement NAT?</h2>
+<p>Router operating system projects like <a href="https://openwrt.org/">OpenWrt</a> use linux under the hood, specifically the <code>nftables</code> module. I went in and took a look at the <code>nftables</code> source code in linux.</p>
+<p>Since NAT is about manipulating IP addresses and ports, it only makes sense to talk about it when TCP and UDP are involved. This is in alignment with what we see in <a href="https://github.com/torvalds/linux/blob/e04c78d86a9699d136910cfc0bdcf01087e3267e/include/net/netfilter/nf_nat_helper.h">nf<em>nat</em>helper.h</a>. There are two core functions in this header: <code>nf_nat_mangle_udp_packet</code> and <code>nf_nat_mangle_tcp_packet</code>.</p>
+<p>Let's take a look at <a href="https://github.com/torvalds/linux/blob/e04c78d86a9699d136910cfc0bdcf01087e3267e/net/netfilter/nf_nat_helper.c#L136"><code>nf_nat_mangle_udp_packet</code></a>.</p>
+<pre><code class="c language-c">if (skb_ensure_writable(skb, skb-&gt;len)) return false;
+</code></pre>
+<p>Before NAT can edit anything, it makes sure the packet memory is writable. I like the assume-nothing approach. Neat explicit check for mutability.</p>
+<pre><code class="c language-c">if (rep_len &gt; match_len &amp;&amp;
+    rep_len - match_len &gt; skb_tailroom(skb) &amp;&amp;
+    !enlarge_skb(skb, rep_len - match_len))
+    return false;
+</code></pre>
+<p>If the replacement string is longer than the original, and there's not enough space, try to expand the buffer. If that fails, bail.</p>
+<pre><code class="c language-c">mangle_contents(skb, protoff + sizeof(*udph),
+        match_offset, match_len, rep_buffer, rep_len);
+</code></pre>
+<p>This is the core: replace match_len bytes at <code>match_offset</code> with <code>rep_len</code> bytes from <code>rep_buffer</code>. It modifies actual payload contents inside the packets on the wire.</p>
+<pre><code class="c language-c">udph-&gt;len = htons(datalen);
+</code></pre>
+<p>When you change the payload size, you must update the header's <code>.len</code> field to match the new packet length.</p>
+<pre><code class="c language-c">nf_nat_csum_recalc(...)
+</code></pre>
+<p>NAT is not just about IPs and ports. It must update checksums so the packet remains valid. Otherwise, the receiving host will reject it as corrupted.</p>
+<p>So NAT is kind of a packet surgery, done live in the data path!</p>
+<h2 id="nataroundyouasanengineerdocker">NAT around you as an engineer - docker!</h2>
+<p>Even if you’ve never written a firewall rule in your life, if you’ve used docker, you’ve been relying on linux NAT. Every time you run:</p>
+<pre><code>docker run -p 8080:80 nginx # ${host_port}:${container_port}
+</code></pre>
+<p>As per docker's <a href="https://docs.docker.com/engine/network/packet-filtering-firewalls/">docs</a>, they use <code>iptables</code>. So we should expect a rule like this:</p>
+<pre><code>iptables -t nat -A PREROUTING -p tcp --dport 8080 -j DNAT --to-destination 172.17.0.2:80
+</code></pre>
+<p>This tells the linux kernel: <i>“If a packet comes to port 8080 on the host, rewrite its destination IP and port to send it into the container.”</i></p>
+<p>The point is: NAT isn't just a data-center or an ISP thing. It's everywhere!</p>
+<h2 id="limitations">limitations</h2>
+<p>While NAT (Network Address Translation) has helped the internet scale beyond IPv4 limits, it’s not a perfect solution.</p>
+<p>Issues:</p>
+<ol>
+<li>It breaks end-to-end connectivity.</li>
+<li>It makes encryption harder because it changes the packet headers.</li>
+<li>It complicates peer-to-peer apps. Added complexity and sometimes even added latency.</li>
+<li>Requires memory to exist since it has to maintain a mapping of all connections.</li>
+</ol>
+<h2 id="ipv6">IPv6</h2>
+<p>IPv6 can truly address the limitations of NAT. It provides a much larger address space, allowing for more devices to connect to the internet without the need for NAT.</p>
+<p>As per <a href="https://www.google.com/intl/en/ipv6/statistics.html">https://www.google.com/intl/en/ipv6/statistics.html</a>, we are not there yet.</p>
+<p><i>Need help with your networking setup? Hire me! <a href="mailto:work@vivekn.dev">work@vivekn.dev</a></i></p>
+        <p></p>
+        <a href="/"><- back to home</a>
+      </main>
+    </body>
+    </html>
+  

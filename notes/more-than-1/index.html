@@ -1,0 +1,121 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>viveknathani - more than 1</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="/theme.css">
+      <meta property="og:title" content="more than 1">
+      <meta property="og:description" content="viveknathani - notes">
+    </head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NJ89W10549');
+    </script>
+
+    <body>
+      <main>
+        
+        <h1 id="morethan1">more-than-1</h1>
+<p>we rarely want applications to process things 1 at a time. if systems are to do more stuff, how will that work fundamentally?</p>
+<h3 id="thread">thread</h3>
+<ul>
+<li>a thread is very much like a separate process, except that threads actually live in the same address space and thus can access the same data</li>
+<li>each thread has it own private set of registers</li>
+<li>when switching from one thread to another, a context switch must take place</li>
+<li>b/w context switch in processes, state of the process is stored in process control blocks. similarly, you have thread control blocks here.</li>
+<li>though, each thread will have its own stack.</li>
+<li>why threads?<ul>
+<li>they solve for parallelism.</li>
+<li>they avoid blocking program process due to slow I/O</li></ul></li>
+<li>a critical section is a piece of code that accesses a shared resource, usually a variable or data structure.</li>
+<li>when two or more threads try to update the same resource at the same time, it leads to non-deterministic outcomes - creating a race condition</li>
+<li>to avoid this, threads must use mutual exclusion primitives</li>
+<li>thread API<ul>
+<li>pthread_create -  for creating threads</li>
+<li>pthread_join - suspends execution of the calling thread until the target thread terminates unless the target thread has already terminated.</li></ul></li>
+<li>what happens to a thread if you kill the program - most resources are released but some (but very imp ones) become a victim of memory leaks</li>
+<li>kernel vs user<ul>
+<li>a kernel thread is a lightweight unit of kernel scheduling</li>
+<li>threads are sometimes implemented in userspace libraries, thus called user threads. The kernel is unaware of them, so they are managed and scheduled in userspace.</li>
+<li>however, the use of blocking system calls in user threads (as opposed to kernel threads) can be problematic. If a user thread or a fiber performs a system call that blocks, the other user threads and fibers in the process are unable to run until the system call returns. a typical example of this problem is when performing I/O: most programs are written to perform I/O synchronously. when an I/O operation is initiated, a system call is made, and does not return until the I/O operation has been completed. In the intervening period, the entire process is "blocked" by the kernel and cannot run, which starves other user threads and fibers in the same process from executing.</li></ul></li>
+<li>hardware<ul>
+<li>until the early 2000s, most desktop computers had only one single-core CPU, with no support for hardware threads. a "hardware thread" is a physical CPU or core. So, a 4 core CPU can genuinely support 4 hardware threads at once - the CPU really is doing 4 things at the same time. ne hardware thread can run many software threads. In modern operating systems, this is often done by time-slicing - each thread gets a few milliseconds to execute before the OS schedules another thread to run on that CPU. Since the OS switches back and forth between the threads quickly, it appears as if one CPU is doing more than one thing at once, but in reality, a core is still running only one hardware thread, which switches between many software threads.</li>
+<li>a graphics processing unit (GPU) is a specialized electronic circuit initially designed to accelerate computer graphics and image processing (either on a video card or embedded on motherboards, mobile phones, personal computers, workstations, and game consoles). after their initial design, GPUs were found to be useful for non-graphic calculations involving embarrassingly parallel problems due to their parallel structure. other non-graphical uses include the training of neural networks and cryptocurrency mining.</li></ul></li>
+<li>thread pools<ul>
+<li>a popular programming pattern involving threads is that of thread pools where a set number of threads are created at startup that then wait for a task to be assigned. when a new task arrives, it wakes up, completes the task and goes back to waiting. this avoids the relatively expensive thread creation and destruction functions for every task performed and takes thread management out of the application developer's hand and leaves it to a library or the operating system that is better suited to optimize thread management. </li></ul></li>
+<li>as thread context switch on modern CPUs can cost up to 1 million CPU cycles (http://ithare.com/infographics-operation-costs-in-cpu-clock-cycles/) , it makes writing efficient multithreading programs difficult. In particular, special attention has to be paid to avoid inter-thread synchronization from being too frequent.</li>
+<li>an algorithm is called non-blocking if failure or suspension of any thread cannot cause failure or suspension of another thread</li>
+<li>producer consumer problem (or the bounded buffer problem) - producers generate data items and place them in a buffer; consumers grab said items from the buffer and consume them in some way. because the bounded buffer is a shared resource, we must of course require synchronized access to it, lest a race condition arise.</li>
+</ul>
+<h3 id="fibers">fibers</h3>
+<ul>
+<li>a fiber is a particularly lightweight thread of execution. like threads, fibers share address space. however, fibers use cooperative multitasking while threads use preemptive multitasking. threads often depend on the kernel's thread scheduler to preempt a busy thread and resume another thread; fibers yield themselves to run another fiber while executing.</li>
+</ul>
+<h3 id="locks">locks</h3>
+<ul>
+<li>provide mutual exclusion to a critical section</li>
+<li>API<ul>
+<li>pthread<em>mutex</em>lock</li>
+<li>pthread<em>mutex</em>unlock</li></ul></li>
+<li>adding locks to a data structure to make it usable by threads makes the structure “thread safe”</li>
+</ul>
+<h3 id="conditionvariable">condition variable</h3>
+<ul>
+<li>useful when some sort of signaling has to take place b/w threads. example, if one thread is waiting for another to do something before it can continue.</li>
+<li>API<ul>
+<li>pthread<em>cond</em>wait</li>
+<li>pthread<em>cond</em>signal</li>
+<li>pthread<em>cond</em>broadcast</li>
+<li>pthread<em>cond</em>init</li>
+<li>pthread<em>cond</em>destroy</li></ul></li>
+</ul>
+<h3 id="semaphore">semaphore</h3>
+<ul>
+<li>a semaphore is a variable or abstract data type used to control access to a common resource by multiple threads and avoid critical section problems in a concurrent system such as a multitasking operating system.</li>
+<li>semaphores can also be used for signalling b/w thread</li>
+<li>hence a semaphore = lock + conditional variable in one</li>
+<li>they can be more complex to use</li>
+</ul>
+<h3 id="concurrencyvsparallelism">concurrency vs parallelism</h3>
+<ul>
+<li>concurrency is about managing multiple tasks by switching between them, while parallelism is about actually doing multiple tasks at the same time</li>
+</ul>
+<h3 id="eventbasedconcurrency">event based concurrency</h3>
+<ul>
+<li>the crux: “how can we build a concurrent server without using threads, and thus retain control over concurrency as well as avoid some of the problems that seem to plague multi-threaded applications?”</li>
+<li>you collect all the waiting events and process them one by one. when a handler processes an event, it is the only activity taking place in the system.</li>
+<li>how exactly does an event-based server determine which events are taking place, in particular with regards to network and disk I/O? Specifically, how can an event server tell if a message has arrived for it? it lets you check whether descriptors can be read from as well as written to; the former lets a server determine that a new packet has arrived and is in need of processing, whereas the latter lets the service know when it is OK to reply (i.e., the outbound queue is not full).</li>
+<li>poll() examines a set of file descriptors to see if some of them are ready for I/O or if certain events have occurred on them.</li>
+<li>what if an event requires that you issue a system call that might block? to overcome this limit, many modern operating systems have introduced new ways to issue I/O requests to the disk system, referred to generically as asynchronous I/O. when async IO completes, “signals” are issued.</li>
+<li>event based programming requires manual stack management</li>
+<li>what is still difficult with events - <ul>
+<li>work great on single core CPUs, run into problems on multi core CPUs</li>
+<li>paging causes blocking</li>
+<li>event based code can be hard to manage</li></ul></li>
+<li>when node.js performs an I/O operation, like reading from the network, accessing a database or the filesystem, instead of blocking the thread and wasting CPU cycles waiting, Node.js will resume the operations when the response comes back.</li>
+</ul>
+<h3 id="greenthread">green thread</h3>
+<ul>
+<li>a green thread is a thread that is scheduled by a runtime library or virtual machine (VM) instead of natively by the underlying operating system (OS). green threads emulate multithreaded environments without relying on any native OS abilities, and they are managed in user space instead of kernel space, enabling them to work in environments that do not have native thread support.</li>
+<li>green threads share a single operating system thread through co-operative concurrency and can therefore not achieve parallelism performance gains like operating system threads.</li>
+<li>the main benefit of coroutines and green threads is ease of implementation.</li>
+<li>goroutines are like green threads but not exactly green threads. they are more similar to being a M:N thread scheduler. they map M light-weight threads to N kernel threads. important talks - https://www.youtube.com/watch?v=-K11rY57K7k&amp;ab<em>channel=Hydra, https://www.youtube.com/watch?v=KBZlN0izeiY&t=536s&ab</em>channel=GopherAcademy</li>
+</ul>
+<h3 id="furtherreading">further reading</h3>
+<ul>
+<li>if you come back here and wish to read some theoretically interesting laws - check amdahl’s law and gustafson’s law.</li>
+</ul>
+        <p></p>
+        <a href="/"><- back to home</a>
+      </main>
+    </body>
+    </html>
+  

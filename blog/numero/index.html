@@ -1,0 +1,51 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>viveknathani - numero - building a math parser for fun</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="/theme.css">
+      <meta property="og:title" content="numero - building a math parser for fun">
+      <meta property="og:description" content="viveknathani - blog">
+    </head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NJ89W10549');
+    </script>
+
+    <body>
+      <main>
+        <div style="margin-top: 10px;"><a href="/blog/?tag=math" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">math</a><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a><a href="/blog/?tag=go" style="text-decoration:none; display:inline-block; background-color: #e9ded6ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">go</a></div>
+        <h1 id="numerobuildingamathparserforfun">numero - building a math parser for fun</h1>
+<p>May 2025</p>
+<p>Some weekends you fix a leaky sink and order groceries. Other weekends you wonder, “How hard could it be to write a tiny math interpreter?”</p>
+<p>That second question is what got me into learning how parsers are built, even though I never expected to use it in production.</p>
+<h3 id="theitch">the itch</h3>
+<p>Every now and then I copy-paste a quick calculation into the macOS Spotlight bar, hit Enter, and feel a little guilty. Spotlight hides the details; it never shows how it got the answer. I wanted a tool that was mine, whose guts I understood, and that I could throw behind an HTTP endpoint if I ever felt like it.</p>
+<h3 id="writingit">writing it</h3>
+<p>Language: Go for simple tooling, static binary, cheap goroutines.</p>
+<p>Design: classic shunting-yard -&gt; postfix -&gt; evaluate.</p>
+<p>Minimal dependencies: Own logger, queue, stack, and parser.</p>
+<p>Ridiculously over-engineered for something nobody had asked me to build. Perfect.</p>
+<h3 id="shippingitanyway">shipping it anyway</h3>
+<p>Because projects are not real until you can send someone a link:</p>
+<p>Here you go: https://numero.vivekn.dev</p>
+<h3 id="didtheworldneedanothermathparser">did the world need another math parser?</h3>
+<p>Almost certainly not.
+But I did, not for the functionality, but for the joy of programming. In my head, fun is a perfectly legitimate product requirement.</p>
+<p>If you ever need a lightweight way to evaluate sin(pi/2) + ln(e) from Go or curl, steal it. If you just want to browse the source and mutter “huh, neat”, that’s fine too.</p>
+<p>Happy hacking.</p>
+<p>Vivek</p>
+        <p></p>
+        <a href="/"><- back to home</a>
+      </main>
+    </body>
+    </html>
+  
