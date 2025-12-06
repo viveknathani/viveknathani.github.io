@@ -23,16 +23,16 @@ const tagMap: Map<string, BlogMeta[]> = new Map();
 let allBlogs: BlogMeta[] = [];
 
 const tagColors = [
-  '#E6B8B8', // Darker pastel pink
-  '#B8E6A8', // Darker pastel green
-  '#A8D9E6', // Darker pastel blue
-  '#D9A8D9', // Darker pastel lavender
-  '#E6CCB8', // Darker pastel peach
-  '#B8BEE6', // Darker pastel periwinkle
-  '#F0D8B8', // Darker pastel yellow
-  '#A8E6CF', // Darker pastel turquoise
-  '#E6BAA8', // Darker pastel coral
-  '#A8E6E0', // Darker pastel cyan
+  '#e7ceceff', // Darker pastel pink
+  '#cfe6c9ff', // Darker pastel green
+  '#cbe2e9ff', // Darker pastel blue
+  '#dac4daff', // Darker pastel lavender
+  '#e9ded6ff', // Darker pastel peach
+  '#d5d8e7ff', // Darker pastel periwinkle
+  '#efe4d7ff', // Darker pastel yellow
+  '#c8e6dbff', // Darker pastel turquoise
+  '#e4d2caff', // Darker pastel coral
+  '#cee9e7ff', // Darker pastel cyan
 ];
 
 function colorForTag(tag: string): string {
@@ -98,10 +98,12 @@ async function convertFromMarkdown(filePath: string) {
     </script>
 
     <body>
-      ${tagsHtml}
-      ${htmlBody}
-      <p></p>
-      <a href="/"><- back to home</a>
+      <main>
+        ${tagsHtml}
+        ${htmlBody}
+        <p></p>
+        <a href="/"><- back to home</a>
+      </main>
     </body>
     </html>
   `;
@@ -229,7 +231,12 @@ async function main() {
 
       const listHtml = blogsToRender
         .map((blog) => {
-          return `<p>${blog.date.toISOString().split('T')[0]} - <a href="/blog/${blog.slug}">${blog.title}</a></p>`;
+          return `
+            <article>
+              <date>${blog.date.toISOString().split('T')[0]}</date>
+              <a href="/blog/${blog.slug}">${blog.title}</a>
+            </article>
+          `;
         })
         .join('');
 
@@ -247,11 +254,13 @@ async function main() {
         <link rel="stylesheet" type="text/css" href="/static/theme.css">
       </head>
       <body>
-        <h1>blog</h1>
-        <p>Ideas. Small. Big. Mine.</p>
-        ${tagsHtml}
-        ${listHtml}
-        <p><a href="/">&#x2190; back to home</a></p>
+        <main>
+          <h1>blog</h1>
+          <p>Ideas. Small. Big. Mine.</p>
+          ${tagsHtml}
+          ${listHtml}
+          <p><a href="/">&#x2190; back to home</a></p>
+        </main>
       </body>
       </html>
       `;
