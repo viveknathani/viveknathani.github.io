@@ -1,13 +1,12 @@
 «««
 title: slow money
-date: 2025-12-13
+date: 2025-12-10
 tags: startups, markets, life
-draft: true
 »»»
 
 # slow money - hard learnings from startups, markets, and life
 
-As of today, I’m three years into my career. I’ve lived the fast paced startup life in Bangalore - the kind you’d hear about in every typical story. I’ve witnessed a 0 -> 1 journey as an early employee, co-founded a startup, consulted for a bunch, and now I’m working at what the cool kids call the beginning of “scale”. The thing about life is: while you are busy working on what you presume to be the most important thing, life itself does not wait. Things always keep happening and it can be hard to keep up.
+As of today, I’m three years into my career. I’ve lived the fast paced startup life in Bangalore - the kind you’d hear about in every typical story. I’ve witnessed a 0 -> 1 journey as an early employee, did my own thing, consulted for a bunch of companies, and now I’m working at what the cool kids call the beginning of “scale”. The thing about life is: while you are busy working on what you presume to be the most important thing, life itself does not wait. Things always keep happening and it can be hard to keep up.
 
 ### speed is necessary
 Move quickly. Slowness in one place bleeds into everything else. Ship fast, talk to users quickly, keep iterating. Nobody likes working with slow people. Commit to timelines and get shit done. Build a reputation for finishing things, no matter the outcome.
