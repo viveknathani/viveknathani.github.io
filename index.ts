@@ -4,6 +4,7 @@ import fs from "fs/promises";
 enum MARKDOWN_TYPE {
   BLOG = "blog",
   NOTES = "notes",
+  SOFTWARE = "software",
 }
 
 interface BlogMeta {
