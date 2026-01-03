@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>viveknathani - demos</title>
+    <link href="/theme.css" rel="stylesheet" type="text/css" />
+    <style>
+      .demo-grid {
+        display: grid;
+        gap: 2rem;
+        margin-top: 2rem;
+        max-width: 520px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .demo-card {
+        border-radius: 12px;
+        padding: 0;
+        background: white;
+        transition: all 0.2s ease;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .video-preview {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        position: relative;
+      }
+
+      .video-preview iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      .demo-card-content {
+        padding: 1.5rem;
+      }
+
+      .demo-card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+      }
+
+      .demo-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0 0 0.8rem 0;
+        color: #1a1a1a;
+      }
+
+      .demo-description {
+        color: #666;
+        margin: 0;
+        line-height: 1.6;
+        font-size: 0.95rem;
+      }
+
+      .demo-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1.2rem;
+        background: #0475cc;
+        color: white !important;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+      }
+
+      .demo-link:hover {
+        background: #035a99;
+        text-decoration: none;
+        transform: translateY(-1px);
+      }
+
+      .demo-link::before {
+        content: "▶";
+        font-size: 0.8rem;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-bottom: 2rem;
+        color: #0475cc;
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+
+      .back-link::before {
+        content: "← ";
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+      }
+
+      h1 {
+        margin-bottom: 0.5rem;
+      }
+
+      .subtitle {
+        color: #666;
+        margin-bottom: 2rem;
+        font-style: italic;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <h1>demos</h1>
+      <p class="subtitle">video walkthroughs of software i've built</p>
+
+      <div class="demo-grid">
+        <div class="demo-card">
+          <div class="video-preview">
+            <iframe 
+              src="https://www.youtube.com/embed/JCJ4G2j9R10" 
+              title="pg_nowhere demo" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+          <div class="demo-card-content">
+            <h3 class="demo-title">pg_nowhere</h3>
+            <p class="demo-description">
+              A PostgreSQL extension to disallow UPDATE and DELETE queries without a WHERE clause.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

@@ -3,6 +3,7 @@ title: software
 »»»
 
 # software
+- [pg_nowhere](https://github.com/viveknathani/pg_nowhere) - A PostgreSQL extension to disallow UPDATE and DELETE queries without a WHERE clause.
 - [newsbot](https://github.com/viveknathani/newsbot) - Automated news digest from Hacker News and Parallel AI, delivered to Slack.
 - [numero](https://github.com/viveknathani/numero) - Parse and run math expressions anywhere, available as a library and as a web service.
 - [monkeyc](https://github.com/viveknathani/monkeyc) - Compiler for the Monkey programming language, written in C, extends the idea to have a self-contained executable.
