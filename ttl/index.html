@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 40px;
+        }
+
+        .days-left {
+            font-size: clamp(60px, 15vw, 120px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #666666 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .days-label {
+            font-size: clamp(16px, 3vw, 24px);
+            color: #666666;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 60px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: #1a1a1a;
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ffffff 0%, #666666 100%);
+            transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            border-radius: 2px;
+        }
+
+        .percentage {
+            font-size: clamp(24px, 5vw, 36px);
+            font-weight: 200;
+            color: #999999;
+            letter-spacing: -0.01em;
+        }
+
+        @media (prefers-color-scheme: light) {
+            body {
+                background: #ffffff;
+                color: #000000;
+            }
+
+            .days-left {
+                background: linear-gradient(135deg, #000000 0%, #666666 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .days-label {
+                color: #999999;
+            }
+
+            .progress-container {
+                background: #f0f0f0;
+            }
+
+            .progress-bar {
+                background: linear-gradient(90deg, #000000 0%, #666666 100%);
+            }
+
+            .percentage {
+                color: #666666;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="days-left" id="daysLeft">0</div>
+        <div class="days-label">days remaining</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="percentage" id="percentage">0.00%</div>
+    </div>
+
+    <script>
+        const startDate = new Date('2025-08-25');
+        const endDate = new Date('2027-02-25');
+        
+        function updateCountdown() {
+            const now = new Date();
+            const totalDuration = endDate - startDate;
+            const elapsed = now - startDate;
+            const remaining = endDate - now;
+            
+            if (remaining <= 0) {
+                document.getElementById('daysLeft').textContent = '0';
+                document.getElementById('progressBar').style.width = '100%';
+                document.getElementById('percentage').textContent = '100.00%';
+                return;
+            }
+            
+            if (elapsed < 0) {
+                document.getElementById('daysLeft').textContent = Math.ceil(totalDuration / (1000 * 60 * 60 * 24));
+                document.getElementById('progressBar').style.width = '0%';
+                document.getElementById('percentage').textContent = '0.00%';
+                return;
+            }
+            
+            const daysRemaining = Math.ceil(remaining / (1000 * 60 * 60 * 24));
+            const percentageComplete = (elapsed / totalDuration) * 100;
+            
+            document.getElementById('daysLeft').textContent = daysRemaining;
+            document.getElementById('progressBar').style.width = percentageComplete + '%';
+            document.getElementById('percentage').textContent = percentageComplete.toFixed(2) + '%';
+        }
+        
+        updateCountdown();
+        setInterval(updateCountdown, 60000);
+    </script>
+</body>
+</html>
