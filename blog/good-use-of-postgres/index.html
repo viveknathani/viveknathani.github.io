@@ -1,0 +1,64 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>viveknathani - good use of postgres</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="/theme.css">
+      <meta property="og:title" content="good use of postgres">
+      <meta property="og:description" content="viveknathani - blog">
+    </head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NJ89W10549');
+    </script>
+
+    <body>
+      <main>
+        <div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a><a href="/blog/?tag=postgresql" style="text-decoration:none; display:inline-block; background-color: #e4d2caff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">postgresql</a><a href="/blog/?tag=databases" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">databases</a></div>
+        <h1 id="gooduseofpostgres">good use of postgres</h1>
+<p>January 2026</p>
+<p>I've been working with PostgreSQL for many years now, and I've learned that the difference between a database that works and one that works well often comes down to a handful of practical decisions. Most issues arise from basic misuse, poor defaults, or decisions made too early without thinking about how the system will actually be queried and operated.</p>
+<p>This post is a collection of practices that have held up well for me across production systems and side projects. None of this is novel. That’s the point.</p>
+<h2 id="trackeverythingwithtimestamps">track everything with timestamps</h2>
+<p>Every table should have <code>created_at</code> and <code>updated_at</code> columns. This seems obvious until you're debugging a production issue at 2 AM and desperately need to know when a record changed.</p>
+<p>For critical state changes, I go further with dedicated log tables. If your orders table has a <code>status</code> field, create an <code>order_status_logs</code> table that records every transition. You'll thank yourself later when someone asks "why did this order get stuck in processing for three days?" and the visibility you gain here is enormous.</p>
+<h2 id="backupsarentoptional">backups aren't optional</h2>
+<p>Point-in-Time Recovery (PITR) isn't just for big companies. Set up WAL archiving and continuous backups from day one. The first time you need to recover from an accidental <code>DELETE</code>/<code>UPDATE</code> or investigate data corruption, you'll understand why this matters.</p>
+<p>Managed databases make this easier, but “enabled” is not the same as “verified”. You should know:</p>
+<ul>
+<li>how far back you can restore,</li>
+<li>how long restores take,</li>
+<li>and what data you lose in the worst case.</li>
+</ul>
+<h2 id="softdeletesforuserfacingdata">soft deletes for user-facing data</h2>
+<p>Hard deletes are permanent. Add a <code>deleted_at</code> timestamp column instead of actually removing rows. Filter it out in your queries with <code>WHERE deleted_at IS NULL</code>. The storage cost is negligible compared to the flexibility you gain.</p>
+<h2 id="designforyourquerypatterns">design for your query patterns</h2>
+<p>Schema design should start with how you'll query the data, not just how you'll store it. If you're constantly joining three tables to answer a common question, denormalize a bit. If you're filtering by date ranges frequently, partition your table I've seen perfectly normalized schemas become performance nightmares because nobody thought about the read patterns. Model your data for how it will be used and not for the sake of theoretical purity.</p>
+<h2 id="indexingbeforecaching">indexing before caching</h2>
+<p>Caching is sexy. Everyone wants to add Redis. But before you introduce another moving part, make sure you've actually indexed your queries properly. Run EXPLAIN ANALYZE on your slow queries. Nine times out of ten, you're missing an index or using one inefficiently. Fix that first. Or as they say, <a href="https://use-the-index-luke.com/">use the index luke</a>.</p>
+<h2 id="understandvacuumingatleastatahighlevel">understand vacuuming (at least at a high level)</h2>
+<p>You don’t need to be a Postgres internals expert, but you do need to understand that Postgres doesn’t clean up after itself automatically in the way you might expect. If you have tables with heavy update/delete patterns, you need to monitor bloat and adjust vacuum settings. Check your vacuum stats regularly, especially on high-churn tables.</p>
+<h2 id="keepormandmigrationsseparate">keep ORM and migrations separate</h2>
+<p>Your ORM (Sequelize, TypeORM, whatever) should handle queries. Your migration tool should handle schema changes. Mixing these concerns creates fragile deployments. I know this is highly opinionated but I just hate seeing ORMs doing a shoddy job at "implicitly" figuring out migration changes from schema declarations. I like it when things are more explicit in my systems.</p>
+<h2 id="dontuseuppercasetableorcolumnnames">don’t use uppercase table or column names</h2>
+<p>Postgres folds unquoted identifiers to lowercase (so <code>UserAccounts</code> becomes <code>useraccounts</code>). Uppercase names force you to quote everything. Stick to lowercase with underscores: <code>user_accounts</code>. It's consistent, requires less typing, and works everywhere.</p>
+<h2 id="useidentityoverserial">use IDENTITY over SERIAL</h2>
+<p>Also listed in <a href="https://wiki.postgresql.org/wiki/Don't_Do_This#Don't_use_serial">this article</a> on the PostgreSQL wiki, serial types can cause issues. IDENTITY columns are the modern, SQL standard-compliant approach for auto-generated primary keys.</p>
+<h2 id="preferconnectionstringsoverkeyvalueconfigs">prefer connection strings over key-value configs</h2>
+<p>Use a single connection string (<code>postgresql://user:pass@host:port/dbname</code>) instead of spreading credentials across multiple config keys. It's easier to rotate, simpler to pass between environments, and reduces configuration drift. Most libraries support it anyway.</p>
+<h2 id="closingthoughts">closing thoughts</h2>
+<p>None of these are revolutionary. They're just things that make your life easier over the long run. PostgreSQL is an incredibly powerful tool, but like any tool, how you use it matters as much as the tool itself.</p>
+        <p></p>
+        <a href="/"><- back to home</a>
+      </main>
+    </body>
+    </html>
+  
