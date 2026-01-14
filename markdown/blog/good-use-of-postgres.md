@@ -2,8 +2,7 @@
 title: good use of postgres
 date: 2025-01-14
 tags: software, postgresql, databases
-draft: true
--»»»
+»»»
 
 # good use of postgres
 
@@ -250,3 +249,5 @@ One variable contains everything. When you rotate credentials, you update one va
 ## closing thoughts
 
 None of these are revolutionary. They're just things that make your life easier over the long run. PostgreSQL is an incredibly powerful tool, but like any tool, how you use it matters as much as the tool itself.
+
+Vivek

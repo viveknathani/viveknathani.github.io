@@ -26,34 +26,185 @@
         <h1 id="gooduseofpostgres">good use of postgres</h1>
 <p>January 2026</p>
 <p>I've been working with PostgreSQL for many years now, and I've learned that the difference between a database that works and one that works well often comes down to a handful of practical decisions. Most issues arise from basic misuse, poor defaults, or decisions made too early without thinking about how the system will actually be queried and operated.</p>
-<p>This post is a collection of practices that have held up well for me across production systems and side projects. None of this is novel. That’s the point.</p>
+<p>This post is a collection of practices that have held up well for me across production systems and side projects. None of this is novel. That's the point.</p>
 <h2 id="trackeverythingwithtimestamps">track everything with timestamps</h2>
 <p>Every table should have <code>created_at</code> and <code>updated_at</code> columns. This seems obvious until you're debugging a production issue at 2 AM and desperately need to know when a record changed.</p>
 <p>For critical state changes, I go further with dedicated log tables. If your orders table has a <code>status</code> field, create an <code>order_status_logs</code> table that records every transition. You'll thank yourself later when someone asks "why did this order get stuck in processing for three days?" and the visibility you gain here is enormous.</p>
+<p><strong>Without timestamps:</strong></p>
+<pre><code class="sql language-sql">CREATE TABLE orders (
+    id BIGINT PRIMARY KEY,
+    status TEXT,
+    total DECIMAL
+);
+</code></pre>
+<p>When an order status is wrong, you have no idea when it changed or what the history looks like. Was it stuck for hours or days? Did it change multiple times? You're flying blind.</p>
+<p><strong>With proper tracking:</strong></p>
+<pre><code class="sql language-sql">CREATE TABLE orders (
+    id BIGINT PRIMARY KEY,
+    status TEXT,
+    total DECIMAL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE order_status_logs (
+    id BIGINT PRIMARY KEY,
+    order_id BIGINT NOT NULL,
+    old_status TEXT,
+    new_status TEXT NOT NULL,
+    changed_by BIGINT,
+    changed_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+</code></pre>
+<p>Now you can see exactly when the order was created, when it was last modified, and the complete history of status changes. When debugging, you can answer "what happened and when" immediately instead of guessing.</p>
 <h2 id="backupsarentoptional">backups aren't optional</h2>
 <p>Point-in-Time Recovery (PITR) isn't just for big companies. Set up WAL archiving and continuous backups from day one. The first time you need to recover from an accidental <code>DELETE</code>/<code>UPDATE</code> or investigate data corruption, you'll understand why this matters.</p>
-<p>Managed databases make this easier, but “enabled” is not the same as “verified”. You should know:</p>
+<p>Managed databases make this easier, but "enabled" is not the same as "verified". You should know:</p>
 <ul>
 <li>how far back you can restore,</li>
 <li>how long restores take,</li>
 <li>and what data you lose in the worst case.</li>
 </ul>
+<p><strong>The naive approach:</strong>
+Running <code>pg_dump</code> once a week to a file on the same server, never testing restores. When someone accidentally runs <code>DELETE FROM users WHERE active = true</code> (they meant <code>false</code>), you discover your last backup is from 6 days ago and it's corrupted because the disk had errors.</p>
+<p><strong>The reliable approach:</strong>
+WAL archiving to S3 with automated continuous backups. You can restore to any point in the last 30 days within a 5-minute window. You've actually performed restore drills quarterly, so you know it takes 15 minutes for your 50GB database and exactly which steps to follow. When that accidental delete happens at 3 PM, you restore to 2:59 PM and lose only one minute of data.</p>
 <h2 id="softdeletesforuserfacingdata">soft deletes for user-facing data</h2>
 <p>Hard deletes are permanent. Add a <code>deleted_at</code> timestamp column instead of actually removing rows. Filter it out in your queries with <code>WHERE deleted_at IS NULL</code>. The storage cost is negligible compared to the flexibility you gain.</p>
+<p><strong>Hard deletes:</strong></p>
+<pre><code class="sql language-sql">DELETE FROM user_posts WHERE id = 123;
+</code></pre>
+<p>User contacts support: "I accidentally deleted my post about my grandmother's recipe, can you restore it?" You have to say no. The data is gone. Even if you have backups, restoring a single row from a backup is complex and risky. The user is upset, and there's nothing you can do.</p>
+<p><strong>Soft deletes:</strong></p>
+<pre><code class="sql language-sql">UPDATE user_posts SET deleted_at = NOW() WHERE id = 123;
+
+-- In queries, filter out deleted records
+SELECT * FROM user_posts WHERE deleted_at IS NULL;
+
+-- To restore
+UPDATE user_posts SET deleted_at = NULL WHERE id = 123;
+</code></pre>
+<p>Same user scenario: you run one UPDATE query and the post is back. Takes 30 seconds. User is happy. You also get audit trails for free (you can see who deleted what and when), and compliance becomes easier since you can prove data retention policies are followed.</p>
 <h2 id="designforyourquerypatterns">design for your query patterns</h2>
-<p>Schema design should start with how you'll query the data, not just how you'll store it. If you're constantly joining three tables to answer a common question, denormalize a bit. If you're filtering by date ranges frequently, partition your table I've seen perfectly normalized schemas become performance nightmares because nobody thought about the read patterns. Model your data for how it will be used and not for the sake of theoretical purity.</p>
+<p>Schema design should start with how you'll query the data, not just how you'll store it. If you're constantly joining three tables to answer a common question, denormalize a bit. If you're filtering by date ranges frequently, partition your table. I've seen perfectly normalized schemas become performance nightmares because nobody thought about the read patterns. Model your data for how it will be used and not for the sake of theoretical purity.</p>
+<p><strong>Optimizing for normalization:</strong></p>
+<pre><code class="sql language-sql">SELECT p.*, COUNT(c.id) as comment_count
+FROM posts p
+LEFT JOIN comments c ON c.post_id = p.id
+WHERE p.author_id = 123
+GROUP BY p.id;
+</code></pre>
+<p>Your app shows "Posts by Author X with comment count" on every page. You designed for perfect 3NF normalization. This query runs on every page load. With 10,000 posts and 100,000 comments, it takes 2 seconds. As data grows, it gets worse. Users complain about slow page loads.</p>
+<p><strong>Optimizing for how you actually query:</strong></p>
+<pre><code class="sql language-sql">ALTER TABLE posts ADD COLUMN comment_count INT DEFAULT 0;
+
+-- Update it with a trigger or in application code when comments change
+-- Now your query is simple
+SELECT * FROM posts WHERE author_id = 123;
+</code></pre>
+<p>Same data, same page, but now it loads in 20ms. Yes, you're storing redundant data. Yes, you need to keep comment_count in sync. But this is a read-heavy pattern (people view posts far more than they comment), so the tradeoff is worth it. The user experience is dramatically better.</p>
 <h2 id="indexingbeforecaching">indexing before caching</h2>
-<p>Caching is sexy. Everyone wants to add Redis. But before you introduce another moving part, make sure you've actually indexed your queries properly. Run EXPLAIN ANALYZE on your slow queries. Nine times out of ten, you're missing an index or using one inefficiently. Fix that first. Or as they say, <a href="https://use-the-index-luke.com/">use the index luke</a>.</p>
+<p>Caching is sexy. Everyone wants to add Redis. But before you introduce another moving part, make sure you've actually indexed your queries properly. Run <code>EXPLAIN ANALYZE</code> on your slow queries. Nine times out of ten, you're missing an index or using one inefficiently. Fix that first. Or as they say, <a href="https://use-the-index-luke.com/">use the index luke</a>.</p>
+<p><strong>Reaching for caching first:</strong></p>
+<pre><code class="sql language-sql">SELECT * FROM orders 
+WHERE user_id = 123 AND status = 'pending'
+ORDER BY created_at DESC;
+</code></pre>
+<p>This query takes 3 seconds. Instead of investigating, you add Redis. Now you're managing cache invalidation (when does it expire? what if an order updates?), cache warming (what about cache misses?), and another service in production. The complexity of your system just doubled.</p>
+<p><strong>Fixing the actual problem:</strong></p>
+<pre><code class="sql language-sql">-- First, understand what's happening
+EXPLAIN ANALYZE 
+SELECT * FROM orders 
+WHERE user_id = 123 AND status = 'pending'
+ORDER BY created_at DESC;
+-- Shows: Seq Scan on orders (scanning all 500k rows)
+
+-- Add the missing index
+CREATE INDEX idx_orders_user_status 
+ON orders(user_id, status, created_at DESC);
+-- Now: Index Scan using idx_orders_user_status
+</code></pre>
+<p>Query now takes 20ms. No Redis needed. No cache invalidation logic. No additional infrastructure. Just proper use of the database you already have. Save caching for when you've exhausted database optimization and still need more speed.</p>
 <h2 id="understandvacuumingatleastatahighlevel">understand vacuuming (at least at a high level)</h2>
-<p>You don’t need to be a Postgres internals expert, but you do need to understand that Postgres doesn’t clean up after itself automatically in the way you might expect. If you have tables with heavy update/delete patterns, you need to monitor bloat and adjust vacuum settings. Check your vacuum stats regularly, especially on high-churn tables.</p>
+<p>You don't need to be a Postgres internals expert, but you do need to understand that Postgres doesn't clean up after itself automatically in the way you might expect. If you have tables with heavy update/delete patterns, you need to monitor bloat and adjust vacuum settings. Check your vacuum stats regularly, especially on high-churn tables.</p>
+<p><strong>Ignoring vacuum:</strong>
+Your <code>sessions</code> table updates on every request (high churn). After 6 months, queries slow down mysteriously. You check the table size: 50GB. But <code>SELECT COUNT(*)</code> shows only 2GB worth of actual session data. The other 48GB is "bloat": dead tuples that Postgres hasn't cleaned up because autovacuum defaults aren't aggressive enough for your workload. Queries are slow because Postgres has to scan through all that garbage.</p>
+<p><strong>Monitoring and tuning:</strong></p>
+<pre><code class="sql language-sql">-- Check when tables were last vacuumed
+SELECT schemaname, relname, last_vacuum, last_autovacuum,
+       n_dead_tup, n_live_tup
+FROM pg_stat_user_tables
+WHERE relname = 'sessions';
+
+-- For high-update tables, make autovacuum more aggressive
+ALTER TABLE sessions SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_analyze_scale_factor = 0.02
+);
+</code></pre>
+<p>Now autovacuum runs more frequently on this table. Bloat stays under control. Queries stay fast. You've prevented the problem instead of firefighting it later.</p>
 <h2 id="keepormandmigrationsseparate">keep ORM and migrations separate</h2>
 <p>Your ORM (Sequelize, TypeORM, whatever) should handle queries. Your migration tool should handle schema changes. Mixing these concerns creates fragile deployments. I know this is highly opinionated but I just hate seeing ORMs doing a shoddy job at "implicitly" figuring out migration changes from schema declarations. I like it when things are more explicit in my systems.</p>
-<h2 id="dontuseuppercasetableorcolumnnames">don’t use uppercase table or column names</h2>
+<p><strong>ORM-generated migrations:</strong>
+You change a model field name from <code>userName</code> to <code>username</code> in your TypeORM entity. The ORM auto-generates a migration that drops the <code>userName</code> column and creates a new <code>username</code> column. You deploy it. All existing usernames are gone. Or, worse: two developers make different model changes, the ORM generates different migrations on their machines due to subtle differences in how they ordered the changes, and now your migration history diverges.</p>
+<p><strong>Explicit SQL migrations:</strong></p>
+<pre><code class="sql language-sql">-- migrations/002_rename_username_column.sql
+ALTER TABLE users RENAME COLUMN "userName" TO username;
+</code></pre>
+<p>You write the migration yourself. It's explicit. It does exactly what you want: renames the column without losing data. When another developer runs migrations, they get the same result. Your ORM (TypeORM, Prisma, whatever) just queries the database as it exists. Clean separation of concerns. Migrations are too critical to leave to magic.</p>
+<h2 id="dontuseuppercasetableorcolumnnames">don't use uppercase table or column names</h2>
 <p>Postgres folds unquoted identifiers to lowercase (so <code>UserAccounts</code> becomes <code>useraccounts</code>). Uppercase names force you to quote everything. Stick to lowercase with underscores: <code>user_accounts</code>. It's consistent, requires less typing, and works everywhere.</p>
+<p><strong>Using mixed case:</strong></p>
+<pre><code class="sql language-sql">CREATE TABLE "UserAccounts" (
+    "UserId" BIGINT,
+    "FirstName" TEXT
+);
+
+-- Now you must quote forever
+SELECT "UserId", "FirstName" FROM "UserAccounts";
+</code></pre>
+<p>You've committed yourself to quotes everywhere, forever. Forget quotes once <code>SELECT UserId FROM UserAccounts</code> and you get an error because Postgres looks for a table called <code>useraccounts</code> with a column called <code>userid</code>, which don't exist. Your query works in one tool but breaks in another because of how it handles quoting. It's a constant source of papercuts.</p>
+<p><strong>Using lowercase:</strong></p>
+<pre><code class="sql language-sql">CREATE TABLE user_accounts (
+    user_id BIGINT,
+    first_name TEXT
+);
+
+SELECT user_id, first_name FROM user_accounts;
+-- or even: SELECT UserId FROM user_accounts; -- works fine!
+</code></pre>
+<p>No quotes needed. Works in psql, works in your ORM, works in every admin tool. Case doesn't matter in queries. One less thing to think about.</p>
 <h2 id="useidentityoverserial">use IDENTITY over SERIAL</h2>
-<p>Also listed in <a href="https://wiki.postgresql.org/wiki/Don't_Do_This#Don't_use_serial">this article</a> on the PostgreSQL wiki, serial types can cause issues. IDENTITY columns are the modern, SQL standard-compliant approach for auto-generated primary keys.</p>
+<p>Also listed in <a href="https://wiki.postgresql.org/wiki/Don't_Do_This#Don't_use_serial">this article</a> on the PostgreSQL wiki, serial types can cause issues. <code>IDENTITY</code> columns are the modern, SQL standard-compliant approach for auto-generated primary keys.</p>
+<p><strong>Using SERIAL:</strong></p>
+<pre><code class="sql language-sql">CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    total DECIMAL
+);
+</code></pre>
+<p><code>SERIAL</code> is just shorthand that creates a sequence implicitly behind the scenes. That sequence is "owned" by the column but in a weird way. If you dump and restore the database, you can hit edge cases where the sequence gets out of sync with your data. If you want to grant permissions, you have to separately grant them on the sequence. If you drop the column without <code>CASCADE</code>, the sequence lingers. It's legacy behavior with quirks.</p>
+<p><strong>Using IDENTITY:</strong></p>
+<pre><code class="sql language-sql">CREATE TABLE orders (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    total DECIMAL
+);
+</code></pre>
+<p><code>IDENTITY</code> is the SQL standard way (Postgres 10+). The sequence is properly managed as part of the column. Permissions work intuitively. Dump/restore behavior is cleaner. It's what SERIAL should have been. If you're starting fresh, there's no reason to use SERIAL anymore.</p>
 <h2 id="preferconnectionstringsoverkeyvalueconfigs">prefer connection strings over key-value configs</h2>
 <p>Use a single connection string (<code>postgresql://user:pass@host:port/dbname</code>) instead of spreading credentials across multiple config keys. It's easier to rotate, simpler to pass between environments, and reduces configuration drift. Most libraries support it anyway.</p>
+<p><strong>Scattered configuration:</strong></p>
+<pre><code class="bash language-bash">DB_HOST=postgres.example.com
+DB_PORT=5432
+DB_USER=app_user
+DB_PASSWORD=secret123
+DB_NAME=production
+DB_SSLMODE=require
+</code></pre>
+<p>You have 6 environment variables to manage. When you need to add <code>sslrootcert</code> or <code>connect_timeout</code>, you add another variable. When you rotate credentials, you update 2 variables and hope you didn't miss any. Different environments might have different formatting expectations. Your connection pooler expects a connection string, so you have to reconstruct it from these parts. It's tedious and error-prone.</p>
+<p><strong>Single connection string:</strong></p>
+<pre><code class="bash language-bash">DATABASE_URL=postgresql://app_user:secret123@postgres.example.com:5432/production?sslmode=require
+</code></pre>
+<p>One variable contains everything. When you rotate credentials, you update one variable atomically. Either the old credentials work or the new ones do, but you can't end up in a half-updated state. Need to add a parameter? Add it to the query string. Every library, tool, and service in the Postgres ecosystem understands this format. Heroku does it this way. Render does it this way. Connection poolers do it this way. There's a reason it's the standard.</p>
 <h2 id="closingthoughts">closing thoughts</h2>
 <p>None of these are revolutionary. They're just things that make your life easier over the long run. PostgreSQL is an incredibly powerful tool, but like any tool, how you use it matters as much as the tool itself.</p>
         <p></p>
