@@ -244,7 +244,7 @@ You have 6 environment variables to manage. When you need to add `sslrootcert` o
 ```bash
 DATABASE_URL=postgresql://app_user:secret123@postgres.example.com:5432/production?sslmode=require
 ```
-One variable contains everything. When you rotate credentials, you update one variable atomically. Either the old credentials work or the new ones do, but you can't end up in a half-updated state. Need to add a parameter? Add it to the query string. Every library, tool, and service in the Postgres ecosystem understands this format. Heroku does it this way. Render does it this way. Connection poolers do it this way. There's a reason it's the standard.
+One variable contains everything. When you rotate credentials, you update one variable atomically. Either the old credentials work or the new ones do, but you can't end up in a half-updated state. Need to add a parameter? Add it to the query string. Every library, tool, and service in the Postgres ecosystem understands this format.
 
 ## closing thoughts
 
