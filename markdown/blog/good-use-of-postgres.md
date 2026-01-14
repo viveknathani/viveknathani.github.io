@@ -1,6 +1,6 @@
 «««
 title: good use of postgres
-date: 2025-01-14
+date: 2026-01-14
 tags: software, postgresql, databases
 »»»
 
