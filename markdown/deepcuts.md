@@ -25,3 +25,7 @@ This page is a list of books, papers, and videos that I think are truly great. T
 
 <i>Vanilla Sky</i> - This one is trippy. 10/10!
 
+<i>A time to kill</i> - thrilling!
+
+<i>Scent of a Woman</i> - beautiful drama!
+
