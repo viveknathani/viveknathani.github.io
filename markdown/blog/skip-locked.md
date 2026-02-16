@@ -89,20 +89,16 @@ Systems like Solid Queue (Rails) and PG Boss do exactly this. They replaced Rabb
 
 ## the trade-offs
 
-Nothing is free. Here's what you're giving up.
+You get an inconsistent view of the data - If 5 jobs are pending but 3 are locked, your query only sees 2. That's intentional. It's fine for job queues. It's terrible if you need to count how many jobs are actually pending.
 
-**You get an inconsistent view of the data.** If 5 jobs are pending but 3 are locked, your query only sees 2. That's intentional. It's fine for job queues. It's terrible if you need to count how many jobs are actually pending.
+Index-only scans don't work - Postgres has to check the tuple header to see if a row is locked. That means fetching the actual row, not just the index. More disk I/O. Queries that could have been index-only scans become full index scans.
 
-**Index-only scans don't work.** Postgres has to check the tuple header to see if a row is locked. That means fetching the actual row, not just the index. More disk I/O. Queries that could have been index-only scans become full index scans.
+Performance degrades with many locked rows - If half your table is locked, workers spend a lot of time skipping rows. Eventually it approaches sequential scan performance. Keep your queue moving. Don't let jobs pile up in `in_progress` state.
 
-**Performance degrades with many locked rows.** If half your table is locked, workers spend a lot of time skipping rows. Eventually it approaches sequential scan performance. Keep your queue moving. Don't let jobs pile up in `in_progress` state.
-
-**Results aren't deterministic without ORDER BY.** Run the same `LIMIT 1` query twice and you might get different rows. Always include `ORDER BY` if you care about which job gets processed first.
+Results aren't deterministic without ORDER BY - Run the same `LIMIT 1` query twice and you might get different rows. Always include `ORDER BY` if you care about which job gets processed first.
 
 ## closing thoughts
 
 `SKIP LOCKED` solves one specific problem really well: distributing work across multiple consumers without them blocking each other.
-
-It's a simple feature. One clause. But it required Postgres to store locks in the tuple header instead of a centralized lock manager. That design decision made this possible.
 
 Vivek
