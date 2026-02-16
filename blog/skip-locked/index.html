@@ -1,0 +1,99 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>viveknathani - how does SKIP LOCKED actually work</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="/theme.css">
+      <meta property="og:title" content="how does SKIP LOCKED actually work">
+      <meta property="og:description" content="viveknathani - blog">
+    </head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NJ89W10549');
+    </script>
+
+    <body>
+      <main>
+        <div style="margin-top: 10px;"><a href="/blog/?tag=databases" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">databases</a><a href="/blog/?tag=postgresql" style="text-decoration:none; display:inline-block; background-color: #e4d2caff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">postgresql</a><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a></div>
+        <h1 id="howdoesskiplockedactuallywork">how does SKIP LOCKED actually work?</h1>
+<p>You've got a table full of jobs. Multiple workers are trying to grab work from it. You need each worker to claim a different job without blocking on each other. How do you do it?</p>
+<p>The naive approach is to <code>SELECT</code> a job, then <code>UPDATE</code> it to mark it as claimed. But there's a race condition. Two workers can read the same job, both think it's available, both try to claim it. Now you're processing the same job twice.</p>
+<p>Fine. Use <code>SELECT FOR UPDATE</code> to lock the row. Problem solved, right? Not quite. Now when worker A locks a job, worker B blocks waiting for that lock to release.</p>
+<p>This is where <code>SKIP LOCKED</code> comes in.</p>
+<h2 id="theonelinersolution">the one-liner solution</h2>
+<pre><code class="sql language-sql">SELECT * FROM jobs
+WHERE status = 'pending'
+ORDER BY created_at
+FOR UPDATE SKIP LOCKED
+LIMIT 1;
+</code></pre>
+<p>That's it. Worker A grabs a job and locks it. Worker B hits that query, sees the job is locked, skips it, and grabs the next one. No blocking. No duplicates. Just works.</p>
+<h2 id="howitactuallyworks">how it actually works</h2>
+<p>Here's what's happening under the hood.</p>
+<p>PostgreSQL marks locked rows using the <code>xmax</code> field and related metadata in the tuple header. When you run <code>SELECT FOR UPDATE</code>,Postgres writes lock information into that row's header.</p>
+<p>Now another transaction comes along and tries to lock the same row. PostgreSQL's lock conflict machinery checks this metadata and determines whether to wait, error, or skip. With <code>SKIP LOCKED</code>, it chooses to skip instead of waiting.</p>
+<p>The query executor scans through the table, attempting to lock each row. Conflict? Skip it. No conflict? Lock it and take it.
+Continue until the <code>LIMIT</code> is satisfied.</p>
+<p>Table-level locks still get acquired normally. <code>SKIP LOCKED</code> only affects row-level locking. You still grab a <code>ROW SHARE</code> lock on the table. You just bypass individual row locks instead of waiting for them.</p>
+<p>This version properly describes that there's actual lock conflict resolution machinery involved, not just a simple xmax check.</p>
+<h2 id="buildingajobqueue">building a job queue</h2>
+<p>Let's say you're building a background job system. You've got a <code>jobs</code> table and multiple workers polling for work.</p>
+<pre><code class="sql language-sql">CREATE TABLE jobs (
+  id SERIAL PRIMARY KEY,
+  payload JSONB NOT NULL,
+  status TEXT DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  started_at TIMESTAMP,
+  completed_at TIMESTAMP
+);
+
+CREATE INDEX idx_jobs_status_created_at ON jobs (status, created_at);
+</code></pre>
+<p>Your worker loop looks like this:</p>
+<pre><code class="sql language-sql">-- Claim a job
+WITH claimed AS (
+  SELECT id, payload FROM jobs
+  WHERE status = 'pending'
+  ORDER BY created_at
+  FOR UPDATE SKIP LOCKED
+  LIMIT 1
+)
+UPDATE jobs
+SET status = 'in_progress', started_at = CURRENT_TIMESTAMP
+FROM claimed
+WHERE jobs.id = claimed.id
+RETURNING jobs.*;
+
+-- Process the job in your application code
+
+-- Mark it done
+UPDATE jobs
+SET status = 'completed', completed_at = CURRENT_TIMESTAMP
+WHERE id = &lt;job_id&gt;;
+</code></pre>
+<p>You can run this on 10 workers, 100 workers, doesn't matter. Each one grabs a different job. No coordination needed. PostgreSQL handles the locking.</p>
+<p>Systems like Solid Queue (Rails) and PG Boss do exactly this. They replaced RabbitMQ and cut latency in half. PostgreSQL can serve 10,000+ jobs per second with this pattern.</p>
+<h2 id="thetradeoffs">the trade-offs</h2>
+<p>Nothing is free. Here's what you're giving up.</p>
+<p><strong>You get an inconsistent view of the data.</strong> If 5 jobs are pending but 3 are locked, your query only sees 2. That's intentional. It's fine for job queues. It's terrible if you need to count how many jobs are actually pending.</p>
+<p><strong>Index-only scans don't work.</strong> Postgres has to check the tuple header to see if a row is locked. That means fetching the actual row, not just the index. More disk I/O. Queries that could have been index-only scans become full index scans.</p>
+<p><strong>Performance degrades with many locked rows.</strong> If half your table is locked, workers spend a lot of time skipping rows. Eventually it approaches sequential scan performance. Keep your queue moving. Don't let jobs pile up in <code>in_progress</code> state.</p>
+<p><strong>Results aren't deterministic without ORDER BY.</strong> Run the same <code>LIMIT 1</code> query twice and you might get different rows. Always include <code>ORDER BY</code> if you care about which job gets processed first.</p>
+<h2 id="closingthoughts">closing thoughts</h2>
+<p><code>SKIP LOCKED</code> solves one specific problem really well: distributing work across multiple consumers without them blocking each other.</p>
+<p>It's a simple feature. One clause. But it required Postgres to store locks in the tuple header instead of a centralized lock manager. That design decision made this possible.</p>
+<p>Vivek</p>
+        <p></p>
+        <a href="/"><- back to home</a>
+      </main>
+    </body>
+    </html>
+  
