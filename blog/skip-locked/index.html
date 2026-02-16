@@ -82,14 +82,12 @@ WHERE id = &lt;job_id&gt;;
 <p>You can run this on 10 workers, 100 workers, doesn't matter. Each one grabs a different job. No coordination needed. PostgreSQL handles the locking.</p>
 <p>Systems like Solid Queue (Rails) and PG Boss do exactly this. They replaced RabbitMQ and cut latency in half. PostgreSQL can serve 10,000+ jobs per second with this pattern.</p>
 <h2 id="thetradeoffs">the trade-offs</h2>
-<p>Nothing is free. Here's what you're giving up.</p>
-<p><strong>You get an inconsistent view of the data.</strong> If 5 jobs are pending but 3 are locked, your query only sees 2. That's intentional. It's fine for job queues. It's terrible if you need to count how many jobs are actually pending.</p>
-<p><strong>Index-only scans don't work.</strong> Postgres has to check the tuple header to see if a row is locked. That means fetching the actual row, not just the index. More disk I/O. Queries that could have been index-only scans become full index scans.</p>
-<p><strong>Performance degrades with many locked rows.</strong> If half your table is locked, workers spend a lot of time skipping rows. Eventually it approaches sequential scan performance. Keep your queue moving. Don't let jobs pile up in <code>in_progress</code> state.</p>
-<p><strong>Results aren't deterministic without ORDER BY.</strong> Run the same <code>LIMIT 1</code> query twice and you might get different rows. Always include <code>ORDER BY</code> if you care about which job gets processed first.</p>
+<p>You get an inconsistent view of the data - If 5 jobs are pending but 3 are locked, your query only sees 2. That's intentional. It's fine for job queues. It's terrible if you need to count how many jobs are actually pending.</p>
+<p>Index-only scans don't work - Postgres has to check the tuple header to see if a row is locked. That means fetching the actual row, not just the index. More disk I/O. Queries that could have been index-only scans become full index scans.</p>
+<p>Performance degrades with many locked rows - If half your table is locked, workers spend a lot of time skipping rows. Eventually it approaches sequential scan performance. Keep your queue moving. Don't let jobs pile up in <code>in_progress</code> state.</p>
+<p>Results aren't deterministic without ORDER BY - Run the same <code>LIMIT 1</code> query twice and you might get different rows. Always include <code>ORDER BY</code> if you care about which job gets processed first.</p>
 <h2 id="closingthoughts">closing thoughts</h2>
 <p><code>SKIP LOCKED</code> solves one specific problem really well: distributing work across multiple consumers without them blocking each other.</p>
-<p>It's a simple feature. One clause. But it required Postgres to store locks in the tuple header instead of a centralized lock manager. That design decision made this possible.</p>
 <p>Vivek</p>
         <p></p>
         <a href="/"><- back to home</a>
