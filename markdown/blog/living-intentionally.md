@@ -2,7 +2,6 @@
 title: living intentionally
 date: 2026-06-11
 tags: software, life
-draft: true
 »»»
 
 # living intentionally
