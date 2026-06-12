@@ -5,6 +5,7 @@ enum MARKDOWN_TYPE {
   BLOG = "blog",
   NOTES = "notes",
   SOFTWARE = "software",
+  SYSTEMS = "systems",
 }
 
 interface BlogMeta {
