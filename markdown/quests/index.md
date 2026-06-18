@@ -18,3 +18,5 @@ In that spirit, I am making a list of quests for myself.
 6. Build my own Robot!
 7. Land a small, non-trivial patch in the Linux kernel.
 8. Learn woodworking!
+9. Solve 1000 problems from Project Euler!
+
