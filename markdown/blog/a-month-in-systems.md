@@ -20,7 +20,7 @@ One thing that stood out was the engineering culture. All significant changes go
 
 Over the month, I ended up contributing 6–7 PRs across the ecosystem. There's something deeply satisfying about seeing your work land in a public codebase. I believe they are now gearing for their next release - v0.14 which will have my changes too!
 
-Beyond the code, I probably learned even more from reading design discussions, the most recent example being Almog's R[FC on subcompactions](https://github.com/slatedb/slatedb/blob/main/rfcs/0028-subcompactions.md) for parallelizing compaction across all available CPU cores on a single machine. I spent an evening thinking through the heuristics for partitioning work across threads, eventually discovering that it resembles the classic partition problem, which also has a dynamic programming solution - [link](https://www8.cs.umu.se/kurser/TDBAfl/VT06/algorithms/BOOK/BOOK2/NODE45.HTM).
+Beyond the code, I probably learned even more from reading design discussions, the most recent example being Almog's [RFC on subcompactions](https://github.com/slatedb/slatedb/blob/main/rfcs/0028-subcompactions.md) for parallelizing compaction across all available CPU cores on a single machine. I spent an evening thinking through the heuristics for partitioning work across threads, eventually discovering that it resembles the classic partition problem, which also has a dynamic programming solution - [link](https://www8.cs.umu.se/kurser/TDBAfl/VT06/algorithms/BOOK/BOOK2/NODE45.HTM).
 
 Given the momentum, I created a small page to list my open-source work here: [link](https://vivekn.dev/oss/).
 
@@ -28,7 +28,7 @@ Given the momentum, I created a small page to list my open-source work here: [li
 
 I met a senior database engineer who casually mentioned jemalloc while explaining the internals of a database. I had heard the name before, but never really understood what made it different from the standard `malloc`. That conversation sent me down a rabbit hole of allocator design, eventually leading me to the [original jemalloc paper](https://people.freebsd.org/~jasone/jemalloc/bsdcan2006/jemalloc.pdf).
 
-One concept that particularly stuck with me was **false sharing**. Two threads can end up modifying different variables that happen to live on the same CPU cache line, causing unnecessary cache invalidations and hurting performance even though the threads aren't logically sharing data.
+One concept that particularly stuck with me was false sharing. Two threads can end up modifying different variables that happen to live on the same CPU cache line, causing unnecessary cache invalidations and hurting performance even though the threads aren't logically sharing data.
 
 A surprisingly simple mitigation is to pad frequently accessed data structures so they occupy an entire cache line. You trade a bit of memory for significantly lower contention. This pattern is also seen in the Linux kernel source - `____cacheline_aligned_in_smp` macro and rust's `crossbeam_utils::CachePadded`.
 
@@ -52,7 +52,7 @@ I'm still very much learning, but reading and writing rust feels a little more n
 
 One muscle I'm consciously trying to build is developing an intuition for what matters in systems engineering.
 
-We recently got to see Jarred Sumner r[ewriting Bun in rust](https://github.com/oven-sh/bun/pull/30412) and [his experimental work for making JavaScript multithreaded](https://github.com/oven-sh/WebKit/pull/249) - both heavily driven via AI coding agents. This got me thinking about *“what was previously considered hard in the database space that can now be kicked off as an experiment for an AI agent?”* 
+We recently got to see Jarred Sumner [rewriting Bun in rust](https://github.com/oven-sh/bun/pull/30412) and [his experimental work for making JavaScript multithreaded](https://github.com/oven-sh/WebKit/pull/249) - both heavily driven via AI coding agents. This got me thinking about *“what was previously considered hard in the database space that can now be kicked off as an experiment for an AI agent?”* 
 
 The first answer to my mind was making PostgreSQL multithreaded. More or less, this thing didn’t evolve much in the past few years BUT I recently saw [Sam Willis taking a shot at this](https://x.com/samwillis/status/2069094864281538702). It’s reassuring that my instincts were pointing in the right direction.
 
