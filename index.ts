@@ -7,6 +7,7 @@ enum MARKDOWN_TYPE {
   SOFTWARE = "software",
   SYSTEMS = "systems",
   QUESTS = "quests",
+  OSS = "oss",
 }
 
 interface BlogMeta {
