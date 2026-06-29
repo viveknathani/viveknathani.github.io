@@ -52,13 +52,13 @@ I'm still very much learning, but reading and writing rust feels a little more n
 
 One muscle I'm consciously trying to build is developing an intuition for what matters in systems engineering.
 
-We recently got to see Jarred Sumner [rewriting Bun in rust](https://github.com/oven-sh/bun/pull/30412) and [his experimental work for making JavaScript multithreaded](https://github.com/oven-sh/WebKit/pull/249) - both heavily driven via AI coding agents. This got me thinking about *“what was previously considered hard in the database space that can now be kicked off as an experiment for an AI agent?”* 
+We recently got to see Jarred Sumner [rewriting bun in rust](https://github.com/oven-sh/bun/pull/30412) and [his experimental work for making JavaScript multithreaded](https://github.com/oven-sh/WebKit/pull/249) - both heavily driven via AI coding agents. This got me thinking about *“what was previously considered hard in the database space that can now be kicked off as an experiment for an AI agent?”* 
 
 The first answer to my mind was making PostgreSQL multithreaded. More or less, this thing didn’t evolve much in the past few years BUT I recently saw [Sam Willis taking a shot at this](https://x.com/samwillis/status/2069094864281538702). It’s reassuring that my instincts were pointing in the right direction.
 
 ### closing thoughts
 
-Looking back, June was a pretty banger month. I managed to spend a healthy amount of time away from the keyboard while still making meaningful progress on the things I care about.
+Looking back, June was a pretty banger month. I managed to hack on the stuff I care about while also spending a healthy amount of time with friends and focussing on my health.
 
 Time to dig deeper.
 
