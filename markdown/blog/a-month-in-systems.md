@@ -54,7 +54,7 @@ One muscle I'm consciously trying to build is developing an intuition for what m
 
 We recently got to see Jarred Sumner [rewriting bun in rust](https://github.com/oven-sh/bun/pull/30412) and [his experimental work for making JavaScript multithreaded](https://github.com/oven-sh/WebKit/pull/249) - both heavily driven via AI coding agents. This got me thinking about *“what was previously considered hard in the database space that can now be kicked off as an experiment for an AI agent?”* 
 
-The first answer to my mind was making PostgreSQL multithreaded. More or less, this thing didn’t evolve much in the past few years BUT I recently saw [Sam Willis taking a shot at this](https://x.com/samwillis/status/2069094864281538702). It’s reassuring that my instincts were pointing in the right direction.
+The first answer to my mind was making PostgreSQL multithreaded. And I recently saw [Sam Willis taking a shot at this](https://x.com/samwillis/status/2069094864281538702). It’s reassuring that my instincts were pointing in the right direction.
 
 ### closing thoughts
 
