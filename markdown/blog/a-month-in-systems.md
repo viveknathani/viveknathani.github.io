@@ -2,7 +2,6 @@
 title: a month in systems
 date: 2026-06-29
 tags: software, rust, databases
-draft: true
 »»»
 
 # a month in systems
