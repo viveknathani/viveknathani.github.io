@@ -7,7 +7,7 @@ draft: true
 
 # a month in systems
 
-<img src="/images/rust-rewrite-comic.jpeg">
+<img src="/images/rust-rewrite-comic.PNG">
 <p style="text-align:center"><i> Image generated via <a href="https://helmer.plus/">Helmer</a> </i></p>
 
 It’s been over a month into my sabbatical. I am taking this time off to get into systems programming. Here’s what I have been up to.
