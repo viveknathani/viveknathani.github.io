@@ -1,6 +1,6 @@
 «««
 title: a month in systems
-date: 2026-06-29
+date: 2026-06-30
 tags: software, rust, databases
 »»»
 
