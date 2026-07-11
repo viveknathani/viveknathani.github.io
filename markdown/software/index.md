@@ -6,6 +6,7 @@ title: software
 
 Sometimes, I put out demos as well: [/demos](/demos/)
 
+- [signal](https://github.com/viveknathani/signal) - Beautiful network monitoring for macOS.
 - [dbtree](https://vivekn.dev/dbtree/) - A tool to visualize database schemas right inside your terminal.
 - [pg_nowhere](https://github.com/viveknathani/pg_nowhere) - A PostgreSQL extension to disallow UPDATE and DELETE queries without a WHERE clause.
 - [newsbot](https://github.com/viveknathani/newsbot) - Automated news digest from Hacker News and Parallel AI, delivered to Slack.
