@@ -6,6 +6,11 @@ title: open source
 
 I love hacking on low-level systems. Below is a brief list of my open-source footprint.
 
+### omnigraph
+
+- [ModernRelay/omnigraph#444 - fix(cluster): validate policy bundle semantics](https://github.com/ModernRelay/omnigraph/pull/444)
+- [ModernRelay/omnigraph#429 - fix(server): report ephemeral bind address](https://github.com/ModernRelay/omnigraph/pull/429)
+
 ### slatedb
 - [slatedb/slatedb#1745 - feat: add L0 flush stall metric](https://github.com/slatedb/slatedb/pull/1745)
 - [slatedb/slatedb#1760- feat: make metric level configurable](https://github.com/slatedb/slatedb/pull/1760)
