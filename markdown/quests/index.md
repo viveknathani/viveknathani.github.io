@@ -10,13 +10,10 @@ In that spirit, I am making a list of quests for myself.
 
 ## list
 
-1. Get into a truly healthy BMI range
-2. Build some muscle and have a good-looking (but not too bulky!) physique, atleast for once in life
-3. Try running a 5k
-4. Get really fucking fluent at systems programming in rust, without the usage of AI
-5. Learn physics, electrical and electronics engineering
-6. Build my own robot
-7. Land a small, non-trivial patch in the linux kernel
-8. Learn woodworking
-9. Solve 1000 problems from project euler
-
+1. Health: BMI <= 24.9 + athletic physique
+2. Health: Run a 5K
+3. Programming: Get fluent at writing Rust without the usage of AI
+4. Programming: Land a small, non-trivial patch in the linux kernel
+5. Hardware: learn physics, electrical and electronics engineering - build my own robot
+6. Math: Understand the Reimann Hypothesis
+7. Math: Master JEE Advanced mathematics
