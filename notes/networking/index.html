@@ -1,37 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>viveknathani - networking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/theme.css">
+  <meta property="og:title" content="networking">
+  <meta property="og:description" content="viveknathani - notes">
+</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJ89W10549');
+</script>
+<body>
+  <main>
 
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>viveknathani - networking</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta charset="utf-8">
-      <link rel="stylesheet" type="text/css" href="/theme.css">
-      <meta property="og:title" content="networking">
-      <meta property="og:description" content="viveknathani - notes">
-    </head>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-NJ89W10549');
-    </script>
-
-    <body>
-      <main>
-        
-        <h1 id="networking">networking</h1>
+<h1 id="networking">networking</h1>
 <h3 id="introduction">introduction</h3>
 <p>Internet is a global network of networks. It is the way devices exchange data. The most fundamental unit of data exchange is the packet.</p>
 <p>End systems are connected to each other via communication links and packet switches. Communication links are made of different types of media, such as copper wire, fiber optics, and radio waves. Packet switches are devices that forward packets from one communication link to another. Routers and link-layer switches are examples of packet switches.</p>
 <h3 id="delaysandlossinpacketswitchednetworks">delays and loss in packet-switched networks</h3>
 <p>Most packet switches use store-and-forward transmission. In this method, the switch must receive the entire packet before it can begin to transmit the first bit of the packet onto the outbound link. So, if a communication link has a transmission rate of R bits per second, a packet of L bits takes L/R seconds to transmit from the switch's input to its output. If there is a switch or a router between two end systems, the time taken is 2L/R.</p>
 <p>An interesting problem:
-Let’s say some packets need to be sent from a given source device to a given destination device. there are N links between these devices. by extension, you can say that there are N - 1 routers between these devices. </p>
-<p>each link has a transmission rate of R bits / second. the size of the packet that you want to send is L bits. </p>
+Let’s say some packets need to be sent from a given source device to a given destination device. there are N links between these devices. by extension, you can say that there are N - 1 routers between these devices.</p>
+<p>each link has a transmission rate of R bits / second. the size of the packet that you want to send is L bits.</p>
 <p>what would be the total time taken for P packets to go from source to destination?</p>
 <p>Answer: (N + (P - 1)) * L / R</p>
 <p>This does not account for queuing delays, processing delays, and propagation delays.</p>
@@ -42,7 +37,7 @@ Let’s say some packets need to be sent from a given source device to a given d
 <p>end-to-end delay for a single packet across N links = N * nodal delay</p>
 <p>An interesting thing to understand is why does packet loss occur? Packet loss occurs when a packet arrives at a router and the router's output buffer is full. The router will drop the packet. This is called congestion.</p>
 <h3 id="howtracerouteworks">how traceroute works</h3>
-<p><a href="https://www.youtube.com/watch?v=75yKT3OuE44&ab_channel=Computerphile">computerphile</a></p>
+<p><a href="https://www.youtube.com/watch?v=75yKT3OuE44&amp;ab_channel=Computerphile">computerphile</a></p>
 <h3 id="protocollayersintheipstack">protocol layers in the IP stack</h3>
 <p>application layer: the layer that is closest to the end user. This layer contains the protocols that the end user interacts with. Examples include HTTP, SMTP, and FTP. Each message in this layer is called a message.</p>
 <p>transport layer: this layer is responsible for end-to-end communication. It is responsible for breaking the data into packets and reassembling them at the destination. Examples include TCP and UDP. Each message in this layer is called a segment.</p>
@@ -52,7 +47,7 @@ Let’s say some packets need to be sent from a given source device to a given d
 <h3 id="http">http</h3>
 <p>http is an application layer protocol that pretty much runs the web.</p>
 <p>an important thing to understand is the difference between a persistent and a non persistent connection. a non persistent connection is where you need to open a separate tcp connection for each request/response pair. in a persistent connection, the same tcp connection can be reutilised. this is a significant performance gain.</p>
-<p>http/1.0 employees non persistent tcp connections by default. http/1.1 employees persistent connections by default. </p>
+<p>http/1.0 employees non persistent tcp connections by default. http/1.1 employees persistent connections by default.</p>
 <p>http/1.1 suffers from a head of line blocking problem. if the first request in a shared tcp connection take a lot of time (like the first payload being too big let’s say), this causes an issue for subsequent requests as they never get the chance to reach the server. browsers employ parallel tcp connections to circumvent this.</p>
 <p>http/2 solves the head of line blocking problem by the idea of framing. it breaks a request into a unit called as a frame. and it sends frames from all possible requests in a rotational/interleaved manner. this gives every request a fairer chance to reach the server. the larger request will still take a considerable amount of time to finish but the perceived latency will still be low because the smaller requests will resolve quickly and user will be able to see atleast something on the webpage.</p>
 <p>http/2 also allows a push behaviour. servers can push data to their clients which is faster and desirable in some situations. from wikipedia: In practice, Server Push frequently results in wasted bandwidth because the server rarely knows which resources are already loaded by the client and transmits the same resource multiple times, resulting in slowdowns if the resources being pushed compete for bandwidth with resources that were requested. http/2 also increases bandwidth efficiency by using a binary compressed format for headers.</p>
@@ -85,12 +80,12 @@ Let’s say some packets need to be sent from a given source device to a given d
 <p>when host gets an IP in a network, it typically gets it dynamically via DHCP.</p>
 <p>how does an ISP get block of addresses? ICANN allocates IP addresses to 5 regional registries who may then distribute it forward. IPv4 however has been exhausted. this had led to techniques like NAT and creation of IPv6.</p>
 <p>NAT: all devices in a local network share just one IPv4 address as far as the outside world is concerned. private address space is usually one of these: 10/8, 172.16/12, 192.168/16. NAT has led to issues like what if one host wants to connect directly to a host behind a NAT - this is problem is solved by NAT traversal which works but it is sort of a hack. still, NAT has eased the pressure and is widely used. in lower level terms: it is a method of mapping an IP address space into another by modifying network address information in the IP header of packets while they are in transit across a traffic routing device.</p>
-<p>everybody should ideally move to IPv6 but until that happens, a neat layer of interoperatability is needed. IP tunelling solves for this. IPv6 datagram is carried inside IPv4 datagram when travelling through IPv4 routers. </p>
+<p>everybody should ideally move to IPv6 but until that happens, a neat layer of interoperatability is needed. IP tunelling solves for this. IPv6 datagram is carried inside IPv4 datagram when travelling through IPv4 routers.</p>
 <p>IPv6 adoption: https://www.google.com/intl/en/ipv6/statistics.html</p>
 <p>generalized forwarding is a flexible approach to packet forwarding in networking, where routers and switches process packets based on abstract, programmable rules rather than rigid, protocol-specific logic. unlike traditional forwarding, which relies on fixed fields (e.g., IP addresses, MAC addresses) and specific routing protocols, GF enables forwarding decisions based on arbitrary packet attributes. checkout https://p4.org - a language used to define custom forwarding behavior in switches and routers.</p>
 <p>google uses SDN to control its data center network called B4.</p>
 <p>routing algorithms can be centralised or decentralised. in the centralised approach, every router has complete information about the whole network. a link state algorithm works like this. a commonly deployed link state algorithm is based on dijkstra’s algorithm. time complexity here is O(n^2) but can be brought down to logarithmic time with the usage of heaps.</p>
-<p>in a decentralised approach, each router begins with only the knowledge of the costs of itws own directly attached links. the distance vector routing algorithm, based on the bellman-ford equation, works like this. </p>
+<p>in a decentralised approach, each router begins with only the knowledge of the costs of itws own directly attached links. the distance vector routing algorithm, based on the bellman-ford equation, works like this.</p>
 <p>an autonomous system (AS) is a collection of networks that share a single routing policy. within an AS, routers use interior gateway protocols to figure out the best way to move packets around. one of the most common igps is ospf (open shortest path first), which is designed to be fast, scalable, and efficient.</p>
 <p>OSPF breaks the network into areas to keep things organized and reduce unnecessary traffic. every router in an area keeps a full map of the network (called a link-state database) and runs dijkstra’s shortest path first (SPF) algorithm to figure out the best routes. instead of just sending updates like other protocols, ospf constantly syncs the full network state, making it super reliable for dynamic networks.</p>
 <p>but when traffic needs to move between different autonomous systems, that’s where bgp (border gateway protocol) comes in. bgp is an exterior gateway protocol (EGP) that connects different ases and decides the best paths for internet traffic. unlike ospf, bgp doesn’t rely on shortest paths—it makes routing decisions based on policies, path attributes, and network stability. routers using BGP exchange massive routing tables and constantly update each other to adapt to network changes. this is what keeps the internet running smoothly, making sure data finds the best path across a global network of ASes.</p>
@@ -107,9 +102,9 @@ protocols like openvpn, wireguard, ipsec, and l2tp define how VPNs establish con
 while vpns are great for security, they’re not foolproof—if the VPN provider logs user activity or gets compromised, privacy can still be at risk. plus, vpns don’t protect against all online threats, so pairing them with good security practices is key.</p>
 <p>tailscale is a peer-to-peer (p2p) VPN that doesn’t rely on a central remote server to route traffic. instead, it builds direct, encrypted connections between devices using wireguard while relying on a coordination server (control plane) for authentication and device discovery.</p>
 <p>802.11 is the IEEE standard for WiFI, defining how wireless networks work. it covers everything from radio frequencies to data transmission and security protocols. different versions of 802.11 bring improvements in speed, range, and efficiency.</p>
-        <p></p>
-        <a href="/"><- back to home</a>
-      </main>
-    </body>
-    </html>
-  
+
+    <p></p>
+    <a href="/"><- back to home</a>
+  </main>
+</body>
+</html>

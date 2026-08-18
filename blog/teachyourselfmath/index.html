@@ -1,29 +1,24 @@
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>viveknathani - indie hacking my way to thousands of math problems and puzzles for the internet</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta charset="utf-8">
-      <link rel="stylesheet" type="text/css" href="/theme.css">
-      <meta property="og:title" content="indie hacking my way to thousands of math problems and puzzles for the internet">
-      <meta property="og:description" content="viveknathani - blog">
-    </head>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-NJ89W10549');
-    </script>
-
-    <body>
-      <main>
-        <div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a><a href="/blog/?tag=math" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">math</a></div>
-        <h1 id="indiehackingmywaytothousandsofmathproblemsandpuzzlesfortheinternet">indie hacking my way to thousands of math problems and puzzles for the internet</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>viveknathani - indie hacking my way to thousands of math problems and puzzles for the internet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/theme.css">
+  <meta property="og:title" content="indie hacking my way to thousands of math problems and puzzles for the internet">
+  <meta property="og:description" content="viveknathani - blog">
+</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJ89W10549');
+</script>
+<body>
+  <main>
+<div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a><a href="/blog/?tag=math" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">math</a></div>
+<h1 id="indiehackingmywaytothousandsofmathproblemsandpuzzlesfortheinternet">indie hacking my way to thousands of math problems and puzzles for the internet</h1>
 <p>October 2024</p>
 <p>Earlier this year, I published a website called <a href="https://teachyourselfmath.app/">teachyourselfmath.app</a>. It gives you a large list of math problems of various categories along with their difficulty levels. The project got more traction than I had anticipated. In this post, I would like to share my journey of building this and talk about some updates.</p>
 <h3 id="thejourney">the journey</h3>
@@ -33,7 +28,7 @@
 <p>So, I sat down and built a job queue-based system using BullMQ that would take the PDF, split it into smaller parts, upload those parts to the model, and retrieve the text. Then I applied some regex and heuristics to find the math problems and dump them into a database. The program worked, but it was just too slow. It turns out Nougat is computationally expensive, and even a small 5-page PDF took about 20 minutes on my M1 MacBook Pro.</p>
 <p>I had a friend with access to powerful computing resources who generously provided me with discounted access to an NVIDIA GPU which reduced Nougat’s processing time to just a few seconds. My entire extraction pipeline was now fast—what a relief! But I knew that this approach isn’t exactly scalable. My friend cannot keep discounting it and I cannot keep paying a premium for running powerful models. But, I went along anyway and let future Vivek worry about it.</p>
 <p>Now, I had the APIs and a database in place. I went onto build a web interface for this. I added the ability for people to comment. I was heavily inspired by the user interface of hacker news and tried to give off a similar vibe. It was during my birthday on 24th January of this year that I decided to <a href="https://news.ycombinator.com/item?id=39113879">release this</a>. Now, I have always worked for for-profit companies and the entire goal of engineering over here is to make stuff that generates large traction and money. I had no such intentions with this site. I figured that if I could find like 10 people who would find this website to be useful, I would feel super happy. To my surprise, the site kinda blew up. People on HN loved it. I received many warm emails and text messages from people about they find this site to be useful. It was truly overwhelming to realize that so many people cared about it. It felt good.</p>
-<p><img src="/images/feedback.png"></p>
+<img src="/images/feedback.png">
 <p>Over the next few months, in my spare time, I have worked on adding a few more features, fixing bugs, and most importantly, sourcing new problems. However, like I shared earlier, running Nougat was expensive. I needed a better way. Thankfully, LLMs have gotten much better at finding the contents of an image. If I could first convert the PDF into an image, LaTeX extraction would then be easier. And now, instead of running something that costs me a lot, I am just able to an API call and use function calling to get a JSON of extracted problems. The relevant code for this lies in the <a href="https://github.com/viveknathani/teachyourselfmath/blob/4c7a5228acb72741907e8b38b1bed896acc42f59/src/services/FileProcessorService.ts">FileProcessorService file</a>. And that’s it, my entire extraction pipeline is not only fast but also super light on my pocket :)</p>
 <h3 id="updates">updates</h3>
 <p>Today, I am releasing a new update. I have added over 2500 problems. And I have introduced a <a href="https://teachyourselfmath.app/?tags=puzzles">new category called puzzles</a> for when you don’t want to apply any mathematical concepts and just want to indulge yourself into lightweight brainteasers. I believe the fundamental purpose of sourcing and displaying problems is now solved to a great extent. I am moving on from this project to focus my time to make some software for math tooling, which I believe is an area that needs some attention. More on this later.</p>
@@ -41,9 +36,9 @@
 <p>I genuinely just want to thank the internet for caring about this project and giving it some life. I’ll continue to maintain it and am reachable via email for any concerns or if you just want to share your thoughts.</p>
 <p>Happy hacking!</p>
 <p>Vivek</p>
-        <p></p>
-        <a href="/"><- back to home</a>
-      </main>
-    </body>
-    </html>
-  
+
+    <p></p>
+    <a href="/"><- back to home</a>
+  </main>
+</body>
+</html>

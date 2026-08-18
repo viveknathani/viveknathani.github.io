@@ -1,37 +1,31 @@
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>viveknathani - ramblings in systems and health</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta charset="utf-8">
-      <link rel="stylesheet" type="text/css" href="/theme.css">
-      <meta property="og:title" content="ramblings in systems and health">
-      <meta property="og:description" content="viveknathani - blog">
-    </head>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-NJ89W10549');
-    </script>
-
-    <body>
-      <main>
-        <div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a><a href="/blog/?tag=databases" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">databases</a><a href="/blog/?tag=life" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">life</a><a href="/blog/?tag=health" style="text-decoration:none; display:inline-block; background-color: #e7ceceff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">health</a></div>
-        <h1 id="ramblingsinsystemsandhealth">ramblings in systems and health</h1>
-<p>July was a slow month filled with curiosities, learnings, and taking care of my body. </p>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>viveknathani - ramblings in systems and health</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/theme.css">
+  <meta property="og:title" content="ramblings in systems and health">
+  <meta property="og:description" content="viveknathani - blog">
+</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJ89W10549');
+</script>
+<body>
+  <main>
+<div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a><a href="/blog/?tag=databases" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">databases</a><a href="/blog/?tag=life" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">life</a><a href="/blog/?tag=health" style="text-decoration:none; display:inline-block; background-color: #e7ceceff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">health</a></div>
+<h1 id="ramblingsinsystemsandhealth">ramblings in systems and health</h1>
+<p>July was a slow month filled with curiosities, learnings, and taking care of my body.</p>
 <p>In case you haven’t been following me for a while, I am on a sabbatical since the past couple of months (checkout <a href="https://vivekn.dev/blog/living-intentionally/">living intentionally</a> and <a href="https://vivekn.dev/blog/a-month-in-systems/">a month in systems</a> for details). I am hacking on low level systems, focussing on my post op recovery and basically, chilling.</p>
 <p>So, let’s dive in!</p>
 <h3 id="databaseresearch">database research</h3>
-<p>Unlike June, I decided to take a step back from open-source for a bit and explore a huge system that I have always loved - Postgres! io_uring has been out there since v18. It is deliberately not there in the write paths at the moment but you can use it for your reads. </p>
-<p>I got interested in an adaptive semantice-aware workload scheduling approach. Essentially, if two competing workloads have to run, can they balance it out with each other to maximise the perceived performance of the system? A simple example for this is to run foreground queries and VACCUM at the same time. I posted a tweet about my first set of findings: </p>
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">interesting, VACCUM does not make every single query slower<br><br>ran a 100 TPS foreground read workload and manually triggered VACUUM. p50 stayed mostly unchanged, while p99 repeatedly spiked past 100 ms <a href="https://t.co/IX0mxwBjM4">pic.twitter.com/IX0mxwBjM4</a></p>&mdash; Vivek Nathani (@viveknathani_) <a href="https://x.com/viveknathani_/status/2077082022791844219?ref_src=twsrc%5Etfw">July 14, 2026</a></blockquote>
-<script async src="https://platform.x.com/widgets.js" charset="utf-8"></script>
+<p>Unlike June, I decided to take a step back from open-source for a bit and explore a huge system that I have always loved - Postgres! io_uring has been out there since v18. It is deliberately not there in the write paths at the moment but you can use it for your reads.</p>
+<p>I got interested in an adaptive semantice-aware workload scheduling approach. Essentially, if two competing workloads have to run, can they balance it out with each other to maximise the perceived performance of the system? A simple example for this is to run foreground queries and VACCUM at the same time. I posted a tweet about my first set of findings:</p>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">interesting, VACCUM does not make every single query slower<br><br>ran a 100 TPS foreground read workload and manually triggered VACUUM. p50 stayed mostly unchanged, while p99 repeatedly spiked past 100 ms <a href="https://t.co/IX0mxwBjM4">pic.twitter.com/IX0mxwBjM4</a></p>&mdash; Vivek Nathani (@viveknathani_) <a href="https://x.com/viveknathani_/status/2077082022791844219?ref_src=twsrc%5Etfw">July 14, 2026</a></blockquote> <script async src="https://platform.x.com/widgets.js" charset="utf-8"></script>
 <p>Given this, I was tempted to write my own solution but I found that you can do some sort of static throttling using a cost-based vaccum delay. This works really well in cutting down foreground p99 but makes <code>VACCUM</code> itself a lot slower (expected). p99.9 however did not improve much.</p>
 <p>And then, I came up with my own policy:</p>
 <ol>
@@ -41,7 +35,7 @@
 <li>The controller allowed <code>VACUUM</code> to resume after at most 50 ms, so maintenance could not be starved. Failsafe vacuum bypassed the policy completely.</li>
 </ol>
 <p>The first results looked good: roughly 19% fewer slow queries for almost no increase in <code>VACUUM</code> time. I followed it with a same-session <code>OFF, ON, ON, OFF, ON, OFF</code> experiment. The apparent improvement disappeared. Median foreground p99 was about 189 ms with the controller both off and on, and every measured range overlapped. My understanding is that the controller could only react after a foreground read had already completed slowly. It then had to wait for <code>VACUUM</code> to reach a delay point. It was detecting a real storage problem, but detecting it too late to reliably protect the affected queries.</p>
-<p>There’s probably more digging worth doing here - I might get back to it someday! It was a fun exercise even if it did not lead to a deterministic performance improvement. I built a sense of scientific temperament through this research. AI makes everything a lot more fun! You can go from ideas to conclusions fairly quickly. </p>
+<p>There’s probably more digging worth doing here - I might get back to it someday! It was a fun exercise even if it did not lead to a deterministic performance improvement. I built a sense of scientific temperament through this research. AI makes everything a lot more fun! You can go from ideas to conclusions fairly quickly.</p>
 <h3 id="gig">gig</h3>
 <p>There’s an interesting client I started consulting this month. I can’t get into the details (yet) but they do a whole lot of work around EV bikes and batteries. I am helping them build some software in exchange of some rent money. In the age of AI where most code is written for you, it is a nice feeling to step back and spend more time thinking deeply about architectural and product choices. Interestingly, my time away from actively writing APIs and spending more time around databases is helping me become a better systems thinker. I have learnt to question all my assumptions and think of a system as a universe with its own guarantees and invariants - similar to staying true to the laws of physics, which brings me to my next mini rabbit hole.</p>
 <h3 id="physics">physics</h3>
@@ -54,7 +48,7 @@
 <h3 id="health">health</h3>
 <p>I had a spasm in my glutes this month, possibly due to some sort of exertion, was forced to rest for 10 days. Even with that and some cheat meal days with friends, I managed to lose 3.8kgs this month!</p>
 <p>Here’s an overall graph since June - blue line represents the actual values, orange line is the EMA trend.</p>
-<p><img src="/images/weight.png"></p>
+<img src="/images/weight.png">
 <p>I have lost 5.8kgs over 53 days, averaging about 0.77kg per week while having fun along the way! A personal win.</p>
 <h3 id="sciencefiction">science fiction</h3>
 <p>I picked up the book, 2001: A Space Odyssey. It is a bit chilling to think they had imagined AI so long ago. I have been rather slow in reading it but it is fun! Oh also, I watched Spiderman: Brand New Day and without getting into any spoilers, I believe it is a pretty plot advancing movie and has helped me re-gain my interest in MCU now!</p>
@@ -63,9 +57,9 @@
 <p>August will be more about open-source again.</p>
 <p>I’ll be back soon.</p>
 <p>Happy hacking!</p>
-        <p></p>
-        <a href="/"><- back to home</a>
-      </main>
-    </body>
-    </html>
-  
+
+    <p></p>
+    <a href="/"><- back to home</a>
+  </main>
+</body>
+</html>

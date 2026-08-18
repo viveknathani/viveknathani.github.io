@@ -1,29 +1,24 @@
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>viveknathani - how database branching works</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta charset="utf-8">
-      <link rel="stylesheet" type="text/css" href="/theme.css">
-      <meta property="og:title" content="how database branching works">
-      <meta property="og:description" content="viveknathani - blog">
-    </head>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-NJ89W10549');
-    </script>
-
-    <body>
-      <main>
-        <div style="margin-top: 10px;"><a href="/blog/?tag=databases" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">databases</a><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a></div>
-        <h1 id="howdoesdatabasebranchingwork">how does database branching work?</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>viveknathani - how database branching works</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/theme.css">
+  <meta property="og:title" content="how database branching works">
+  <meta property="og:description" content="viveknathani - blog">
+</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJ89W10549');
+</script>
+<body>
+  <main>
+<div style="margin-top: 10px;"><a href="/blog/?tag=databases" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">databases</a><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a></div>
+<h1 id="howdoesdatabasebranchingwork">how does database branching work?</h1>
 <p>I've been seeing the term "database branching" being thrown around a lot lately. The idea seems really useful while creating completely isolated environments for your pull requests. But how does it work? Do we just do a <code>pg_dump</code> on demand? Or do we pass a <code>--schema-only</code> flag? When does it become a bottleneck? Let's take a look.</p>
 <h2 id="justcopy">just copy?</h2>
 <p>The straightforward way to "branch" a database is to copy it. Traditional Postgres stores data in files, so you copy the files. A 100GB database needs 100GB copied and 100GB more disk space. Branch creation time scales linearly with size.</p>
@@ -75,9 +70,9 @@
 <h2 id="closingthoughts">closing thoughts</h2>
 <p>I think the most interesting part is how much of this mirrors Git's internals. The same ideas that made code version control work, commits as immutable snapshots, references instead of copies, apply to databases too. Just with ACID guarantees and a lot more complexity.</p>
 <p>Vivek</p>
-        <p></p>
-        <a href="/"><- back to home</a>
-      </main>
-    </body>
-    </html>
-  
+
+    <p></p>
+    <a href="/"><- back to home</a>
+  </main>
+</body>
+</html>

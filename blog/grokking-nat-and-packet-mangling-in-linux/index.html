@@ -1,30 +1,25 @@
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>viveknathani - grokking NAT and packet mangling in linux</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta charset="utf-8">
-      <link rel="stylesheet" type="text/css" href="/theme.css">
-      <meta property="og:title" content="grokking NAT and packet mangling in linux">
-      <meta property="og:description" content="viveknathani - blog">
-    </head>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-NJ89W10549');
-    </script>
-
-    <body>
-      <main>
-        <div style="margin-top: 10px;"><a href="/blog/?tag=computer-networking" style="text-decoration:none; display:inline-block; background-color: #e7ceceff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">computer-networking</a><a href="/blog/?tag=containers" style="text-decoration:none; display:inline-block; background-color: #e4d2caff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">containers</a><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a></div>
-        <h1 id="grokkingnatandpacketmanglinginlinux">grokking NAT and packet mangling in linux</h1>
-<p><img src="/images/NAT.png"></p>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>viveknathani - grokking NAT and packet mangling in linux</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/theme.css">
+  <meta property="og:title" content="grokking NAT and packet mangling in linux">
+  <meta property="og:description" content="viveknathani - blog">
+</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJ89W10549');
+</script>
+<body>
+  <main>
+<div style="margin-top: 10px;"><a href="/blog/?tag=computer-networking" style="text-decoration:none; display:inline-block; background-color: #e7ceceff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">computer-networking</a><a href="/blog/?tag=containers" style="text-decoration:none; display:inline-block; background-color: #e4d2caff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">containers</a><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a></div>
+<h1 id="grokkingnatandpacketmanglinginlinux">grokking NAT and packet mangling in linux</h1>
+<img src="/images/NAT.png">
 <p style="text-align:center"><i> Source: <a href="https://imgur.com/gallery/i-made-this-nat-1Ucb01N">Imgur</a> </i></p>
 <p>Imagine a house full of devices connected to your Wi-Fi network. From any device, try finding your public IP by visiting <a href="https://www.whatismyip.com/">https://www.whatismyip.com/</a>. The IPv4 address field should be the same for all devices. This is the IP provided by your Internet Service Provider (ISP) to your router, which acts as a gateway for your internet.</p>
 <p>So what's happening here? If the IPv4 address is the same, how is the router able to differentiate between the devices? Why can't we just assign a unique IPv4 address to each device?</p>
@@ -38,7 +33,7 @@
 <h2 id="history">history</h2>
 <p>As per the <a href="https://www.rfc-editor.org/rfc/rfc1631">RFC 1631</a> from 1994, NAT was proposed as a <em>short-term solution</em> to the IPv4 address shortage problem. Today, in 2025, NAT is widely used everywhere.</p>
 <p>A patch work that stayed forever. Seems familiar?</p>
-<p><img src="/images/wire-patch.jpeg"></p>
+<img src="/images/wire-patch.jpeg">
 <p style="text-align:center"><i> Overhead cables that were supposed to be underground. Source: <a href="https://x.com/CoreyJMahler/status/1931057608162685149/photo/1">Twitter. </a> </i></p>
 <h2 id="types">types</h2>
 <ol>
@@ -78,25 +73,25 @@ Network B: uses 10.0.0.0/24
 <p>It is important to note that the types in the list above are not mutually exclusive. A PAT like behaviour is seen in conjunction with Restricted Cone NAT, for instance.</p>
 <h2 id="sohowdoroutersimplementnat">so how do routers implement NAT?</h2>
 <p>Router operating system projects like <a href="https://openwrt.org/">OpenWrt</a> use linux under the hood, specifically the <code>nftables</code> module. I went in and took a look at the <code>nftables</code> source code in linux.</p>
-<p>Since NAT is about manipulating IP addresses and ports, it only makes sense to talk about it when TCP and UDP are involved. This is in alignment with what we see in <a href="https://github.com/torvalds/linux/blob/e04c78d86a9699d136910cfc0bdcf01087e3267e/include/net/netfilter/nf_nat_helper.h">nf<em>nat</em>helper.h</a>. There are two core functions in this header: <code>nf_nat_mangle_udp_packet</code> and <code>nf_nat_mangle_tcp_packet</code>.</p>
+<p>Since NAT is about manipulating IP addresses and ports, it only makes sense to talk about it when TCP and UDP are involved. This is in alignment with what we see in <a href="https://github.com/torvalds/linux/blob/e04c78d86a9699d136910cfc0bdcf01087e3267e/include/net/netfilter/nf_nat_helper.h">nf_nat_helper.h</a>. There are two core functions in this header: <code>nf_nat_mangle_udp_packet</code> and <code>nf_nat_mangle_tcp_packet</code>.</p>
 <p>Let's take a look at <a href="https://github.com/torvalds/linux/blob/e04c78d86a9699d136910cfc0bdcf01087e3267e/net/netfilter/nf_nat_helper.c#L136"><code>nf_nat_mangle_udp_packet</code></a>.</p>
-<pre><code class="c language-c">if (skb_ensure_writable(skb, skb-&gt;len)) return false;
+<pre><code class="language-c">if (skb_ensure_writable(skb, skb-&gt;len)) return false;
 </code></pre>
 <p>Before NAT can edit anything, it makes sure the packet memory is writable. I like the assume-nothing approach. Neat explicit check for mutability.</p>
-<pre><code class="c language-c">if (rep_len &gt; match_len &amp;&amp;
+<pre><code class="language-c">if (rep_len &gt; match_len &amp;&amp;
     rep_len - match_len &gt; skb_tailroom(skb) &amp;&amp;
     !enlarge_skb(skb, rep_len - match_len))
     return false;
 </code></pre>
 <p>If the replacement string is longer than the original, and there's not enough space, try to expand the buffer. If that fails, bail.</p>
-<pre><code class="c language-c">mangle_contents(skb, protoff + sizeof(*udph),
-        match_offset, match_len, rep_buffer, rep_len);
+<pre><code class="language-c">mangle_contents(skb, protoff + sizeof(*udph),
+		match_offset, match_len, rep_buffer, rep_len);
 </code></pre>
 <p>This is the core: replace match_len bytes at <code>match_offset</code> with <code>rep_len</code> bytes from <code>rep_buffer</code>. It modifies actual payload contents inside the packets on the wire.</p>
-<pre><code class="c language-c">udph-&gt;len = htons(datalen);
+<pre><code class="language-c">udph-&gt;len = htons(datalen);
 </code></pre>
 <p>When you change the payload size, you must update the header's <code>.len</code> field to match the new packet length.</p>
-<pre><code class="c language-c">nf_nat_csum_recalc(...)
+<pre><code class="language-c">nf_nat_csum_recalc(...)
 </code></pre>
 <p>NAT is not just about IPs and ports. It must update checksums so the packet remains valid. Otherwise, the receiving host will reject it as corrupted.</p>
 <p>So NAT is kind of a packet surgery, done live in the data path!</p>
@@ -122,9 +117,9 @@ Network B: uses 10.0.0.0/24
 <p>IPv6 can truly address the limitations of NAT. It provides a much larger address space, allowing for more devices to connect to the internet without the need for NAT.</p>
 <p>As per <a href="https://www.google.com/intl/en/ipv6/statistics.html">https://www.google.com/intl/en/ipv6/statistics.html</a>, we are not there yet.</p>
 <p><i>Need help with your networking setup? Hire me! <a href="mailto:work@vivekn.dev">work@vivekn.dev</a></i></p>
-        <p></p>
-        <a href="/"><- back to home</a>
-      </main>
-    </body>
-    </html>
-  
+
+    <p></p>
+    <a href="/"><- back to home</a>
+  </main>
+</body>
+</html>

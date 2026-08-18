@@ -1,34 +1,29 @@
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>viveknathani - sharing runtime configuration in concurrent Rust apps</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta charset="utf-8">
-      <link rel="stylesheet" type="text/css" href="/theme.css">
-      <meta property="og:title" content="sharing runtime configuration in concurrent Rust apps">
-      <meta property="og:description" content="viveknathani - blog">
-    </head>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-NJ89W10549');
-    </script>
-
-    <body>
-      <main>
-        <div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a><a href="/blog/?tag=rust" style="text-decoration:none; display:inline-block; background-color: #cbe2e9ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">rust</a></div>
-        <h1 id="sharingruntimeconfigurationinconcurrentrustapps">sharing runtime configuration in concurrent Rust apps</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>viveknathani - sharing runtime configuration in concurrent Rust apps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/theme.css">
+  <meta property="og:title" content="sharing runtime configuration in concurrent Rust apps">
+  <meta property="og:description" content="viveknathani - blog">
+</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJ89W10549');
+</script>
+<body>
+  <main>
+<div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a><a href="/blog/?tag=rust" style="text-decoration:none; display:inline-block; background-color: #cbe2e9ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">rust</a></div>
+<h1 id="sharingruntimeconfigurationinconcurrentrustapps">sharing runtime configuration in concurrent Rust apps</h1>
 <p>I've been building <a href="https://github.com/viveknathani/signal">signal</a>, a small network monitoring app for macOS. It is composed of a few long running tasks. The throughput sampler wakes every second. A connectivity check probes the gateway, DNS and the internet, while another task refreshes details about the selected interface. They all need to know which interface the user is monitoring right now.</p>
 <p>The user can change that setting while the tasks are running. <code>Arc&lt;RwLock&lt;_&gt;&gt;</code> looks like enough: share the state and call it a day. Except the write has side effects. We need to save the choice and refresh the snapshot, and a task may still finish work for the old interface after the switch.</p>
 <h3 id="temptingapproaches">tempting approaches</h3>
 <p>We could give every task its own copy of the configuration.</p>
-<pre><code class="rust language-rust">#[derive(Clone)]
+<pre><code class="language-rust">#[derive(Clone)]
 struct RuntimeConfig {
     selected_interface: Option&lt;String&gt;,
 }
@@ -42,7 +37,7 @@ tokio::spawn(run_connectivity_sampler(config.clone()));
 </code></pre>
 <p>This works as long as the configuration never changes. Once the user selects <code>en7</code>, both tasks keep sampling <code>en0</code>. We could restart the workers every time the interface changes. That is fair when a new configuration really requires a rebuilt worker. For signal, changing one string did not justify tearing down the samplers and bringing them back up.</p>
 <p>So we share one copy instead:</p>
-<pre><code class="rust language-rust">type SharedState = Arc&lt;RwLock&lt;AppState&gt;&gt;;
+<pre><code class="language-rust">type SharedState = Arc&lt;RwLock&lt;AppState&gt;&gt;;
 
 async fn select_interface(state: &amp;SharedState, interface_id: String) {
     state.write().await.selected_interface = Some(interface_id);
@@ -55,7 +50,7 @@ async fn select_interface(state: &amp;SharedState, interface_id: String) {
 <p>The samplers only need to ask which interface is current. A UI command needs to request a switch, but it does not need a mutable reference to the rest of <code>AppState</code>.</p>
 <p>So give the two sides different handles. A sampler gets read access to the current interface. The UI gets a command sender.</p>
 <p>Here is how signal's throughput sampler reads the selection:</p>
-<pre><code class="rust language-rust">let selected_interface = {
+<pre><code class="language-rust">let selected_interface = {
     let state = state.read().await;
     state.selected_interface.clone()
 };
@@ -71,7 +66,7 @@ let counters = interface_reader.read_interface_counters(&amp;interface_id)?;
 <h3 id="theproposedapproach">the proposed approach</h3>
 <p>Signal keeps readable state behind an <code>Arc&lt;RwLock&lt;AppState&gt;&gt;</code>, but sends every post-startup mutation to <code>AppState</code> through one bounded <a href="https://docs.rs/tokio/latest/tokio/sync/mpsc/"><code>mpsc</code></a> channel.</p>
 <p>The relevant types look like this:</p>
-<pre><code class="rust language-rust">#[derive(Clone)]
+<pre><code class="language-rust">#[derive(Clone)]
 struct RuntimeHandle {
     sender: mpsc::Sender&lt;AppEvent&gt;,
     state: Arc&lt;RwLock&lt;AppState&gt;&gt;,
@@ -89,7 +84,7 @@ enum ConfigEvent {
 }
 </code></pre>
 <p><code>RuntimeHandle</code> is the small public surface around the runtime. Its fields are private. A caller can ask for a snapshot or submit a supported change:</p>
-<pre><code class="rust language-rust">impl RuntimeHandle {
+<pre><code class="language-rust">impl RuntimeHandle {
     async fn snapshot(&amp;self) -&gt; AppState {
         self.state.read().await.clone()
     }
@@ -108,7 +103,7 @@ enum ConfigEvent {
 }
 </code></pre>
 <p>At startup, the app creates one state value and one channel:</p>
-<pre><code class="rust language-rust">let state = Arc::new(RwLock::new(initial_state));
+<pre><code class="language-rust">let state = Arc::new(RwLock::new(initial_state));
 let (sender, receiver) = mpsc::channel(256);
 
 start_event_reducer(state.clone(), receiver);
@@ -120,7 +115,7 @@ start_interface_sampler(state.clone(), sender.clone());
 <p>I think of this as a single-writer runtime. There may be many event producers and state readers, but the reducer is the one intentional writer to <code>AppState</code>.</p>
 <h3 id="whyonereducermatters">why one reducer matters</h3>
 <p>The reducer is an ordinary Tokio task with a loop:</p>
-<pre><code class="rust language-rust">while let Some(event) = receiver.recv().await {
+<pre><code class="language-rust">while let Some(event) = receiver.recv().await {
     let mut state = state.write().await;
 
     match event {
@@ -153,11 +148,11 @@ start_interface_sampler(state.clone(), sender.clone());
 <p>Atomics fit small independent values. An <code>AtomicBool</code> works for a stop flag that workers poll. An <code>AtomicU64</code> can hold a sampling interval that workers reload. Once several fields must change together, one configuration snapshot is easier to reason about.</p>
 <p>Start with what each reader must observe. If only the newest value matters, updates may be coalesced. If every change matters, put it on a queue.</p>
 <h3 id="closingthoughts">closing thoughts</h3>
-<p>It's been a fun exercise towards what I'd like to call, "thinking in Rust". Signal was a way for me to flex those muscles. </p>
+<p>It's been a fun exercise towards what I'd like to call, "thinking in Rust". Signal was a way for me to flex those muscles.</p>
 <p>Happy hacking!</p>
-        <p></p>
-        <a href="/"><- back to home</a>
-      </main>
-    </body>
-    </html>
-  
+
+    <p></p>
+    <a href="/"><- back to home</a>
+  </main>
+</body>
+</html>

@@ -1,35 +1,30 @@
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>viveknathani - how does SKIP LOCKED actually work</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta charset="utf-8">
-      <link rel="stylesheet" type="text/css" href="/theme.css">
-      <meta property="og:title" content="how does SKIP LOCKED actually work">
-      <meta property="og:description" content="viveknathani - blog">
-    </head>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-NJ89W10549');
-    </script>
-
-    <body>
-      <main>
-        <div style="margin-top: 10px;"><a href="/blog/?tag=databases" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">databases</a><a href="/blog/?tag=postgresql" style="text-decoration:none; display:inline-block; background-color: #e4d2caff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">postgresql</a><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a></div>
-        <h1 id="howdoesskiplockedactuallywork">how does SKIP LOCKED actually work?</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>viveknathani - how does SKIP LOCKED actually work</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/theme.css">
+  <meta property="og:title" content="how does SKIP LOCKED actually work">
+  <meta property="og:description" content="viveknathani - blog">
+</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJ89W10549');
+</script>
+<body>
+  <main>
+<div style="margin-top: 10px;"><a href="/blog/?tag=databases" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">databases</a><a href="/blog/?tag=postgresql" style="text-decoration:none; display:inline-block; background-color: #e4d2caff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">postgresql</a><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a></div>
+<h1 id="howdoesskiplockedactuallywork">how does SKIP LOCKED actually work?</h1>
 <p>You've got a table full of jobs. Multiple workers are trying to grab work from it. You need each worker to claim a different job without blocking on each other. How do you do it?</p>
 <p>The naive approach is to <code>SELECT</code> a job, then <code>UPDATE</code> it to mark it as claimed. But there's a race condition. Two workers can read the same job, both think it's available, both try to claim it. Now you're processing the same job twice.</p>
 <p>Fine. Use <code>SELECT FOR UPDATE</code> to lock the row. Problem solved, right? Not quite. Now when worker A locks a job, worker B blocks waiting for that lock to release.</p>
 <p>This is where <code>SKIP LOCKED</code> comes in.</p>
 <h2 id="theonelinersolution">the one-liner solution</h2>
-<pre><code class="sql language-sql">SELECT * FROM jobs
+<pre><code class="language-sql">SELECT * FROM jobs
 WHERE status = 'pending'
 ORDER BY created_at
 FOR UPDATE SKIP LOCKED
@@ -46,7 +41,7 @@ Continue until the <code>LIMIT</code> is satisfied.</p>
 <p>This version properly describes that there's actual lock conflict resolution machinery involved, not just a simple xmax check.</p>
 <h2 id="buildingajobqueue">building a job queue</h2>
 <p>Let's say you're building a background job system. You've got a <code>jobs</code> table and multiple workers polling for work.</p>
-<pre><code class="sql language-sql">CREATE TABLE jobs (
+<pre><code class="language-sql">CREATE TABLE jobs (
   id SERIAL PRIMARY KEY,
   payload JSONB NOT NULL,
   status TEXT DEFAULT 'pending',
@@ -58,7 +53,7 @@ Continue until the <code>LIMIT</code> is satisfied.</p>
 CREATE INDEX idx_jobs_status_created_at ON jobs (status, created_at);
 </code></pre>
 <p>Your worker loop looks like this:</p>
-<pre><code class="sql language-sql">-- Claim a job
+<pre><code class="language-sql">-- Claim a job
 WITH claimed AS (
   SELECT id, payload FROM jobs
   WHERE status = 'pending'
@@ -89,9 +84,9 @@ WHERE id = &lt;job_id&gt;;
 <h2 id="closingthoughts">closing thoughts</h2>
 <p><code>SKIP LOCKED</code> solves one specific problem really well: distributing work across multiple consumers without them blocking each other.</p>
 <p>Vivek</p>
-        <p></p>
-        <a href="/"><- back to home</a>
-      </main>
-    </body>
-    </html>
-  
+
+    <p></p>
+    <a href="/"><- back to home</a>
+  </main>
+</body>
+</html>

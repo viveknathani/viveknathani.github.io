@@ -1,29 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>viveknathani - designing data intensive applications</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/theme.css">
+  <meta property="og:title" content="designing data intensive applications">
+  <meta property="og:description" content="viveknathani - notes">
+</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJ89W10549');
+</script>
+<body>
+  <main>
 
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>viveknathani - designing data intensive applications</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta charset="utf-8">
-      <link rel="stylesheet" type="text/css" href="/theme.css">
-      <meta property="og:title" content="designing data intensive applications">
-      <meta property="og:description" content="viveknathani - notes">
-    </head>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-NJ89W10549');
-    </script>
-
-    <body>
-      <main>
-        
-        <h1 id="designingdataintensiveapplications">designing data intensive applications</h1>
+<h1 id="designingdataintensiveapplications">designing data intensive applications</h1>
 <ol>
 <li>goal is to make systems that are reliable, scalable, and maintainable.</li>
 <li>data models: relational, document, graph, triple store.</li>
@@ -108,52 +103,70 @@
 <p>troubles in distributed systems</p>
 <ol>
 <li>partial failures</li>
-<li>unreliable networks<ol>
+<li>unreliable networks
+<ol>
 <li>timeouts</li>
 <li>unbounded delays</li>
 <li>congestion</li>
-<li>queuing</li></ol></li>
+<li>queuing</li>
+</ol>
+</li>
 <li>variable delays are a consequence of dynamic resource partitioning</li>
-<li>unreliable clocks<ol>
+<li>unreliable clocks
+<ol>
 <li>a day may not have exactly 86400 seconds</li>
 <li>time-of-day clocks might move backwards in time</li>
-<li>monotonic clocks can helpful in measuring duration </li>
+<li>monotonic clocks can helpful in measuring duration</li>
 <li>time-of-day clocks are usually synchronised with NTP which can be inaccurate because of network round trip and quartz drift.</li>
-<li>logical clocks are hence looked at as the alternative. just increment counters. and use this to understand the relative ordering of events. eg: lamport clock.</li></ol></li>
+<li>logical clocks are hence looked at as the alternative. just increment counters. and use this to understand the relative ordering of events. eg: lamport clock.</li>
+</ol>
+</li>
 </ol>
 <p>consistency and consensus</p>
 <ol>
-<li>linearizability<ol>
+<li>linearizability
+<ol>
 <li>make the system appear as if there is only a single copy of data. a read followed by a write will receive the most up to date version of the data.</li>
 <li>if any one read has returned the new value, all following reads must also return the new value. the value should never flip back to the old one.</li>
 <li>you can theoretically check if a system’s behaviour is linearisable by recording the timings of all requests and responses and arranging them in a valid sequential order.</li>
 <li>single leader replication has the potential to provide linearizability.</li>
 <li>some consensus algorithms can guarantee linearizability. zookeeper and etcd are examples of systems that use these algorithms.</li>
-<li>if your application requires linearizability and some replicas are down, then it can cause unavailability. </li>
-<li>Attiya and Welch prove that if you want linearizability, the response time of read and write requests is atleast proportional to the uncertainty of delays in the network.</li></ol></li>
-<li>CAP theorem<ol>
+<li>if your application requires linearizability and some replicas are down, then it can cause unavailability.</li>
+<li>Attiya and Welch prove that if you want linearizability, the response time of read and write requests is atleast proportional to the uncertainty of delays in the network.</li>
+</ol>
+</li>
+<li>CAP theorem
+<ol>
 <li>states that you can have a system is either consistent and partition tolerant (CP) OR available and partition tolerant (AP) OR consistent and available.</li>
-<li>however, this theorem has many misleading definitions and assumptions and only serves as a high level thinking ground. it is of little practical value in designing systems.</li></ol></li>
-<li>ordering<ol>
-<li>ordering of events helps in preserving causality </li>
+<li>however, this theorem has many misleading definitions and assumptions and only serves as a high level thinking ground. it is of little practical value in designing systems.</li>
+</ol>
+</li>
+<li>ordering
+<ol>
+<li>ordering of events helps in preserving causality</li>
 <li>causal order is not total order</li>
 <li>a linearizable system has total order</li>
 <li>you can order events in a sequence using lamport timestamps</li>
 <li>total order broadcast ensures that all nodes in the distributed system agree on the order in which messages are delivered, regardless of the sender. this property is crucial for maintaining consistency and ensuring that all participants have a consistent view of the system state.</li>
-<li>a linearizable compare-and-set register and total order broadcast are both equivalent to having consensus.</li></ol></li>
-<li>consensus<ol>
+<li>a linearizable compare-and-set register and total order broadcast are both equivalent to having consensus.</li>
+</ol>
+</li>
+<li>consensus
+<ol>
 <li>2PC - coordinator sends “prepare”, sends “commit” - has single point of failure if coordinator is down.</li>
 <li>3PC solves for SPOF but it assumes a network with bounded delay and nodes with bounded response times - both of which are pretty unrealistic.</li>
 <li>good consensus algorithms don’t let you reach this dead state - they always move forward.</li>
-<li>popular ones: viewstamped replication, paxos, raft, and zab. </li>
+<li>popular ones: viewstamped replication, paxos, raft, and zab.</li>
 <li>they all implement total order broadcast.</li>
 <li>leader is elected by votes.</li>
-<li>most consensus algorithms assume there to be a fixed set of nodes. they rely on timeouts to detect failed nodes. they are sensitive to unreliable networks. </li>
-<li>explore zookeeper and etcd - see how they are used. </li></ol></li>
+<li>most consensus algorithms assume there to be a fixed set of nodes. they rely on timeouts to detect failed nodes. they are sensitive to unreliable networks.</li>
+<li>explore zookeeper and etcd - see how they are used.</li>
 </ol>
-        <p></p>
-        <a href="/"><- back to home</a>
-      </main>
-    </body>
-    </html>
-  
+</li>
+</ol>
+
+    <p></p>
+    <a href="/"><- back to home</a>
+  </main>
+</body>
+</html>

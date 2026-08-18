@@ -1,29 +1,24 @@
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>viveknathani - delp</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta charset="utf-8">
-      <link rel="stylesheet" type="text/css" href="/theme.css">
-      <meta property="og:title" content="delp">
-      <meta property="og:description" content="viveknathani - blog">
-    </head>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-NJ89W10549');
-    </script>
-
-    <body>
-      <main>
-        <div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a></div>
-        <h1 id="buildingdelpanopensourcetooltohelpdevs">Building delp - an open-source tool to help devs</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>viveknathani - delp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/theme.css">
+  <meta property="og:title" content="delp">
+  <meta property="og:description" content="viveknathani - blog">
+</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJ89W10549');
+</script>
+<body>
+  <main>
+<div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a></div>
+<h1 id="buildingdelpanopensourcetooltohelpdevs">Building delp - an open-source tool to help devs</h1>
 <p>August 2022</p>
 <h3 id="motivation">Motivation</h3>
 <p><em>"A man who knows why can bear any how." - Friedrich Nietzsche</em></p>
@@ -37,14 +32,22 @@
 <h3 id="workflow">Workflow</h3>
 <p>I wanted my development workflow to be as simple and as effective as possible. So I came up with this process:</p>
 <ol>
-<li><p>I start developing in the <a href="https://github.com/viveknathani/delp/tree/dev">development branch</a> of my source code.</p></li>
-<li><p>I let my code pass through lint checks, formatting checks, and optionally, some tests too. I build a version of this site and run it on localhost. I keep pushing my development commits too, frequently.</p></li>
-<li><p>If my build is stable enough, I merge my <a href="https://github.com/viveknathani/delp/tree/main">main branch</a> with the development branch.</p></li>
-<li><p>When I push commits to the main branch, I want <a href="https://www.netlify.com/">Netlify</a> to deploy my site automatically. And that's it.</p>
-<p>So I programmed things to do exactly this. I set up the build, formatting, linting, and testing commands in my package.json file.</p></li>
+<li>
+<p>I start developing in the <a href="https://github.com/viveknathani/delp/tree/dev">development branch</a> of my source code.</p>
+</li>
+<li>
+<p>I let my code pass through lint checks, formatting checks, and optionally, some tests too. I build a version of this site and run it on localhost. I keep pushing my development commits too, frequently.</p>
+</li>
+<li>
+<p>If my build is stable enough, I merge my <a href="https://github.com/viveknathani/delp/tree/main">main branch</a> with the development branch.</p>
+</li>
+<li>
+<p>When I push commits to the main branch, I want <a href="https://www.netlify.com/">Netlify</a> to deploy my site automatically. And that's it.</p>
+<p>So I programmed things to do exactly this. I set up the build, formatting, linting, and testing commands in my package.json file.</p>
+</li>
 </ol>
 <h3 id="outcome">Outcome</h3>
-<p><img src="/images/delp.PNG" height="194.45px" width="350px"></p>
+<img src="/images/delp.PNG" height="194.45px" width="350px">
 <p>So this is delp.</p>
 <p>The process was actually fun. To be honest, building something like delp is not hard at all. You can pick up any feature of delp and build it in like an evening. But it still feels nice to build a collection of such tools in the way it helps me and potentially other developers too.</p>
 <h3 id="whatsnext">What's next</h3>
@@ -52,9 +55,9 @@
 <ul>
 <li>Vivek</li>
 </ul>
-        <p></p>
-        <a href="/"><- back to home</a>
-      </main>
-    </body>
-    </html>
-  
+
+    <p></p>
+    <a href="/"><- back to home</a>
+  </main>
+</body>
+</html>

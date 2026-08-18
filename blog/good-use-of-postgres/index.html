@@ -1,29 +1,24 @@
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>viveknathani - good use of postgres</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta charset="utf-8">
-      <link rel="stylesheet" type="text/css" href="/theme.css">
-      <meta property="og:title" content="good use of postgres">
-      <meta property="og:description" content="viveknathani - blog">
-    </head>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-NJ89W10549');
-    </script>
-
-    <body>
-      <main>
-        <div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a><a href="/blog/?tag=postgresql" style="text-decoration:none; display:inline-block; background-color: #e4d2caff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">postgresql</a><a href="/blog/?tag=databases" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">databases</a></div>
-        <h1 id="gooduseofpostgres">good use of postgres</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>viveknathani - good use of postgres</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/theme.css">
+  <meta property="og:title" content="good use of postgres">
+  <meta property="og:description" content="viveknathani - blog">
+</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJ89W10549');
+</script>
+<body>
+  <main>
+<div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a><a href="/blog/?tag=postgresql" style="text-decoration:none; display:inline-block; background-color: #e4d2caff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">postgresql</a><a href="/blog/?tag=databases" style="text-decoration:none; display:inline-block; background-color: #efe4d7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">databases</a></div>
+<h1 id="gooduseofpostgres">good use of postgres</h1>
 <p>January 2026</p>
 <p>I've been working with PostgreSQL for many years now, and I've learned that the difference between a database that works and one that works well often comes down to a handful of practical decisions. Most issues arise from basic misuse, poor defaults, or decisions made too early without thinking about how the system will actually be queried and operated.</p>
 <p>This post is a collection of practices that have held up well for me across production systems and side projects. None of this is novel. That's the point.</p>
@@ -31,7 +26,7 @@
 <p>Every table should have <code>created_at</code> and <code>updated_at</code> columns. This seems obvious until you're debugging a production issue at 2 AM and desperately need to know when a record changed.</p>
 <p>For critical state changes, I go further with dedicated log tables. If your orders table has a <code>status</code> field, create an <code>order_status_logs</code> table that records every transition. You'll thank yourself later when someone asks "why did this order get stuck in processing for three days?" and the visibility you gain here is enormous.</p>
 <p><strong>Without timestamps:</strong></p>
-<pre><code class="sql language-sql">CREATE TABLE orders (
+<pre><code class="language-sql">CREATE TABLE orders (
     id BIGINT PRIMARY KEY,
     status TEXT,
     total DECIMAL
@@ -39,7 +34,7 @@
 </code></pre>
 <p>When an order status is wrong, you have no idea when it changed or what the history looks like. Was it stuck for hours or days? Did it change multiple times? You're flying blind.</p>
 <p><strong>With proper tracking:</strong></p>
-<pre><code class="sql language-sql">CREATE TABLE orders (
+<pre><code class="language-sql">CREATE TABLE orders (
     id BIGINT PRIMARY KEY,
     status TEXT,
     total DECIMAL,
@@ -72,11 +67,11 @@ WAL archiving to S3 with automated continuous backups. You can restore to any po
 <h2 id="softdeletesforuserfacingdata">soft deletes for user-facing data</h2>
 <p>Hard deletes are permanent. Add a <code>deleted_at</code> timestamp column instead of actually removing rows. Filter it out in your queries with <code>WHERE deleted_at IS NULL</code>. The storage cost is negligible compared to the flexibility you gain.</p>
 <p><strong>Hard deletes:</strong></p>
-<pre><code class="sql language-sql">DELETE FROM user_posts WHERE id = 123;
+<pre><code class="language-sql">DELETE FROM user_posts WHERE id = 123;
 </code></pre>
 <p>User contacts support: "I accidentally deleted my post about my grandmother's recipe, can you restore it?" You have to say no. The data is gone. Even if you have backups, restoring a single row from a backup is complex and risky. The user is upset, and there's nothing you can do.</p>
 <p><strong>Soft deletes:</strong></p>
-<pre><code class="sql language-sql">UPDATE user_posts SET deleted_at = NOW() WHERE id = 123;
+<pre><code class="language-sql">UPDATE user_posts SET deleted_at = NOW() WHERE id = 123;
 
 -- In queries, filter out deleted records
 SELECT * FROM user_posts WHERE deleted_at IS NULL;
@@ -88,7 +83,7 @@ UPDATE user_posts SET deleted_at = NULL WHERE id = 123;
 <h2 id="designforyourquerypatterns">design for your query patterns</h2>
 <p>Schema design should start with how you'll query the data, not just how you'll store it. If you're constantly joining three tables to answer a common question, denormalize a bit. If you're filtering by date ranges frequently, partition your table. I've seen perfectly normalized schemas become performance nightmares because nobody thought about the read patterns. Model your data for how it will be used and not for the sake of theoretical purity.</p>
 <p><strong>Optimizing for normalization:</strong></p>
-<pre><code class="sql language-sql">SELECT p.*, COUNT(c.id) as comment_count
+<pre><code class="language-sql">SELECT p.*, COUNT(c.id) as comment_count
 FROM posts p
 LEFT JOIN comments c ON c.post_id = p.id
 WHERE p.author_id = 123
@@ -96,7 +91,7 @@ GROUP BY p.id;
 </code></pre>
 <p>Your app shows "Posts by Author X with comment count" on every page. You designed for perfect 3NF normalization. This query runs on every page load. With 10,000 posts and 100,000 comments, it takes 2 seconds. As data grows, it gets worse. Users complain about slow page loads.</p>
 <p><strong>Optimizing for how you actually query:</strong></p>
-<pre><code class="sql language-sql">ALTER TABLE posts ADD COLUMN comment_count INT DEFAULT 0;
+<pre><code class="language-sql">ALTER TABLE posts ADD COLUMN comment_count INT DEFAULT 0;
 
 -- Update it with a trigger or in application code when comments change
 -- Now your query is simple
@@ -106,13 +101,13 @@ SELECT * FROM posts WHERE author_id = 123;
 <h2 id="indexingbeforecaching">indexing before caching</h2>
 <p>Caching is sexy. Everyone wants to add Redis. But before you introduce another moving part, make sure you've actually indexed your queries properly. Run <code>EXPLAIN ANALYZE</code> on your slow queries. Nine times out of ten, you're missing an index or using one inefficiently. Fix that first. Or as they say, <a href="https://use-the-index-luke.com/">use the index luke</a>.</p>
 <p><strong>Reaching for caching first:</strong></p>
-<pre><code class="sql language-sql">SELECT * FROM orders 
+<pre><code class="language-sql">SELECT * FROM orders 
 WHERE user_id = 123 AND status = 'pending'
 ORDER BY created_at DESC;
 </code></pre>
 <p>This query takes 3 seconds. Instead of investigating, you add Redis. Now you're managing cache invalidation (when does it expire? what if an order updates?), cache warming (what about cache misses?), and another service in production. The complexity of your system just doubled.</p>
 <p><strong>Fixing the actual problem:</strong></p>
-<pre><code class="sql language-sql">-- First, understand what's happening
+<pre><code class="language-sql">-- First, understand what's happening
 EXPLAIN ANALYZE 
 SELECT * FROM orders 
 WHERE user_id = 123 AND status = 'pending'
@@ -130,7 +125,7 @@ ON orders(user_id, status, created_at DESC);
 <p><strong>Ignoring vacuum:</strong>
 Your <code>sessions</code> table updates on every request (high churn). After 6 months, queries slow down mysteriously. You check the table size: 50GB. But <code>SELECT COUNT(*)</code> shows only 2GB worth of actual session data. The other 48GB is "bloat": dead tuples that Postgres hasn't cleaned up because autovacuum defaults aren't aggressive enough for your workload. Queries are slow because Postgres has to scan through all that garbage.</p>
 <p><strong>Monitoring and tuning:</strong></p>
-<pre><code class="sql language-sql">-- Check when tables were last vacuumed
+<pre><code class="language-sql">-- Check when tables were last vacuumed
 SELECT schemaname, relname, last_vacuum, last_autovacuum,
        n_dead_tup, n_live_tup
 FROM pg_stat_user_tables
@@ -148,14 +143,14 @@ ALTER TABLE sessions SET (
 <p><strong>ORM-generated migrations:</strong>
 You change a model field name from <code>userName</code> to <code>username</code> in your TypeORM entity. The ORM auto-generates a migration that drops the <code>userName</code> column and creates a new <code>username</code> column. You deploy it. All existing usernames are gone. Or, worse: two developers make different model changes, the ORM generates different migrations on their machines due to subtle differences in how they ordered the changes, and now your migration history diverges.</p>
 <p><strong>Explicit SQL migrations:</strong></p>
-<pre><code class="sql language-sql">-- migrations/002_rename_username_column.sql
+<pre><code class="language-sql">-- migrations/002_rename_username_column.sql
 ALTER TABLE users RENAME COLUMN "userName" TO username;
 </code></pre>
 <p>You write the migration yourself. It's explicit. It does exactly what you want: renames the column without losing data. When another developer runs migrations, they get the same result. Your ORM (TypeORM, Prisma, whatever) just queries the database as it exists. Clean separation of concerns. Migrations are too critical to leave to magic.</p>
 <h2 id="dontuseuppercasetableorcolumnnames">don't use uppercase table or column names</h2>
 <p>Postgres folds unquoted identifiers to lowercase (so <code>UserAccounts</code> becomes <code>useraccounts</code>). Uppercase names force you to quote everything. Stick to lowercase with underscores: <code>user_accounts</code>. It's consistent, requires less typing, and works everywhere.</p>
 <p><strong>Using mixed case:</strong></p>
-<pre><code class="sql language-sql">CREATE TABLE "UserAccounts" (
+<pre><code class="language-sql">CREATE TABLE "UserAccounts" (
     "UserId" BIGINT,
     "FirstName" TEXT
 );
@@ -165,7 +160,7 @@ SELECT "UserId", "FirstName" FROM "UserAccounts";
 </code></pre>
 <p>You've committed yourself to quotes everywhere, forever. Forget quotes once <code>SELECT UserId FROM UserAccounts</code> and you get an error because Postgres looks for a table called <code>useraccounts</code> with a column called <code>userid</code>, which don't exist. Your query works in one tool but breaks in another because of how it handles quoting. It's a constant source of papercuts.</p>
 <p><strong>Using lowercase:</strong></p>
-<pre><code class="sql language-sql">CREATE TABLE user_accounts (
+<pre><code class="language-sql">CREATE TABLE user_accounts (
     user_id BIGINT,
     first_name TEXT
 );
@@ -175,16 +170,16 @@ SELECT user_id, first_name FROM user_accounts;
 </code></pre>
 <p>No quotes needed. Works in psql, works in your ORM, works in every admin tool. Case doesn't matter in queries. One less thing to think about.</p>
 <h2 id="useidentityoverserial">use IDENTITY over SERIAL</h2>
-<p>Also listed in <a href="https://wiki.postgresql.org/wiki/Don't_Do_This#Don't_use_serial">this article</a> on the PostgreSQL wiki, serial types can cause issues. <code>IDENTITY</code> columns are the modern, SQL standard-compliant approach for auto-generated primary keys.</p>
+<p>Also listed in <a href="https://wiki.postgresql.org/wiki/Don&#x27;t_Do_This#Don&#x27;t_use_serial">this article</a> on the PostgreSQL wiki, serial types can cause issues. <code>IDENTITY</code> columns are the modern, SQL standard-compliant approach for auto-generated primary keys.</p>
 <p><strong>Using SERIAL:</strong></p>
-<pre><code class="sql language-sql">CREATE TABLE orders (
+<pre><code class="language-sql">CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
     total DECIMAL
 );
 </code></pre>
 <p><code>SERIAL</code> is just shorthand that creates a sequence implicitly behind the scenes. That sequence is "owned" by the column but in a weird way. If you dump and restore the database, you can hit edge cases where the sequence gets out of sync with your data. If you want to grant permissions, you have to separately grant them on the sequence. If you drop the column without <code>CASCADE</code>, the sequence lingers. It's legacy behavior with quirks.</p>
 <p><strong>Using IDENTITY:</strong></p>
-<pre><code class="sql language-sql">CREATE TABLE orders (
+<pre><code class="language-sql">CREATE TABLE orders (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     total DECIMAL
 );
@@ -193,7 +188,7 @@ SELECT user_id, first_name FROM user_accounts;
 <h2 id="preferconnectionstringsoverkeyvalueconfigs">prefer connection strings over key-value configs</h2>
 <p>Use a single connection string (<code>postgresql://user:pass@host:port/dbname</code>) instead of spreading credentials across multiple config keys. It's easier to rotate, simpler to pass between environments, and reduces configuration drift. Most libraries support it anyway.</p>
 <p><strong>Scattered configuration:</strong></p>
-<pre><code class="bash language-bash">DB_HOST=postgres.example.com
+<pre><code class="language-bash">DB_HOST=postgres.example.com
 DB_PORT=5432
 DB_USER=app_user
 DB_PASSWORD=secret123
@@ -202,15 +197,15 @@ DB_SSLMODE=require
 </code></pre>
 <p>You have 6 environment variables to manage. When you need to add <code>sslrootcert</code> or <code>connect_timeout</code>, you add another variable. When you rotate credentials, you update 2 variables and hope you didn't miss any. Different environments might have different formatting expectations. Your connection pooler expects a connection string, so you have to reconstruct it from these parts. It's tedious and error-prone.</p>
 <p><strong>Single connection string:</strong></p>
-<pre><code class="bash language-bash">DATABASE_URL=postgresql://app_user:secret123@postgres.example.com:5432/production?sslmode=require
+<pre><code class="language-bash">DATABASE_URL=postgresql://app_user:secret123@postgres.example.com:5432/production?sslmode=require
 </code></pre>
 <p>One variable contains everything. When you rotate credentials, you update one variable atomically. Either the old credentials work or the new ones do, but you can't end up in a half-updated state. Need to add a parameter? Add it to the query string. Every library, tool, and service in the Postgres ecosystem understands this format.</p>
 <h2 id="closingthoughts">closing thoughts</h2>
 <p>None of these are revolutionary. They're just things that make your life easier over the long run. PostgreSQL is an incredibly powerful tool, but like any tool, how you use it matters as much as the tool itself.</p>
 <p>Vivek</p>
-        <p></p>
-        <a href="/"><- back to home</a>
-      </main>
-    </body>
-    </html>
-  
+
+    <p></p>
+    <a href="/"><- back to home</a>
+  </main>
+</body>
+</html>

@@ -1,29 +1,24 @@
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>viveknathani - sharing data in rust</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta charset="utf-8">
-      <link rel="stylesheet" type="text/css" href="/theme.css">
-      <meta property="og:title" content="sharing data in rust">
-      <meta property="og:description" content="viveknathani - blog">
-    </head>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-NJ89W10549');
-    </script>
-
-    <body>
-      <main>
-        <div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a><a href="/blog/?tag=rust" style="text-decoration:none; display:inline-block; background-color: #cbe2e9ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">rust</a></div>
-        <h1 id="sharingdatainrust">sharing data in Rust</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>viveknathani - sharing data in rust</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/theme.css">
+  <meta property="og:title" content="sharing data in rust">
+  <meta property="og:description" content="viveknathani - blog">
+</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJ89W10549');
+</script>
+<body>
+  <main>
+<div style="margin-top: 10px;"><a href="/blog/?tag=software" style="text-decoration:none; display:inline-block; background-color: #d5d8e7ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">software</a><a href="/blog/?tag=rust" style="text-decoration:none; display:inline-block; background-color: #cbe2e9ff; color: #222; padding: 3px 10px; border-radius: 12px; margin-right: 6px; margin-bottom: 6px; font-size: 0.85em; user-select:none; cursor:pointer;">rust</a></div>
+<h1 id="sharingdatainrust">sharing data in Rust</h1>
 <p>January 2025</p>
 <p>We are interested in looking at various ways to share data in Rust under various conditions. This deserves a summarized understanding because Rust is powerful but also complex. <a href="https://marabos.nl/atomics/">This book</a> is a great resource to have in your library and the post often takes ideas from it.</p>
 <h3 id="readaccesstoallthreadswithnodynamicallocationnomutation">read access to all threads with no dynamic allocation, no mutation</h3>
@@ -47,9 +42,9 @@
 <p>Common usecases: Keeping a global counter, toggling a flag, or accessing a single value across threads.</p>
 <h3 id="ifyouthinkoftheflowofyourdatalikeariver">if you think of the flow of your data like a river</h3>
 <p>Channels are one of the most idiomatic ways to share data between threads in Rust. They allow safe, synchronized, and structured communication by transferring ownership of data from one thread to another. The standard library provides multi-producer, single-consumer channels (mpsc). You can create a channel with <code>std::sync::mpsc::channel()</code> which returns a <code>(Sender, Receiver)</code> pair. Threads can send data using the Sender and receive data using the Receiver.</p>
-        <p></p>
-        <a href="/"><- back to home</a>
-      </main>
-    </body>
-    </html>
-  
+
+    <p></p>
+    <a href="/"><- back to home</a>
+  </main>
+</body>
+</html>
