@@ -14,6 +14,5 @@ In that spirit, I am making a list of quests for myself.
 2. Health: Run a 5K
 3. Programming: Get fluent at writing Rust without the usage of AI
 4. Programming: Land a small, non-trivial patch in the linux kernel
-5. Hardware: learn physics, electrical and electronics engineering - build my own robot
-6. Math: Understand the Reimann Hypothesis
-7. Math: Master JEE Advanced mathematics
+5. Hardware: Learn physics, electrical and electronics engineering - build my own robot
+6. Math: Master Linear Algebra
