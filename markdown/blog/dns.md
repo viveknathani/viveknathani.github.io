@@ -12,7 +12,7 @@ The core idea of DNS is simple to understand. You give a domain name and get bac
 
 If we were tasked with designing a system like this, most of us would begin with a single database. We would store all the domain names and their IP addresses in a table-like structure, maybe put an index on it and call it a day, right?
 
-But here's the problem. Quick google searches reveal that there are over 600 million+ domains in the world. And there are billions of DNS queries happening every day. That's an insane amount of scale. Is a single big table really capable of handling that? Not really.
+But here's the problem. Quick Google searches reveal that there are over 600 million domains in the world. And there are billions of DNS queries happening every day. That's an insane amount of scale. Is a single big table really capable of handling that? Not really.
 
 So, maybe you could shard? Hmm, that makes sense. But on what basis will you split the table? You could perhaps shard on the basis of geography of the registered domain. That could work. But here's the thing. In our design, sharding is an *after thought*. What if we could have a system that is *fundamentally sharded across the world*. This is the neat idea behind DNS. It has a tree-like structure in the world. Let's understand this tree.
 
@@ -28,7 +28,7 @@ The Internet Corporation for Assigned Names and Numbers (ICANN) operates servers
 
 If you are writing software that has to serve DNS queries, you need to start somewhere. So you are typically required to hardcode the IP address of these 13 servers. [This is also how it is done everywhere.](https://gitlab.isc.org/isc-projects/bind9/-/blame/4c3b063ef8bd6e47b13c1dac3087daa1301a78ac/lib/dns/rootns.c#L37-80) The good thing is that, this list almost never changes.
 
-The TLD server now has a smaller set of data to deal with it. It is only concerned with the domain it belongs to. But interestingly, the breakup does not end here. A DNS query sent to a TLD server is further redirected to something called as the authoritative nameserver. The authoritative nameserver is usually your last step in the journey for finding an IP address. The authoritative nameserver contains information specific to the domain name it serves.
+The TLD server now has a smaller set of data to deal with. It is only concerned with the domain it belongs to. But interestingly, the breakup does not end here. A DNS query sent to a TLD server is further redirected to something called the authoritative nameserver. The authoritative nameserver is usually your last step in the journey of finding an IP address. The authoritative nameserver contains information specific to the domain name it serves.
 
 <img src="/images/dns-tree.png">
 

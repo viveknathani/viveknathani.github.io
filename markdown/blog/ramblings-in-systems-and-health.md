@@ -16,11 +16,11 @@ So, let’s dive in!
 
 Unlike June, I decided to take a step back from open-source for a bit and explore a huge system that I have always loved - Postgres! io_uring has been out there since v18. It is deliberately not there in the write paths at the moment but you can use it for your reads. 
 
-I got interested in an adaptive semantice-aware workload scheduling approach. Essentially, if two competing workloads have to run, can they balance it out with each other to maximise the perceived performance of the system? A simple example for this is to run foreground queries and VACCUM at the same time. I posted a tweet about my first set of findings: 
+I got interested in an adaptive semantic-aware workload scheduling approach. Essentially, if two competing workloads have to run, can they balance each other out to maximise the perceived performance of the system? A simple example of this is to run foreground queries and VACUUM at the same time. I posted a tweet about my first set of findings:
 
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">interesting, VACCUM does not make every single query slower<br><br>ran a 100 TPS foreground read workload and manually triggered VACUUM. p50 stayed mostly unchanged, while p99 repeatedly spiked past 100 ms <a href="https://t.co/IX0mxwBjM4">pic.twitter.com/IX0mxwBjM4</a></p>&mdash; Vivek Nathani (@viveknathani_) <a href="https://x.com/viveknathani_/status/2077082022791844219?ref_src=twsrc%5Etfw">July 14, 2026</a></blockquote> <script async src="https://platform.x.com/widgets.js" charset="utf-8"></script>
 
-Given this, I was tempted to write my own solution but I found that you can do some sort of static throttling using a cost-based vaccum delay. This works really well in cutting down foreground p99 but makes `VACCUM` itself a lot slower (expected). p99.9 however did not improve much.
+Given this, I was tempted to write my own solution, but I found that you can do some sort of static throttling using a cost-based vacuum delay. This works really well in cutting down foreground p99 but makes `VACUUM` itself a lot slower (expected). p99.9, however, did not improve much.
 
 And then, I came up with my own policy:
 

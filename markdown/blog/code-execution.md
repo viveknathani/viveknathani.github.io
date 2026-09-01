@@ -113,6 +113,6 @@ Putting all the pieces together and giving them a minimal UI, here is what I cam
 
 ### conclusion
 
-It was fun building this service. When you see something you have been working on for some time, come alive, it is a great feeling. But the biggest takeaway for me is my newfound interest in the inner workings of containerization. This is an exciting space to dig into. And I hope build more things around this. Happy programming :)
+It was fun building this service. When you see something you have been working on for some time come alive, it is a great feeling. But the biggest takeaway for me is my newfound interest in the inner workings of containerization. This is an exciting space to dig into. And I hope to build more things around this. Happy programming :)
 
 Vivek

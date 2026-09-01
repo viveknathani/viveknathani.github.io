@@ -17,5 +17,5 @@ Good decision making is about minimising regrets. In this blog, I am drafting so
 5. Which choice helps me get closer to the person I want to be?
 6. Which choice aligns the most to my personal values?
 7. Are you deciding too early and trying to avoid conflicting thoughts? Is it possible that the date to make the decision is still far away into the future?
-8. Can I ask for an opinion of someone who understands my situation?
+8. Can I ask for the opinion of someone who understands my situation?
 9. Be true to yourself.

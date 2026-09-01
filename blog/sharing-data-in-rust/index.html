@@ -26,7 +26,7 @@
 <h3 id="absolutefreedomlikec">absolute freedom like C</h3>
 <p>Use raw pointers - <code>*const T</code> and <code>*mut T</code>. This is useful and sometimes the only way to do things but it will usually lead to unsafe code.</p>
 <h3 id="writetoaninternalpropertyofastructwithoutmakingthestructinstancemutable">write to an internal property of a struct without making the struct instance mutable</h3>
-<p>Use <code>Cell</code> or <code>RefCell</code> for this. Bot allow you to mutate data even when it's behind an immutable reference.</p>
+<p>Use <code>Cell</code> or <code>RefCell</code> for this. Both allow you to mutate data even when it's behind an immutable reference.</p>
 <p><code>Cell</code> works for simple, <code>Copy</code> types like integers, booleans, etc. <code>RefCell</code> works for non-Copy types like <code>String</code> and <code>Vec</code>.</p>
 <p><code>RefCell</code> also allows you to borrow the data mutably at runtime. This is useful when you can't determine at compile time whether you need mutable access to the data.</p>
 <p><code>Cell</code> is a bit faster than <code>RefCell</code> because it doesn't do runtime checks. <code>RefCell</code> panics at runtime if you violate the borrowing rules.</p>

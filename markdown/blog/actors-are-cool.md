@@ -10,7 +10,7 @@ I’ve spent a lot of time writing server-side software. And there are 4 kinds o
 
 1. Simple HTTP Request - it either fetches data or performs a well defined operation (updating a database / calling another API) and gives back a response with a status code and a body that your app can work with. Example: getting a list of todos.
 2. HTTP Request that queues a job - this is useful when you know something is going to take time and/or needs a bit of retryability upon failure. The server queues the job and returns a job id which your frontend can use to poll for status. A worker in the background picks up the job and runs it. Example: processing an image.
-3. Scheduled jobs and event emissions  - they are not exactly triggered by a client (although they may be a downstream effect of some work done by the client). The server itself runs some predefined logic to decide when a job should run - either at a predefined time or when a new event happens in a system. Example: sending a newsletter everyday at 7 AM or updating the analytics database when a new user signs up.
+3. Scheduled jobs and event emissions - they are not exactly triggered by a client (although they may be a downstream effect of some work done by the client). The server itself runs some predefined logic to decide when a job should run - either at a predefined time or when a new event happens in a system. Example: sending a newsletter every day at 7 AM or updating the analytics database when a new user signs up.
 4. Realtime streaming and duplex channels - for times when you can’t afford to poll. Example: getting ticker updates for stock prices, chatting with a friend, or video calls.
 
 There’s a new kind of workload emerging on the street, thanks to AI - agents! Agents in the backend can be non-deterministic, long-running and memory-intensive. Trying to fit them in the above 4 patterns creates a problem when you have to scale the system. 
@@ -44,9 +44,9 @@ But the isolation model of workers gives us good guarantees to work with, even i
 
 By embedding a private, co-located SQLite engine directly within a globally routed V8 isolate, you are effectively getting a distributed actor runtime! You can now keep high-frequency tool loops and context updates close to the compute that owns them, without forcing unrelated agents to coordinate through the same rows or locks. This is beautiful!
 
-I love Cloudflare but there’s one issue - your backend runs on AWS / GCP / Azure / GCP / Railway / Render. Your team has spent years on those platforms. You are neck deep into your existing infrastructure provider. And in order to run your agents, the Cloudflare model wants you to bring your code to them. This may not work for your team. [Rivet](https://rivet.dev/) solves this. It gives you an open-source actor management engine that you can run on your own infrastructure. Actors are first-class primitives but not limited to the bounds of a V8 isolate. They have higher memory and CPU limits. And you can self-host Rivet in your own infrastructure!
+I love Cloudflare but there’s one issue - your backend runs on AWS / GCP / Azure / Railway / Render. Your team has spent years on those platforms. You are neck deep into your existing infrastructure provider. And in order to run your agents, the Cloudflare model wants you to bring your code to them. This may not work for your team. [Rivet](https://rivet.dev/) solves this. It gives you an open-source actor management engine that you can run on your own infrastructure. Actors are first-class primitives but not limited to the bounds of a V8 isolate. They have higher memory and CPU limits. And you can self-host Rivet on your own infrastructure!
 
-Let’s build a small app on top of Rivet - a platform to give your users a list of interesting research papers and blogs everyday based on the topics given by them.
+Let’s build a small app on top of Rivet - a platform to give your users a list of interesting research papers and blogs every day based on the topics they provide.
 
 Every user gets an actor. We define the actor once and use the user’s ID as its key:
 
