@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>viveknathani - how i write software</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/theme.css">
+  <meta property="og:title" content="how i write software">
+  <meta property="og:description" content="viveknathani - notes">
+</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJ89W10549');
+</script>
+<body>
+  <main>
+
+<h1 id="howiwritesoftware">how i write software</h1>
+<p>Last Updated: September 2026</p>
+<p>Let's say I have a product document and an empty GitHub organisation. How do I start building?</p>
+<p>It is tempting to create a backend repository, install a framework, add a <code>/health</code> route and call it progress. I have done this several times. It feels nice because there is code on the screen, but I still don't understand the product.</p>
+<p>So I start with the people who will use the system.</p>
+<p>Who are the users? What can they do? Where do they do it - a web app, mobile app, desktop app or CLI? What does the backend need to make all of this work? What data do we need to store?</p>
+<p>I usually draw a high-level system diagram and then start working on the data model. I use PostgreSQL for most products. Thinking in tables and relationships is a good test of whether I have actually understood the product.</p>
+<p>A product document might say that a staff member belongs to a facility. Okay, but can they belong to more than one facility? Can they move? Does the history matter? Is a platform administrator also part of a customer organisation?</p>
+<p>These look like database questions but they are actually product questions. I like to have answers before there are fifty API endpoints built around the wrong assumptions.</p>
+<h2 id="boringtechnologyisgood">boring technology is good</h2>
+<p>I pick technology based on the work it has to do. There is no prize for using the most interesting database.</p>
+<p>Most products I work on have relational data and need transactions, so PostgreSQL is usually enough. I will consider a document database, time-series database or analytical store when there is a real usecase for it. The workload needs to justify the extra system.</p>
+<p>Go is usually my default for backend services. It is easy to deploy, concurrency is nice and it is fast enough for pretty much all ordinary product work. Node and TypeScript make sense when using one language across the frontend and backend makes the team faster. I would not use Node for CPU-heavy work just because the frontend happens to use TypeScript.</p>
+<p>Redis comes in when I actually need caching, or when my job system already needs it. I have used BullMQ with Node and Asynq with Go. Watermill is nice for events in Go.</p>
+<p>Configuration comes from the environment. Logs go to standard output. Databases and other services are configured using URLs. Processes should be safe to restart. This is basically the useful part of the 12-factor model.</p>
+<p>The backend and worker can share the same code and services while running as different processes. Separate process does not have to mean a separate repository or an entirely different service.</p>
+<h2 id="thebackend">the backend</h2>
+<p>I lean towards monorepos these days, although my thoughts on repository boundaries keep changing. The exact Git setup is less important to me than being able to discover the entire system without doing archaeology.</p>
+<p>Inside the backend, I create modules named after the product: <code>users</code>, <code>organisations</code>, <code>payments</code>, <code>rentals</code>. Names like <code>foundation</code>, <code>common</code> and <code>misc</code> usually mean that I have not figured out where something belongs.</p>
+<p>I don't like the repository pattern much in application backends. Most business logic lives in the service layer. Controllers are thin HTTP wrappers around services. Routes connect URLs and middleware to controllers. Workers use the same services instead of implementing the business logic again.</p>
+<p>Roughly:</p>
+<pre><code class="language-text">routes -&gt; controllers -&gt; services -&gt; database and integrations
+                         ^
+workers -----------------|
+</code></pre>
+<p>If changing an HTTP detail forces me to rewrite business behaviour, something is probably in the wrong layer. A controller should not be deciding whether a rental can be renewed.</p>
+<p>I start with a modular backend, not microservices. A single application with clear modules and separate worker processes is easy to run and understand. Microservices add network calls, deployment coordination, observability work and more failure modes. They are useful when the system has real ownership or scaling boundaries. If one small team owns everything, ten services usually pretend that an organisation exists when it doesn't.</p>
+<p>Something can always be extracted later when I have evidence that it needs to be.</p>
+<h2 id="getthewholethingrunningearly">get the whole thing running early</h2>
+<p>Before building too many features, I want:</p>
+<ul>
+<li>PostgreSQL and Redis running locally, if Redis is needed;</li>
+<li>the backend and workers running;</li>
+<li>environment-based configuration;</li>
+<li>formatting and linting;</li>
+<li>a test setup;</li>
+<li>CI that runs the checks;</li>
+<li>application and request logs;</li>
+<li>health checks;</li>
+<li>basic frontend structure, authentication and the design system;</li>
+<li>a local setup that another engineer can start without calling me.</li>
+</ul>
+<p>I don't need a giant production setup on day one. I just want the repeated work automated and failures to be visible.</p>
+<p>Deployment is part of this setup. On Railway, for example, I run database migrations as a pre-deploy command. If a migration fails, the deployment fails. I don't want the new backend to start and hope that somebody remembers to run migrations later.</p>
+<p>I prefer forward migrations. Rolling the schema backwards is not my default recovery plan. This means schema changes have to work while old and new versions of the app may briefly run against the same database. Add before removing. Backfill before adding a constraint. Deploy code that can work with both shapes before deleting the old one.</p>
+<p>The backend and worker can have separate process definitions or Dockerfiles when the platform needs them. They still share the same business logic. Logs go to standard output and secrets stay in environment variables.</p>
+<h2 id="externalserviceswillbelate">external services will be late</h2>
+<p>Startup products often depend on an OTP provider, payment gateway, or a KYC vendor. Quite often, the product needs to move before the commercial agreement or final API documentation exists.</p>
+<p>Waiting blocks the entire product. Adding fake vendor behaviour everywhere creates a mess.</p>
+<p>I define the integration boundary and create a fake implementation for development or staging. The rest of the application talks to that boundary. The mock is obvious and controlled by the environment. When the real integration is ready, I can replace the fake without teaching every controller and frontend screen about the vendor.</p>
+<p>Background work needs similar care. Sending a message, processing a webhook or retrying a network call may belong in a worker. The worker still calls the same service as the HTTP path. Putting work in a queue does not magically solve duplicate execution, retries or idempotency. It just moves those problems somewhere else.</p>
+<h2 id="therepositoryshouldexplainitself">the repository should explain itself</h2>
+<p>I have worked on systems where one engineer knew most of the important things. Everything worked until that person was not around.</p>
+<p>I don't want to be important because only I know how the system works. Three weeks into a project, another engineer should be able to understand the repository and ship an ordinary feature without speaking to me.</p>
+<p>AI makes this easier. An agent can inspect code, update documentation in the same change and turn a mistake into an instruction that prevents it from happening again. But this only works when the repository has some structure.</p>
+<p>I use <code>AGENTS.md</code> as the starting point. It does not contain every detail about the system. It explains how the repository is organised, where the sources of truth live, how to verify a change and which rules are important.</p>
+<p>The rest goes into a small documentation setup:</p>
+<ul>
+<li>context documents explain how modules work today</li>
+<li>API docs describe the contract that is actually implemented</li>
+<li>ERDs explain important architectural choices</li>
+<li>runbooks contain operational steps</li>
+<li><code>docs/README.md</code> links everything together</li>
+</ul>
+<p>Documentation changes with the code. If an API changes, the docs and examples change in the same pull request. If the code proves that a context document is wrong, I fix the document. If nobody can find a document, it may as well not exist, so it goes in the index.</p>
+<p>I also use temporary specs while building larger changes. The spec is useful while the work is in progress. Once it ships, the final truth should live in the code, API contract, context docs or an ERD. I don't want an old implementation plan quietly becoming a second source of truth.</p>
+<p>Ideally, an engineer can point an agent at the repository and the agent can find the relevant module, understand the contract, read about earlier mistakes, make the change and run the checks.</p>
+<p>This does not mean every change should be delegated blindly. New data flows, permissions, money movement and changes to core product rules need careful human thought.</p>
+<h2 id="agentsstillneedreview">agents still need review</h2>
+<p>An agent-friendly repository does not make agents correct.</p>
+<p>AI can write an implementation and a beautiful test suite where both are based on the same wrong assumption. Everything passes and the feature is still wrong.</p>
+<p>I care more about what a test proves than how many tests were added. Important product rules, tenant isolation, payments, retries and concurrent behaviour need tests that try to break the boundary. During review, I want to trace the requirement through the handler, service, database and final behaviour.</p>
+<p>AI makes implementation, documentation and routine verification cheaper. It does not decide what the product is supposed to mean.</p>
+<h2 id="whatamioptimisingfor">what am I optimising for?</h2>
+<p>I am not trying to predict every future requirement or design the perfect architecture.</p>
+<p>I want ordinary work to feel ordinary. A feature should have an obvious home. HTTP code should be thin. Workers should reuse business logic. Configuration should come from the environment. Deployments should run their own migrations or fail. A new engineer should be able to run the system locally. An agent should be able to explain the repository using evidence instead of making things up.</p>
+<p>When something goes wrong, I want the fix to leave the system slightly better. Fix the code, update the explanation, record the mistake if it can happen again and move on.</p>
+<p>The goal is simple: keep shipping without needing a hero in the room.</p>
+
+    <p></p>
+    <a href="/"><- back to home</a>
+  </main>
+</body>
+</html>

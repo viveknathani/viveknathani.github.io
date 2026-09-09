@@ -19,6 +19,7 @@ Structured and selective brain dump.
 5. [database admin](/notes/database-admin)
 6. [javascript](/notes/javascript)
 7. [hash tables](/notes/hash-tables)
+8. [how i write software](/notes/how-i-write-software/)
 
 ### religion
 
