@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>viveknathani - how i write software part 2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/theme.css">
+  <meta property="og:title" content="how i write software part 2">
+  <meta property="og:description" content="viveknathani - notes">
+</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJ89W10549"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJ89W10549');
+</script>
+<body>
+  <main>
+
+<h1 id="howiwritesoftwarepart2">how i write software part 2</h1>
+<p>Last Updated: October 2026</p>
+<p><a href="/notes/how-i-write-software/">Part 1</a> explains how I start building a product.
+This is about the smaller decisions inside a Go codebase. I keep explaining
+these to agents, so here is something I can point them at.</p>
+<h2 id="routescontrollersservices">routes, controllers, services</h2>
+<p>For an application backend, I usually want this:</p>
+<pre><code class="language-text">routes -&gt; controllers -&gt; services -&gt; database and integrations
+                            ^
+workers --------------------|
+</code></pre>
+<p>Routes register paths, methods and middleware, then connect them to controller
+methods. A route file should make the HTTP surface easy to find.</p>
+<p>Controllers deal with HTTP. Parse the body, path and query parameters, get the
+caller and authorization context, call a service, and translate the result into
+an HTTP response. Coordinating access checks can take a few lines. Thin does
+not mean that every controller method has to fit in five lines.</p>
+<p>Services own the product rules: whether an operation is allowed, what changes
+together, and what happens when it fails. They take <code>context.Context</code> and
+ordinary Go values. Passing a Fiber context into a service makes it harder to
+call that service from a worker or a command.</p>
+<p>I am comfortable with services querying the database directly. GORM and SQL
+both have a place. I don't need a repository interface around every table.
+Keeping the queries and transaction beside the operation often makes the code
+easier to understand.</p>
+<h2 id="givethingsanobvioushome">give things an obvious home</h2>
+<p>I organise backend modules around the product: <code>users</code>, <code>rentals</code>, <code>payments</code>.
+A module can have <code>service.go</code>, <code>models.go</code>, <code>errors.go</code>, and files named after
+specific operations as it grows. I want to find refunds by looking for refunds.</p>
+<p>The layout follows the program. In <a href="https://github.com/viveknathani/dbtree">dbtree</a>,
+the useful boundaries are <code>database</code>, <code>graph</code> and <code>render</code>: inspect a schema,
+build its graph, then render it. A CLI does not need controllers just because
+my backend has them.</p>
+<h2 id="binariesliveincmd">binaries live in cmd</h2>
+<p>Executable entry points go under <code>cmd/&lt;name&gt;/</code>:</p>
+<pre><code class="language-text">cmd/api/main.go
+cmd/worker/main.go
+cmd/some-tool/main.go
+internal/modules/payments/
+internal/modules/rentals/
+internal/controllers/
+internal/routes/
+</code></pre>
+<p>Each entry point loads configuration, constructs dependencies, starts its work
+and handles shutdown. Business logic belongs in packages the binaries can use.
+The API and worker should call the same rental service when they perform the
+same operation. A maintenance command should not need to start an HTTP server.</p>
+<p>I prefer explicit constructors and wiring. Seeing where a database connection
+or payment provider comes from is useful. I don't need a dependency injection
+framework to hide those few lines.</p>
+<h2 id="migrationshavetheirowntool">migrations have their own tool</h2>
+<p>I use versioned SQL migrations with a dedicated tool such as <code>golang-migrate</code>.
+GORM can handle application queries; it does not get to infer production
+schema changes through <code>AutoMigrate</code>.</p>
+<p>Migrations run as an explicit deployment step. If they fail, deployment fails.
+Starting another API or worker process should not quietly change the schema.
+As in part 1, I prefer forward recovery and changes that let old and new code
+briefly work against the same database.</p>
+<h2 id="abstractionsneedareason">abstractions need a reason</h2>
+<p>Concrete structs and functions are a good starting point. I introduce an
+interface when there is behaviour to substitute: a payment gateway, an IoT
+provider, or different database inspectors. A fake and a real provider can
+implement the same boundary without spreading vendor details through services.</p>
+<p>This does not mean every service needs an interface. Sometimes a switch over a
+few supported formats is perfectly readable. I want to understand the work
+without jumping through several files that only forward the same arguments.</p>
+<h2 id="keepthecodecomfortabletoread">keep the code comfortable to read</h2>
+<p>I aim for roughly 80 columns. I don't want to keep scrolling horizontally to
+read a function call. Wrap long signatures and calls, and give complicated
+expressions meaningful intermediate names. Use judgment when wrapping would
+make something harder to read.</p>
+<p>Use the repository's formatter and linter. In Go, <code>gofmt</code> handles formatting;
+tools such as <code>golines</code> can help with line length. Agree on the settings once
+and let the checks do the repetitive work.</p>
+<p>Keep functions focused. Prefer early returns over deep nesting. Extract a
+helper when it names a useful step, and keep related code close together.
+Comments should explain the rule or reason: why a row is locked, why a retry
+is safe, or why a state transition is refused.</p>
+<h2 id="maketheboundarieshold">make the boundaries hold</h2>
+<p>A friendly validation check does not stop two concurrent requests from passing
+it. Use transactions, constraints and row locks where the operation needs
+them. Keep tenant scope explicit in queries. A queue does not make an operation
+idempotent.</p>
+<p>Return errors that callers can act on. Sentinel errors can identify a category;
+typed errors can carry a stable conflict code and a useful message. Controllers
+translate these into HTTP responses. Services should not choose HTTP statuses.</p>
+<p>Tests should try to break the important rules: cross-tenant access, duplicate
+execution, conflicting updates, and partial failure. Passing tests are useful
+when they prove the behaviour we actually need.</p>
+<p>When an agent adds a feature, I want to follow it from the route to the service,
+through the transaction, and back to the response. The code should make that
+ordinary review easy.</p>
+
+    <p></p>
+    <a href="/"><- back to home</a>
+  </main>
+</body>
+</html>

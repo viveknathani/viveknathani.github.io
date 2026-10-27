@@ -20,6 +20,7 @@ Structured and selective brain dump.
 6. [javascript](/notes/javascript)
 7. [hash tables](/notes/hash-tables)
 8. [how i write software](/notes/how-i-write-software/)
+9. [how i write software part 2](/notes/how-i-write-software-part-2/)
 
 ### religion
 
